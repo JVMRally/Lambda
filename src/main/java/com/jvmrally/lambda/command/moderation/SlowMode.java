@@ -16,6 +16,9 @@ public class SlowMode {
     static class SlowModeRequest {
         @Flag(shortName = 't', longName = "time")
         private Integer time = 0;
+
+        @Flag(shortName = 'r', longName = "reset")
+        private Boolean reset = false;
     }
 
     /**
@@ -28,6 +31,9 @@ public class SlowMode {
     @CommandHandler(commandName = "slow")
     public static void slow(SlowModeRequest req, MessageReceivedEvent e) {
         List<TextChannel> channels = e.getMessage().getMentionedChannels();
+        if (req.reset) {
+            req.time = 0;
+        }
         if (channels.isEmpty()) {
             setSlowMode(e.getTextChannel(), req.time);
             return;
