@@ -1,6 +1,7 @@
 package com.jvmrally.lambda.command.moderation;
 
 import java.util.List;
+import com.jvmrally.lambda.Util;
 import disparse.parser.reflection.CommandHandler;
 import disparse.parser.reflection.Flag;
 import disparse.parser.reflection.ParsedEntity;
@@ -30,13 +31,9 @@ public class SlowMode {
      */
     @CommandHandler(commandName = "slow")
     public static void slow(SlowModeRequest req, MessageReceivedEvent e) {
-        List<TextChannel> channels = e.getMessage().getMentionedChannels();
+        List<TextChannel> channels = Util.getTargetChannels(e);
         if (req.reset) {
             req.time = 0;
-        }
-        if (channels.isEmpty()) {
-            setSlowMode(e.getTextChannel(), req.time);
-            return;
         }
         for (TextChannel channel : channels) {
             setSlowMode(channel, req.time);
