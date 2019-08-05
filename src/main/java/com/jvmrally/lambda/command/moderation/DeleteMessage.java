@@ -3,6 +3,7 @@ package com.jvmrally.lambda.command.moderation;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import com.jvmrally.lambda.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import disparse.parser.reflection.CommandHandler;
@@ -35,17 +36,28 @@ public class DeleteMessage {
      */
     @CommandHandler(commandName = "delete")
     public static void delete(DeleteRequest req, MessageReceivedEvent e) {
+        List<TextChannel> channels = Util.getTargetChannels(e);
         for (Member member : e.getMessage().getMentionedMembers()) {
-            for (TextChannel channel : e.getMessage().getMentionedChannels()) {
-                List<Message> messages = channel.getIterableHistory().stream().limit(HISTORY_LIMIT)
-                        .filter(isMemberEqualToAuthor(member)).limit(req.limit)
-                        .collect(Collectors.toList());
-                logger.info("Deleting {} messages in channel {} by user {}", messages.size(),
-                        channel.getName(), member.getUser().getName());
-                for (Message message : messages) {
-                    message.delete().queue();
-                }
+            for (TextChannel channel : channels) {
+                deleteMessages(channel, member, req.limit);
             }
+        }
+    }
+
+    /**
+     * Deletes messages sent by a specific users from a specific channel
+     * 
+     * @param channel the channel to delete messages from
+     * @param member  the target user
+     * @param limit   the maximum number of messages to delete
+     */
+    private static void deleteMessages(TextChannel channel, Member member, int limit) {
+        List<Message> messages = channel.getIterableHistory().stream().limit(HISTORY_LIMIT)
+                .filter(isMemberEqualToAuthor(member)).limit(limit).collect(Collectors.toList());
+        logger.info("Deleting {} messages in channel {} by user {}", messages.size(),
+                channel.getName(), member.getUser().getName());
+        for (Message message : messages) {
+            message.delete().queue();
         }
     }
 
