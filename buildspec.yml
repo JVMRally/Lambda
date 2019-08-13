@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: openjdk11
+  build:
+    commands:
+      - echo Build started on `date`
+      - mvn test
+  post_build:
+    commands:
+      - mvn package
+artifacts:
+  files:
+    - target/lambda-1.0.jar
+    - appspec.yml
+  discard-paths: yes
