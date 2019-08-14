@@ -34,7 +34,7 @@ public class App {
     }
 
     private static void initFlyway() {
-        String url = "jdbc:postgresql://" + System.getenv("LAMBDA_DB_HOST");
+        String url = System.getenv("LAMBDA_DB_HOST");
         String user = System.getenv("LAMBDA_DB_USER");
         String password = System.getenv("LAMBDA_DB_PASSWORD");
         Flyway.configure().dataSource(url, user, password).load().migrate();
