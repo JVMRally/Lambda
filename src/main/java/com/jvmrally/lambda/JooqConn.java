@@ -20,7 +20,7 @@ public class JooqConn {
 
     public static DSLContext getContext() {
         if (dsl == null && conn == null) {
-            String url = "jdbc:postgresql://" + System.getenv("LAMBDA_DB_HOST");
+            String url = System.getenv("LAMBDA_DB_HOST");
             String user = System.getenv("LAMBDA_DB_USER");
             String password = System.getenv("LAMBDA_DB_PASSWORD");
             try {
