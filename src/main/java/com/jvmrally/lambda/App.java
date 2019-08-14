@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.security.auth.login.LoginException;
 import javax.sql.DataSource;
+import com.jvmrally.lambda.config.JooqCodeGen;
 import com.jvmrally.lambda.listener.DirectMessageListener;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.internal.jdbc.DriverDataSource;
@@ -37,6 +38,13 @@ public class App {
         String url = System.getenv("LAMBDA_DB_HOST");
         String user = System.getenv("LAMBDA_DB_USER");
         String password = System.getenv("LAMBDA_DB_PASSWORD");
-        Flyway.configure().dataSource(url, user, password).load().migrate();
+        int migrations = Flyway.configure().dataSource(url, user, password).load().migrate();
+        if (migrations > 0) {
+            try {
+                JooqCodeGen.runJooqCodeGen(url, user, password);
+            } catch (Exception e) {
+                logger.error("Problem with code gen.", e);
+            }
+        }
     }
 }
