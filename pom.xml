@@ -28,7 +28,6 @@
     <maven.shade.version>3.2.1</maven.shade.version>
     <flyway.version>5.2.4</flyway.version>
     <junit.version>5.5.1</junit.version>
-    <h2.version>1.4.199</h2.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -121,13 +120,6 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
-    
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>${h2.version}</version>
-    </dependency>
-
   </dependencies>
 
   <build>
@@ -153,48 +145,6 @@
         </executions>
       </plugin>
       
-      <plugin>
-				<groupId>org.jooq</groupId>
-				<artifactId>jooq-codegen-maven</artifactId>
-        <version>${jooq.version}</version>
-				<executions>
-					<execution>
-            <id>jooq-codegen</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-				
-				<configuration>
-					<jdbc>
-						<driver>${db.driver}</driver>
-						<url>${db.url}</url>
-						<user>${db.user}</user>
-						<password>${db.password}</password>
-					</jdbc>
-					<generator>
-						<target>
-							<packageName>com.jvmrally.lambda.db</packageName>
-							<directory>src/main/java</directory>
-						</target>
-						<database>
-							<excludes>
-								flyway_schema_history
-								| pg_.*
-								| information_schema.*
-							</excludes>
-							<inputSchema>public</inputSchema>
-							<outputSchemaToDefault>true</outputSchemaToDefault>
-						</database>
-						<generate>
-							<deprecationOnUnknownTypes>false</deprecationOnUnknownTypes>
-							<pojos>true</pojos>
-						</generate>
-					</generator>
-				</configuration>		
-			</plugin>      
     </plugins>
   </build>
 </project>
