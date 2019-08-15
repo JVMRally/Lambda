@@ -1,6 +1,7 @@
 package com.jvmrally.lambda;
 
 import java.util.List;
+import java.util.StringJoiner;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -22,5 +23,20 @@ public class Util {
             channels = List.of(e.getTextChannel());
         }
         return channels;
+    }
+
+    /**
+     * Takes the list of arguments passed to a command method and rebuilds them into a single
+     * string.
+     * 
+     * @param args the list of arguments to rebuild
+     * @return a string
+     */
+    public static String rebuildArgsToString(List<String> args) {
+        StringJoiner sj = new StringJoiner(" ");
+        for (String s : args) {
+            sj.add(s);
+        }
+        return sj.toString();
     }
 }
