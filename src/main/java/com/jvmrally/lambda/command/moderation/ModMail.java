@@ -20,7 +20,7 @@ public class ModMail {
     }
 
     @CommandHandler(commandName = "modmail")
-    public static void delete(ModMailRequest req, List<String> args, MessageReceivedEvent e) {
+    public static void modmail(ModMailRequest req, List<String> args, MessageReceivedEvent e) {
         List<Member> members = e.getMessage().getMentionedMembers();
         if (members.size() > 1) {
             e.getChannel().sendMessage("Can only modmail 1 user").queue();

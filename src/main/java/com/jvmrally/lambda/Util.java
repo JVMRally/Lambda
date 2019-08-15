@@ -1,7 +1,10 @@
 package com.jvmrally.lambda;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -38,5 +41,21 @@ public class Util {
             sj.add(s);
         }
         return sj.toString();
+    }
+
+    /**
+     * Method to find a role in a guild. If role is not found, returns Optional.empty
+     * 
+     * @param guild the guild to search
+     * @param name  the role to find
+     * @return the found role, or Optional.empty
+     */
+    public static Optional<Role> getRole(Guild guild, String name) {
+        List<Role> roles = guild.getRolesByName(name, true);
+        if (roles.size() == 1) {
+            return Optional.of(roles.get(0));
+        } else {
+            return Optional.empty();
+        }
     }
 }
