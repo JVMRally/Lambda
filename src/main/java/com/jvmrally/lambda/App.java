@@ -14,6 +14,7 @@ import org.reflections.Reflections;
 import disparse.discord.Dispatcher;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 
 /**
  * App Entry
@@ -30,6 +31,7 @@ public class App {
         JDA jda = Dispatcher.init(new JDABuilder(System.getenv(TOKEN)), PREFIX)
                 .addEventListeners(new DirectMessageListener()).build();
         jda.awaitReady();
+        jda.getPresence().setActivity(Activity.playing("DM to contact staff"));
         registerScheduledTasks(jda);
     }
 
