@@ -1,22 +1,14 @@
 package com.jvmrally.lambda;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import javax.security.auth.login.LoginException;
-import javax.sql.DataSource;
 import com.jvmrally.lambda.config.JooqCodeGen;
 import com.jvmrally.lambda.listener.DirectMessageListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.flywaydb.core.Flyway;
-import org.flywaydb.core.internal.jdbc.DriverDataSource;
-import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 import disparse.discord.Dispatcher;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * App Entry
