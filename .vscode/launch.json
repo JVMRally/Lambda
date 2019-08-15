@@ -6,6 +6,14 @@
             "request": "launch",
             "mainClass": "com.jvmrally.lambda.App",
             "projectName": "lambda"
+        },
+        {
+            "type": "java",
+            "name": "Generate and run",
+            "request": "launch",
+            "mainClass": "com.jvmrally.lambda.App",
+            "projectName": "lambda",
+            "args": "--generate"
         }
     ]
 }

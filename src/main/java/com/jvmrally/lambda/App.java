@@ -20,18 +20,18 @@ public class App {
     private static final Logger logger = LogManager.getLogger(App.class);
 
     public static void main(String[] args) throws LoginException, InterruptedException {
-        initFlyway();
+        initFlyway(args);
         JDA jda = Dispatcher.init(new JDABuilder(System.getenv(TOKEN)), PREFIX)
                 .addEventListeners(new DirectMessageListener()).build();
         jda.awaitReady();
     }
 
-    private static void initFlyway() {
+    private static void initFlyway(String[] args) {
         String url = System.getenv("LAMBDA_DB_HOST");
         String user = System.getenv("LAMBDA_DB_USER");
         String password = System.getenv("LAMBDA_DB_PASSWORD");
-        int migrations = Flyway.configure().dataSource(url, user, password).load().migrate();
-        if (migrations > 0) {
+        Flyway.configure().dataSource(url, user, password).load().migrate();
+        if (args.length == 1 && args[0].equals("--generate")) {
             try {
                 JooqCodeGen.runJooqCodeGen(url, user, password);
             } catch (Exception e) {
