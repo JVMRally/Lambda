@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import disparse.parser.reflection.Injectable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,7 +19,12 @@ public class JooqConn {
     private static Connection conn = null;
     private static DSLContext dsl = null;
 
+    @Injectable
     public static DSLContext getContext() {
+        return JooqConn.getJooqContext();
+    }
+
+    public static DSLContext getJooqContext() {
         if (dsl == null && conn == null) {
             String url = System.getenv("LAMBDA_DB_HOST");
             String user = System.getenv("LAMBDA_DB_USER");
