@@ -2,8 +2,8 @@ package com.jvmrally.lambda.listener;
 
 import static com.jvmrally.lambda.db.tables.DmTimeouts.DM_TIMEOUTS;
 import java.util.concurrent.TimeUnit;
-import com.jvmrally.lambda.JooqConn;
 import com.jvmrally.lambda.db.tables.pojos.DmTimeouts;
+import com.jvmrally.lambda.injectable.JooqConn;
 import org.jooq.DSLContext;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

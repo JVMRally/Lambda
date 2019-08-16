@@ -1,4 +1,4 @@
-package com.jvmrally.lambda;
+package com.jvmrally.lambda.injectable;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
