@@ -2,6 +2,7 @@ package com.jvmrally.lambda.command.moderation;
 
 import static com.jvmrally.lambda.db.tables.Mute.MUTE;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import com.jvmrally.lambda.Util;
 import org.jooq.DSLContext;
@@ -9,6 +10,7 @@ import disparse.parser.reflection.CommandHandler;
 import disparse.parser.reflection.Flag;
 import disparse.parser.reflection.ParsedEntity;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -36,12 +38,15 @@ public class Mute {
             e.getChannel().sendMessage("Must mention at least one user").queue();
             return;
         }
-        for (Member member : members) {
-            Util.getRole(e.getGuild(), "muted").ifPresentOrElse(role -> {
-                e.getGuild().addRoleToMember(member, role).queue();
-                logMute(dsl, member, e, req);
-            }, () -> e.getChannel().sendMessage("Role does not exist").queue());
-        }
+        Optional<Role> role = Util.getRole(e.getGuild(), "muted");
+        role.ifPresentOrElse(r -> {
+            for (Member member : members) {
+                if (!member.getRoles().contains(r)) {
+                    e.getGuild().addRoleToMember(member, r).queue();
+                    logMute(dsl, member, e, req);
+                }
+            }
+        }, () -> e.getChannel().sendMessage("Role does not exist").queue());
     }
 
     private static void logMute(DSLContext dsl, Member member, MessageReceivedEvent e,
