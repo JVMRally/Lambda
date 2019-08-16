@@ -1,9 +1,7 @@
 package com.jvmrally.lambda;
 
-import java.util.Calendar;
 import java.util.Set;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import javax.security.auth.login.LoginException;
 import com.jvmrally.lambda.annotation.Task;
 import com.jvmrally.lambda.config.JooqCodeGen;
@@ -25,10 +23,9 @@ public class App {
     private static final String TOKEN = "LAMBDA_TOKEN";
     private static final String PREFIX = "!";
     private static final Logger logger = LogManager.getLogger(App.class);
-    private static final int HOUR = 60 * 60 * 1000;
 
     public static void main(String[] args) throws LoginException, InterruptedException {
-        initFlyway(args);
+        initDatabase(args);
         JDA jda = Dispatcher.init(new JDABuilder(System.getenv(TOKEN)), PREFIX)
                 .addEventListeners(new DirectMessageListener()).build();
         jda.awaitReady();
@@ -36,11 +33,17 @@ public class App {
         registerScheduledTasks(jda);
     }
 
+    /**
+     * Finds all tasks in the task package and registers them with the scheduler. Scheduling info is
+     * read from the Task annotation
+     * 
+     * @param jda the jda instance
+     */
     private static void registerScheduledTasks(JDA jda) {
         var scheduler = Executors.newSingleThreadScheduledExecutor();
         var reflections = new Reflections("com.jvmrally.lambda.tasks");
         Set<Class<? extends Runnable>> classes = reflections.getSubTypesOf(Runnable.class);
-        for (Class<? extends Object> c : classes) {
+        for (Class<? extends Runnable> c : classes) {
             if (c.isAnnotationPresent(Task.class)) {
                 Task task = c.getAnnotation(Task.class);
                 try {
@@ -57,7 +60,12 @@ public class App {
         }
     }
 
-    private static void initFlyway(String[] args) {
+    /**
+     * Run flyway migrations, and if --generate arg is passed, run Jooq Code generation
+     * 
+     * @param args command line args
+     */
+    private static void initDatabase(String[] args) {
         String url = System.getenv("LAMBDA_DB_HOST");
         String user = System.getenv("LAMBDA_DB_USER");
         String password = System.getenv("LAMBDA_DB_PASSWORD");

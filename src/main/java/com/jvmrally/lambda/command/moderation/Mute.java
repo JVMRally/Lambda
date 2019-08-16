@@ -1,18 +1,16 @@
 package com.jvmrally.lambda.command.moderation;
 
+import static com.jvmrally.lambda.db.tables.Mute.MUTE;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import com.jvmrally.lambda.JooqConn;
 import com.jvmrally.lambda.Util;
 import org.jooq.DSLContext;
 import disparse.parser.reflection.CommandHandler;
 import disparse.parser.reflection.Flag;
-import disparse.parser.reflection.Injectable;
 import disparse.parser.reflection.ParsedEntity;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import static com.jvmrally.lambda.db.tables.Mute.MUTE;
 
 /**
  * Mute
