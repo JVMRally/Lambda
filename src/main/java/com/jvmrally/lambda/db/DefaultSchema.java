@@ -4,6 +4,7 @@
 package com.jvmrally.lambda.db;
 
 
+import com.jvmrally.lambda.db.tables.Audit;
 import com.jvmrally.lambda.db.tables.DmTimeouts;
 import com.jvmrally.lambda.db.tables.Mute;
 
@@ -31,12 +32,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefaultSchema extends SchemaImpl {
 
-    private static final long serialVersionUID = -1514777364;
+    private static final long serialVersionUID = 903472675;
 
     /**
      * The reference instance of <code></code>
      */
     public static final DefaultSchema DEFAULT_SCHEMA = new DefaultSchema();
+
+    /**
+     * The table <code>audit</code>.
+     */
+    public final Audit AUDIT = com.jvmrally.lambda.db.tables.Audit.AUDIT;
 
     /**
      * The table <code>dm_timeouts</code>.
@@ -73,6 +79,7 @@ public class DefaultSchema extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            Audit.AUDIT,
             DmTimeouts.DM_TIMEOUTS,
             Mute.MUTE);
     }

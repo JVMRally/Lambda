@@ -21,7 +21,7 @@ public class JooqConn {
 
     @Injectable
     public static DSLContext getContext() {
-        return JooqConn.getJooqContext();
+        return getJooqContext();
     }
 
     public static DSLContext getJooqContext() {
