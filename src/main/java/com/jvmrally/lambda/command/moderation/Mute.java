@@ -31,11 +31,6 @@ public class Mute {
         private String reason = "";
     }
 
-    @Injectable
-    public static DSLContext getContext() {
-        return JooqConn.getContext();
-    }
-
     @CommandHandler(commandName = "mute")
     public static void mute(DSLContext dsl, MuteRequest req, MessageReceivedEvent e) {
         List<Member> members = e.getMessage().getMentionedMembers();

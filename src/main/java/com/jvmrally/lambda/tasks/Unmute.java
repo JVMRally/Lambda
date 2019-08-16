@@ -32,7 +32,7 @@ public class Unmute implements Runnable {
         for (Mute mute : mutes) {
             if (mute.getMuteExpiry() <= now) {
                 Util.getRole(guild, "muted").ifPresentOrElse(role -> {
-                    guild.removeRoleFromMember(guild.getMemberById(mute.getUserid()), role);
+                    guild.removeRoleFromMember(guild.getMemberById(mute.getUserid()), role).queue();
                     dsl.deleteFrom(MUTE).where(MUTE.USERID.eq(mute.getUserid())).execute();
                 }, () -> logger.warn("Role was not found"));
             }

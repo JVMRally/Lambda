@@ -42,11 +42,8 @@ public class App {
         int registeredTasks = 0;
         for (Class<? extends Object> c : classes) {
             try {
-                scheduler
-                        .scheduleWithFixedDelay(
-                                (Runnable) Class.forName(c.getName()).getConstructor(JDA.class)
-                                        .newInstance(jda),
-                                millisToNextHour(), HOUR, TimeUnit.MILLISECONDS);
+                scheduler.schedule((Runnable) Class.forName(c.getName()).getConstructor(JDA.class)
+                        .newInstance(jda), 5, TimeUnit.MINUTES);
                 registeredTasks++;
             } catch (ReflectiveOperationException e) {
                 logger.error("Error registering tasks", e);
@@ -67,13 +64,5 @@ public class App {
                 logger.error("Problem with code gen.", e);
             }
         }
-    }
-
-    private static long millisToNextHour() {
-        Calendar calendar = Calendar.getInstance();
-        long minutesToNextHour = TimeUnit.MINUTES.toMillis(60 - calendar.get(Calendar.MINUTE));
-        long secondsToNextHour = TimeUnit.SECONDS.toMillis(60 - calendar.get(Calendar.SECOND));
-        int millisToNextHour = 1000 - calendar.get(Calendar.MILLISECOND);
-        return minutesToNextHour + secondsToNextHour + millisToNextHour;
     }
 }
