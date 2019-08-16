@@ -1,6 +1,7 @@
 package com.jvmrally.lambda.listener;
 
 import static com.jvmrally.lambda.db.tables.DmTimeouts.DM_TIMEOUTS;
+import java.util.concurrent.TimeUnit;
 import com.jvmrally.lambda.JooqConn;
 import com.jvmrally.lambda.db.tables.pojos.DmTimeouts;
 import org.jooq.DSLContext;
@@ -21,9 +22,26 @@ public class DirectMessageListener extends ListenerAdapter {
         long authorId = e.getAuthor().getIdLong();
         long now = System.currentTimeMillis();
         dsl.selectFrom(DM_TIMEOUTS).where(DM_TIMEOUTS.USERID.eq(authorId))
-                .fetchOptionalInto(DmTimeouts.class).ifPresentOrElse(
-                        timeout -> updateTimeout(timeout, now), () -> insertTimeout(authorId, now));
+                .fetchOptionalInto(DmTimeouts.class).ifPresentOrElse(timeout -> {
+                    updateTimeout(timeout, now);
+                    if (now - timeout.getLastMessageTime() > TimeUnit.HOURS.toMillis(2)) {
+                        sendAcknowledgement(e);
+                    }
+                }, () -> {
+                    insertTimeout(authorId, now);
+                    sendAcknowledgement(e);
+                });
         logMessage(e);
+    }
+
+    /**
+     * Send achknowledgement message to user
+     * 
+     * @param e the event to respond to
+     */
+    private void sendAcknowledgement(PrivateMessageReceivedEvent e) {
+        e.getChannel().sendMessage(
+                "Thank you for your message. Our staff will get back to you asap. Subsequent replies will also be forwarded to staff.");
     }
 
     /**
