@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.security.auth.login.LoginException;
+import com.jvmrally.lambda.annotation.Task;
 import com.jvmrally.lambda.config.JooqCodeGen;
 import com.jvmrally.lambda.listener.DirectMessageListener;
 import org.apache.logging.log4j.LogManager;
@@ -39,17 +40,21 @@ public class App {
         var scheduler = Executors.newSingleThreadScheduledExecutor();
         var reflections = new Reflections("com.jvmrally.lambda.tasks");
         Set<Class<? extends Runnable>> classes = reflections.getSubTypesOf(Runnable.class);
-        int registeredTasks = 0;
         for (Class<? extends Object> c : classes) {
-            try {
-                scheduler.schedule((Runnable) Class.forName(c.getName()).getConstructor(JDA.class)
-                        .newInstance(jda), 5, TimeUnit.MINUTES);
-                registeredTasks++;
-            } catch (ReflectiveOperationException e) {
-                logger.error("Error registering tasks", e);
+            if (c.isAnnotationPresent(Task.class)) {
+                Task task = c.getAnnotation(Task.class);
+                try {
+                    scheduler.schedule((Runnable) Class.forName(c.getName())
+                            .getConstructor(JDA.class).newInstance(jda), task.frequency(),
+                            task.unit());
+                    logger.info("Registered {} Task", c.getName());
+                } catch (ReflectiveOperationException e) {
+                    logger.error("Error registering tasks", e);
+                }
+            } else {
+                logger.error("Task {} does not have the @Task annotation", c.getName());
             }
         }
-        logger.info("Registered {} tasks", registeredTasks);
     }
 
     private static void initFlyway(String[] args) {

@@ -1,8 +1,10 @@
 package com.jvmrally.lambda.tasks;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import com.jvmrally.lambda.JooqConn;
 import com.jvmrally.lambda.Util;
+import com.jvmrally.lambda.annotation.Task;
 import com.jvmrally.lambda.db.tables.pojos.Mute;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +15,7 @@ import static com.jvmrally.lambda.db.tables.Mute.MUTE;
 /**
  * UnmuteTask
  */
+@Task(unit = TimeUnit.MINUTES, frequency = 5)
 public class Unmute implements Runnable {
 
     private static final Logger logger = LogManager.getLogger(Unmute.class);
