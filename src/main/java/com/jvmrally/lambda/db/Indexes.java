@@ -4,6 +4,7 @@
 package com.jvmrally.lambda.db;
 
 
+import com.jvmrally.lambda.db.tables.Audit;
 import com.jvmrally.lambda.db.tables.DmTimeouts;
 import com.jvmrally.lambda.db.tables.Mute;
 
@@ -31,6 +32,7 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index AUDIT_PKEY = Indexes0.AUDIT_PKEY;
     public static final Index DM_TIMEOUTS_PKEY = Indexes0.DM_TIMEOUTS_PKEY;
     public static final Index MUTE_PKEY = Indexes0.MUTE_PKEY;
 
@@ -39,6 +41,7 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index AUDIT_PKEY = Internal.createIndex("audit_pkey", Audit.AUDIT, new OrderField[] { Audit.AUDIT.ID }, true);
         public static Index DM_TIMEOUTS_PKEY = Internal.createIndex("dm_timeouts_pkey", DmTimeouts.DM_TIMEOUTS, new OrderField[] { DmTimeouts.DM_TIMEOUTS.USERID }, true);
         public static Index MUTE_PKEY = Internal.createIndex("mute_pkey", Mute.MUTE, new OrderField[] { Mute.MUTE.USERID }, true);
     }

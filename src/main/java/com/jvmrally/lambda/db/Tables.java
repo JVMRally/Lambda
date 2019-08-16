@@ -4,6 +4,7 @@
 package com.jvmrally.lambda.db;
 
 
+import com.jvmrally.lambda.db.tables.Audit;
 import com.jvmrally.lambda.db.tables.DmTimeouts;
 import com.jvmrally.lambda.db.tables.Mute;
 
@@ -22,6 +23,11 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>audit</code>.
+     */
+    public static final Audit AUDIT = com.jvmrally.lambda.db.tables.Audit.AUDIT;
 
     /**
      * The table <code>dm_timeouts</code>.
