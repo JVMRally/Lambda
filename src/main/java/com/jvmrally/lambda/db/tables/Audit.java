@@ -18,6 +18,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -42,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Audit extends TableImpl<AuditRecord> {
 
-    private static final long serialVersionUID = 1422311495;
+    private static final long serialVersionUID = -1885454678;
 
     /**
      * The reference instance of <code>audit</code>
@@ -60,7 +61,7 @@ public class Audit extends TableImpl<AuditRecord> {
     /**
      * The column <code>audit.id</code>.
      */
-    public final TableField<AuditRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<AuditRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('audit_serial'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>audit.user_id</code>.
@@ -134,6 +135,14 @@ public class Audit extends TableImpl<AuditRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.AUDIT_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<AuditRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_AUDIT;
     }
 
     /**

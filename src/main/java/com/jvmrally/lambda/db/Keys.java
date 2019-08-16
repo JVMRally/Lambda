@@ -13,6 +13,7 @@ import com.jvmrally.lambda.db.tables.records.MuteRecord;
 
 import javax.annotation.Generated;
 
+import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
 
@@ -35,6 +36,7 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<AuditRecord, Integer> IDENTITY_AUDIT = Identities0.IDENTITY_AUDIT;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -52,6 +54,10 @@ public class Keys {
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
+
+    private static class Identities0 {
+        public static Identity<AuditRecord, Integer> IDENTITY_AUDIT = Internal.createIdentity(Audit.AUDIT, Audit.AUDIT.ID);
+    }
 
     private static class UniqueKeys0 {
         public static final UniqueKey<AuditRecord> AUDIT_PKEY = Internal.createUniqueKey(Audit.AUDIT, "audit_pkey", Audit.AUDIT.ID);
