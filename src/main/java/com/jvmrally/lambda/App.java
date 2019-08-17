@@ -47,8 +47,8 @@ public class App {
             if (c.isAnnotationPresent(Task.class)) {
                 Task task = c.getAnnotation(Task.class);
                 try {
-                    scheduler.schedule((Runnable) Class.forName(c.getName())
-                            .getConstructor(JDA.class).newInstance(jda), task.frequency(),
+                    scheduler.scheduleAtFixedRate((Runnable) Class.forName(c.getName())
+                            .getConstructor(JDA.class).newInstance(jda), 0, task.frequency(),
                             task.unit());
                     logger.info("Registered {} Task", c.getName());
                 } catch (ReflectiveOperationException e) {
