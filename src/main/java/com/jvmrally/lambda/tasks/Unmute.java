@@ -29,16 +29,14 @@ public class Unmute implements Runnable {
     @Override
     public void run() {
         DSLContext dsl = JooqConn.getContext();
-        List<Mute> mutes = dsl.selectFrom(MUTE).fetchInto(Mute.class);
-        long now = System.currentTimeMillis();
+        List<Mute> mutes = dsl.selectFrom(MUTE)
+                .where(MUTE.MUTE_EXPIRY.le(System.currentTimeMillis())).fetchInto(Mute.class);
         var guild = jda.getGuilds().get(0);
         for (Mute mute : mutes) {
-            if (mute.getMuteExpiry() <= now) {
-                Util.getRole(guild, "muted").ifPresentOrElse(role -> {
-                    guild.removeRoleFromMember(guild.getMemberById(mute.getUserid()), role).queue();
-                    dsl.deleteFrom(MUTE).where(MUTE.USERID.eq(mute.getUserid())).execute();
-                }, () -> logger.warn("Role was not found"));
-            }
+            Util.getRole(guild, "muted").ifPresentOrElse(role -> {
+                guild.removeRoleFromMember(guild.getMemberById(mute.getUserid()), role).queue();
+                dsl.deleteFrom(MUTE).where(MUTE.USERID.eq(mute.getUserid())).execute();
+            }, () -> logger.warn("Role was not found"));
         }
     }
 }

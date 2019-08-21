@@ -22,17 +22,18 @@ public class Mute {
 
     @ParsedEntity
     static class MuteRequest {
-        @Flag(shortName = 'd', longName = "days")
+        @Flag(shortName = 'd', longName = "days", description = "Number of days to mute.")
         private Integer days = 0;
 
-        @Flag(shortName = 'h', longName = "hours")
+        @Flag(longName = "hours", description = "Number of hours to mute.")
         private Integer hours = 1;
 
-        @Flag(shortName = 'r', longName = "reason")
+        @Flag(shortName = 'r', longName = "reason", description = "The reason for the mute.")
         private String reason = "";
     }
 
-    @CommandHandler(commandName = "mute")
+    @CommandHandler(commandName = "mute",
+            description = "Mute someone for the specified amount of time. Defaults to 1 hour.")
     public static void mute(Auditor audit, DSLContext dsl, MuteRequest req,
             MessageReceivedEvent e) {
         List<Member> members = e.getMessage().getMentionedMembers();

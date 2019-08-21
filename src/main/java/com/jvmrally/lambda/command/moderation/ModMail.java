@@ -15,11 +15,13 @@ public class ModMail {
 
     @ParsedEntity
     static class ModMailRequest {
-        @Flag(shortName = 'u', longName = "user")
+        @Flag(shortName = 'u', longName = "user",
+                description = "The target user to respond to as a mention. e.g. `@Lambda#0313`")
         private String user = "";
     }
 
-    @CommandHandler(commandName = "modmail")
+    @CommandHandler(commandName = "modmail",
+            description = "Reply to a user via the bot via direct message.")
     public static void modmail(ModMailRequest req, List<String> args, MessageReceivedEvent e) {
         List<Member> members = e.getMessage().getMentionedMembers();
         if (members.size() > 1) {
