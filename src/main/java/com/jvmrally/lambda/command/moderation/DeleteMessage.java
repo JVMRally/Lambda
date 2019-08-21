@@ -23,7 +23,8 @@ public class DeleteMessage {
 
     @ParsedEntity
     static class DeleteRequest {
-        @Flag(shortName = 'l', longName = "limit")
+        @Flag(shortName = 'l', longName = "limit",
+                description = "The maxmimum number of messages to delete.")
         private Integer limit = 25;
     }
 
@@ -34,7 +35,8 @@ public class DeleteMessage {
      * @param req the request entity containing command flags and values
      * @param e   the message entity received
      */
-    @CommandHandler(commandName = "delete")
+    @CommandHandler(commandName = "delete",
+            description = "Deletes messages sent by mentioned users from all mentioned channels. Defaults to the last 25 messages.")
     public static void delete(DeleteRequest req, MessageReceivedEvent e) {
         List<TextChannel> channels = Util.getTargetChannels(e);
         for (Member member : e.getMessage().getMentionedMembers()) {
