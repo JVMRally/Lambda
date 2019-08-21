@@ -1,14 +1,13 @@
 package com.jvmrally.lambda.injectable;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import disparse.parser.reflection.Injectable;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * JooqConn
@@ -16,26 +15,23 @@ import org.apache.logging.log4j.Logger;
 public class JooqConn {
 
     private static final Logger logger = LogManager.getLogger(JooqConn.class);
-    private static Connection conn = null;
+    private static HikariConfig config = null;
     private static DSLContext dsl = null;
 
     @Injectable
-    public static DSLContext getContext() {
-        return getJooqContext();
-    }
-
     public static DSLContext getJooqContext() {
-        if (dsl == null && conn == null) {
-            String url = System.getenv("LAMBDA_DB_HOST");
-            String user = System.getenv("LAMBDA_DB_USER");
-            String password = System.getenv("LAMBDA_DB_PASSWORD");
-            try {
-                conn = DriverManager.getConnection(url, user, password);
-                dsl = DSL.using(conn, SQLDialect.POSTGRES);
-            } catch (SQLException e) {
-                logger.error(e);
-            }
+        if (dsl == null && config == null) {
+            init();
         }
         return dsl;
+    }
+
+    private static void init() {
+        logger.info("Initialising Jooq context");
+        config = new HikariConfig();
+        config.setJdbcUrl(System.getenv("LAMBDA_DB_HOST"));
+        config.setUsername(System.getenv("LAMBDA_DB_USER"));
+        config.setPassword(System.getenv("LAMBDA_DB_PASSWORD"));
+        dsl = DSL.using(new HikariDataSource(config), SQLDialect.POSTGRES);
     }
 }

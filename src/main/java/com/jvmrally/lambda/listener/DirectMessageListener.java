@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
  * DirectMessageListener
  */
 public class DirectMessageListener extends ListenerAdapter {
-    private static DSLContext dsl = JooqConn.getContext();
+    private static DSLContext dsl = JooqConn.getJooqContext();
 
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent e) {
