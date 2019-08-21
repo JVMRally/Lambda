@@ -28,7 +28,7 @@ public class Unmute implements Runnable {
 
     @Override
     public void run() {
-        DSLContext dsl = JooqConn.getContext();
+        DSLContext dsl = JooqConn.getJooqContext();
         List<Mute> mutes = dsl.selectFrom(MUTE)
                 .where(MUTE.MUTE_EXPIRY.le(System.currentTimeMillis())).fetchInto(Mute.class);
         var guild = jda.getGuilds().get(0);
