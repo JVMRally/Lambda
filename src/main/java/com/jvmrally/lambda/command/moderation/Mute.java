@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import com.jvmrally.lambda.utility.Util;
+import com.jvmrally.lambda.utility.messaging.Messenger;
 import com.jvmrally.lambda.db.enums.AuditAction;
 import com.jvmrally.lambda.injectable.Auditor;
 import org.jooq.DSLContext;
@@ -38,7 +39,8 @@ public class Mute {
             MessageReceivedEvent e) {
         List<Member> members = e.getMessage().getMentionedMembers();
         if (members.isEmpty()) {
-            e.getChannel().sendMessage("Must mention at least one user").queue();
+            Messenger.toChannel(messenger -> messenger.to(e.getChannel())
+                    .message("Must mention at least one user."));
             return;
         }
         Optional<Role> role = Util.getRole(e.getGuild(), "muted");
@@ -51,7 +53,8 @@ public class Mute {
                             req.reason);
                 }
             }
-        }, () -> e.getChannel().sendMessage("Role does not exist").queue());
+        }, () -> Messenger.toChannel(
+                messenger -> messenger.to(e.getChannel()).message("Role does not exist")));
 
     }
 
