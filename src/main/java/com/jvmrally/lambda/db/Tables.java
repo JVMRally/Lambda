@@ -5,6 +5,7 @@ package com.jvmrally.lambda.db;
 
 
 import com.jvmrally.lambda.db.tables.Audit;
+import com.jvmrally.lambda.db.tables.Ban;
 import com.jvmrally.lambda.db.tables.DmTimeouts;
 import com.jvmrally.lambda.db.tables.Mute;
 
@@ -28,6 +29,11 @@ public class Tables {
      * The table <code>audit</code>.
      */
     public static final Audit AUDIT = com.jvmrally.lambda.db.tables.Audit.AUDIT;
+
+    /**
+     * The table <code>ban</code>.
+     */
+    public static final Ban BAN = com.jvmrally.lambda.db.tables.Ban.BAN;
 
     /**
      * The table <code>dm_timeouts</code>.

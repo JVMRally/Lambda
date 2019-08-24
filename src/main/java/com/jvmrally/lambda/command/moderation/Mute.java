@@ -47,9 +47,7 @@ public class Mute {
 
     private static void logMute(DSLContext dsl, Member member, MessageReceivedEvent e,
             TimedReasonRequest req) {
-        long expiryMillis =
-                TimeUnit.HOURS.toMillis(req.getHours()) + TimeUnit.DAYS.toMillis(req.getHours());
-        dsl.insertInto(MUTE).values(member.getIdLong(), System.currentTimeMillis() + expiryMillis)
+        dsl.insertInto(MUTE).values(member.getIdLong(), req.getExpiry())
                 .execute();
     }
 }

@@ -5,9 +5,11 @@ package com.jvmrally.lambda.db;
 
 
 import com.jvmrally.lambda.db.tables.Audit;
+import com.jvmrally.lambda.db.tables.Ban;
 import com.jvmrally.lambda.db.tables.DmTimeouts;
 import com.jvmrally.lambda.db.tables.Mute;
 import com.jvmrally.lambda.db.tables.records.AuditRecord;
+import com.jvmrally.lambda.db.tables.records.BanRecord;
 import com.jvmrally.lambda.db.tables.records.DmTimeoutsRecord;
 import com.jvmrally.lambda.db.tables.records.MuteRecord;
 
@@ -43,6 +45,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<AuditRecord> AUDIT_PKEY = UniqueKeys0.AUDIT_PKEY;
+    public static final UniqueKey<BanRecord> BAN_PKEY = UniqueKeys0.BAN_PKEY;
     public static final UniqueKey<DmTimeoutsRecord> DM_TIMEOUTS_PKEY = UniqueKeys0.DM_TIMEOUTS_PKEY;
     public static final UniqueKey<MuteRecord> MUTE_PKEY = UniqueKeys0.MUTE_PKEY;
 
@@ -61,6 +64,7 @@ public class Keys {
 
     private static class UniqueKeys0 {
         public static final UniqueKey<AuditRecord> AUDIT_PKEY = Internal.createUniqueKey(Audit.AUDIT, "audit_pkey", Audit.AUDIT.ID);
+        public static final UniqueKey<BanRecord> BAN_PKEY = Internal.createUniqueKey(Ban.BAN, "ban_pkey", Ban.BAN.USERID);
         public static final UniqueKey<DmTimeoutsRecord> DM_TIMEOUTS_PKEY = Internal.createUniqueKey(DmTimeouts.DM_TIMEOUTS, "dm_timeouts_pkey", DmTimeouts.DM_TIMEOUTS.USERID);
         public static final UniqueKey<MuteRecord> MUTE_PKEY = Internal.createUniqueKey(Mute.MUTE, "mute_pkey", Mute.MUTE.USERID);
     }

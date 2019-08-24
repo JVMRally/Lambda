@@ -5,6 +5,7 @@ package com.jvmrally.lambda.db;
 
 
 import com.jvmrally.lambda.db.tables.Audit;
+import com.jvmrally.lambda.db.tables.Ban;
 import com.jvmrally.lambda.db.tables.DmTimeouts;
 import com.jvmrally.lambda.db.tables.Mute;
 
@@ -33,7 +34,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefaultSchema extends SchemaImpl {
 
-    private static final long serialVersionUID = 1686494486;
+    private static final long serialVersionUID = 417539251;
 
     /**
      * The reference instance of <code></code>
@@ -44,6 +45,11 @@ public class DefaultSchema extends SchemaImpl {
      * The table <code>audit</code>.
      */
     public final Audit AUDIT = com.jvmrally.lambda.db.tables.Audit.AUDIT;
+
+    /**
+     * The table <code>ban</code>.
+     */
+    public final Ban BAN = com.jvmrally.lambda.db.tables.Ban.BAN;
 
     /**
      * The table <code>dm_timeouts</code>.
@@ -93,6 +99,7 @@ public class DefaultSchema extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             Audit.AUDIT,
+            Ban.BAN,
             DmTimeouts.DM_TIMEOUTS,
             Mute.MUTE);
     }

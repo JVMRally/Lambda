@@ -58,7 +58,7 @@ public class Messenger implements BuildChannel, BuildMessage, BuildMember {
      */
     private void sendDirectMessage() {
         member.getUser().openPrivateChannel()
-                .queue(channel -> channel.sendMessage(message).queue());
+                .queue(privateChannel -> privateChannel.sendMessage(message).queue());
     }
 
     /**
