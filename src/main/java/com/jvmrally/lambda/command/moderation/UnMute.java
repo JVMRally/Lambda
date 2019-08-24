@@ -4,6 +4,7 @@ import static com.jvmrally.lambda.db.tables.Mute.MUTE;
 import java.util.List;
 import java.util.Optional;
 import com.jvmrally.lambda.utility.Util;
+import com.jvmrally.lambda.utility.messaging.Messenger;
 import org.jooq.DSLContext;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.entities.Member;
@@ -19,7 +20,8 @@ public class UnMute {
     public static void mute(DSLContext dsl, MessageReceivedEvent e) {
         List<Member> members = e.getMessage().getMentionedMembers();
         if (members.isEmpty()) {
-            e.getChannel().sendMessage("Must mention at least one user").queue();
+            Messenger.toChannel(messenger -> messenger.to(e.getChannel())
+                    .message("Must mention at least one user"));
             return;
         }
         Optional<Role> role = Util.getRole(e.getGuild(), "muted");
@@ -28,6 +30,7 @@ public class UnMute {
                 e.getGuild().removeRoleFromMember(member, r);
                 dsl.deleteFrom(MUTE).where(MUTE.USERID.eq(member.getIdLong())).execute();
             }
-        }, () -> e.getChannel().sendMessage("Role does not exist").queue());
+        }, () -> Messenger.toChannel(
+                messenger -> messenger.to(e.getChannel()).message("Role does not exist")));
     }
 }

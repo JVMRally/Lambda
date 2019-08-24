@@ -2,6 +2,7 @@ package com.jvmrally.lambda.command.moderation;
 
 import java.util.List;
 import com.jvmrally.lambda.utility.Util;
+import com.jvmrally.lambda.utility.messaging.Messenger;
 import disparse.parser.reflection.CommandHandler;
 import disparse.parser.reflection.Flag;
 import disparse.parser.reflection.ParsedEntity;
@@ -25,16 +26,17 @@ public class ModMail {
     public static void modmail(ModMailRequest req, List<String> args, MessageReceivedEvent e) {
         List<Member> members = e.getMessage().getMentionedMembers();
         if (members.size() > 1) {
-            e.getChannel().sendMessage("Can only modmail 1 user").queue();
+            Messenger.toChannel(
+                    messenger -> messenger.to(e.getChannel()).message("Can only modmail 1 user"));
             return;
         }
         if (req.user.isEmpty()) {
-            e.getChannel().sendMessage("Must provide a user").queue();
+            Messenger.toChannel(
+                    messenger -> messenger.to(e.getChannel()).message("Must provide a user"));
             return;
         }
         Member member = members.get(0);
         String message = "**Staff Reply: ** " + Util.rebuildArgsToString(args);
-        member.getUser().openPrivateChannel()
-                .queue(channel -> channel.sendMessage(message).queue());
+        Messenger.toUser(messenger -> messenger.to(member).message(message));
     }
 }

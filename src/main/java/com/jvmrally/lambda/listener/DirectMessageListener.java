@@ -4,6 +4,7 @@ import static com.jvmrally.lambda.db.tables.DmTimeouts.DM_TIMEOUTS;
 import java.util.concurrent.TimeUnit;
 import com.jvmrally.lambda.db.tables.pojos.DmTimeouts;
 import com.jvmrally.lambda.injectable.JooqConn;
+import com.jvmrally.lambda.utility.messaging.Messenger;
 import org.jooq.DSLContext;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -74,6 +75,7 @@ public class DirectMessageListener extends ListenerAdapter {
         String message = "User: " + e.getAuthor().getAsMention() + " sent message: "
                 + e.getMessage().getContentRaw();
         var channels = e.getJDA().getTextChannelsByName("modmail", true);
-        channels.forEach(channel -> channel.sendMessage(message).queue());
+        channels.forEach(channel -> Messenger
+                .toChannel(messenger -> messenger.to(channel).message(message)));
     }
 }
