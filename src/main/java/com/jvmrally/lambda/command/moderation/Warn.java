@@ -5,8 +5,6 @@ import com.jvmrally.lambda.command.entites.ReasonRequest;
 import com.jvmrally.lambda.db.enums.AuditAction;
 import com.jvmrally.lambda.injectable.Auditor;
 import com.jvmrally.lambda.utility.messaging.Messenger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -16,8 +14,6 @@ import static com.jvmrally.lambda.db.tables.Audit.AUDIT;
  * Warn
  */
 public final class Warn {
-
-	private static final Logger logger = LogManager.getLogger(Warn.class);
 
 	/**
 	 * Gives a warning to a user
