@@ -1,9 +1,10 @@
-package com.jvmrally.lambda;
+package com.jvmrally.lambda.utility;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -54,6 +55,21 @@ public class Util {
         List<Role> roles = guild.getRolesByName(name, true);
         if (roles.size() == 1) {
             return Optional.of(roles.get(0));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Returns an optional member for the mentioned members in a message.
+     * 
+     * @param e
+     * @return
+     */
+    public static Optional<Member> getMentionedMember(MessageReceivedEvent e) {
+        List<Member> members = e.getMessage().getMentionedMembers();
+        if (members.size() == 1) {
+            return Optional.of(members.get(0));
         } else {
             return Optional.empty();
         }
