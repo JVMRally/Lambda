@@ -1,7 +1,7 @@
 package com.jvmrally.lambda.command.moderation;
 
 import java.util.List;
-import com.jvmrally.lambda.Util;
+import com.jvmrally.lambda.utility.Util;
 import disparse.parser.reflection.CommandHandler;
 import disparse.parser.reflection.Flag;
 import disparse.parser.reflection.ParsedEntity;

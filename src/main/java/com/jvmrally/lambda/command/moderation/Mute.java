@@ -4,7 +4,7 @@ import static com.jvmrally.lambda.db.tables.Mute.MUTE;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import com.jvmrally.lambda.Util;
+import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.db.enums.AuditAction;
 import com.jvmrally.lambda.injectable.Auditor;
 import org.jooq.DSLContext;
