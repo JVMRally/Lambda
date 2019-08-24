@@ -3,7 +3,7 @@ package com.jvmrally.lambda.command.moderation;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import com.jvmrally.lambda.Util;
+import com.jvmrally.lambda.utility.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import disparse.parser.reflection.CommandHandler;

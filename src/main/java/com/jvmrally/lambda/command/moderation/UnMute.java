@@ -3,7 +3,7 @@ package com.jvmrally.lambda.command.moderation;
 import static com.jvmrally.lambda.db.tables.Mute.MUTE;
 import java.util.List;
 import java.util.Optional;
-import com.jvmrally.lambda.Util;
+import com.jvmrally.lambda.utility.Util;
 import org.jooq.DSLContext;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.entities.Member;
