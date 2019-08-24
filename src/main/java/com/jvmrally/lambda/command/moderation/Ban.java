@@ -1,7 +1,6 @@
 package com.jvmrally.lambda.command.moderation;
 
 import static com.jvmrally.lambda.db.tables.Ban.BAN;
-import java.util.concurrent.TimeUnit;
 import com.jvmrally.lambda.command.entites.BanRequest;
 import com.jvmrally.lambda.db.enums.AuditAction;
 import com.jvmrally.lambda.injectable.Auditor;
@@ -37,6 +36,13 @@ public class Ban {
                 messenger -> messenger.to(e.getChannel()).message("Must provide a user")));
     }
 
+    /**
+     * If the clear flag is true, will delete the last 7 days of messages from the target user
+     * 
+     * @param dsl
+     * @param member the target member
+     * @param req
+     */
     public static void banUser(DSLContext dsl, Member member, BanRequest req) {
         int deleteDays = req.shouldClear() ? DELETE_DAYS : 0;
         member.ban(deleteDays, req.getReason());

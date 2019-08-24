@@ -14,7 +14,7 @@ public class BanRequest extends TimedReasonRequest {
     private boolean clear = false;
 
     /**
-     * @return the clear
+     * @return Whether or not to delete the last 7 days of messages.
      */
     public boolean shouldClear() {
         return clear;
