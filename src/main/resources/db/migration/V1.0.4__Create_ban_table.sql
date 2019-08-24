@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS ban  (
+    userid bigint UNIQUE NOT NULL PRIMARY KEY,
+    ban_expiry bigint NOT NULL DEFAULT 1976256242000
+);

@@ -1,5 +1,6 @@
 package com.jvmrally.lambda.command.entites;
 
+import java.util.concurrent.TimeUnit;
 import disparse.parser.reflection.Flag;
 import disparse.parser.reflection.ParsedEntity;
 
@@ -27,5 +28,10 @@ public class TimedReasonRequest extends ReasonRequest {
      */
     public Integer getHours() {
         return hours;
+    }
+
+    public long getExpiry() {
+        return System.currentTimeMillis() + TimeUnit.HOURS.toMillis(getHours())
+                + TimeUnit.DAYS.toMillis(getHours());
     }
 }
