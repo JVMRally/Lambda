@@ -23,22 +23,16 @@ public class Mute {
             description = "Mute someone for the specified amount of time. Defaults to 1 hour.")
     public static void mute(Auditor audit, DSLContext dsl, TimedReasonRequest req,
             MessageReceivedEvent e) {
-        List<Member> members = e.getMessage().getMentionedMembers();
-        if (members.isEmpty()) {
-            Messenger.toChannel(messenger -> messenger.to(e.getChannel())
-                    .message("Must mention at least one user."));
-            return;
-        }
-        Optional<Role> role = Util.getRole(e.getGuild(), "muted");
-        role.ifPresentOrElse(r -> {
-            for (Member member : members) {
-                if (!member.getRoles().contains(r)) {
-                    e.getGuild().addRoleToMember(member, r).queue();
+        Util.getRole(e.getGuild(), "muted").ifPresentOrElse(role -> {
+            Util.getMentionedMembers(e).ifPresentOrElse(members -> members.forEach(member -> {
+                if (!member.getRoles().contains(role)) {
+                    e.getGuild().addRoleToMember(member, role).queue();
                     logMute(dsl, member, req);
                     audit.log(AuditAction.MUTED, e.getAuthor().getIdLong(), member.getIdLong(),
                             req.getReason());
                 }
-            }
+            }), () -> Messenger.toChannel(messenger -> messenger.to(e.getChannel())
+                    .message("Must mention at least one user")));
         }, () -> Messenger.toChannel(
                 messenger -> messenger.to(e.getChannel()).message("Role does not exist")));
     }

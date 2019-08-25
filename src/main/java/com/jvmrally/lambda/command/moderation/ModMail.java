@@ -16,19 +16,10 @@ public class ModMail {
     @CommandHandler(commandName = "modmail",
             description = "Reply to a user via the bot via direct message.")
     public static void modmail(UserRequest req, List<String> args, MessageReceivedEvent e) {
-        List<Member> members = e.getMessage().getMentionedMembers();
-        if (members.size() > 1) {
-            Messenger.toChannel(
-                    messenger -> messenger.to(e.getChannel()).message("Can only modmail 1 user"));
-            return;
-        }
-        if (req.getUser().isEmpty()) {
-            Messenger.toChannel(
-                    messenger -> messenger.to(e.getChannel()).message("Must provide a user"));
-            return;
-        }
-        Member member = members.get(0);
-        String message = "**Staff Reply: ** " + Util.rebuildArgsToString(args);
-        Messenger.toUser(messenger -> messenger.to(member).message(message));
+        Util.getMentionedMember(e).ifPresentOrElse(member -> {
+            String message = "**Staff Reply: ** " + Util.rebuildArgsToString(args);
+            Messenger.toUser(messenger -> messenger.to(member).message(message));
+        }, () -> Messenger.toChannel(
+                messenger -> messenger.to(e.getChannel()).message("Must provide a user")));
     }
 }

@@ -61,7 +61,8 @@ public class Util {
     }
 
     /**
-     * Returns an optional member for the mentioned members in a message.
+     * Returns a single member from the mentioned members. If 0 or more than 1 member is mentioned,
+     * returnsan empty optional
      * 
      * @param e
      * @return
@@ -72,6 +73,21 @@ public class Util {
             return Optional.of(members.get(0));
         } else {
             return Optional.empty();
+        }
+    }
+
+    /**
+     * 
+     * 
+     * @param e
+     * @return
+     */
+    public static Optional<List<Member>> getMentionedMembers(MessageReceivedEvent e) {
+        List<Member> members = e.getMessage().getMentionedMembers();
+        if (members.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(members);
         }
     }
 }

@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  */
 public interface BuildMessage {
 
-    Messenger message(String message);
+    CompletedMessenger message(String message);
 
-    Messenger message(EmbedBuilder embed);
+    CompletedMessenger message(EmbedBuilder embed);
 }

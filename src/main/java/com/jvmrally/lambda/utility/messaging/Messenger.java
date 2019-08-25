@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 /**
  * Messenger
  */
-public class Messenger implements BuildChannel, BuildMessage, BuildMember {
+public class Messenger implements BuildChannel, BuildMessage, BuildMember, CompletedMessenger {
 
     private MessageChannel channel;
     private Optional<String> message;
@@ -24,14 +24,14 @@ public class Messenger implements BuildChannel, BuildMessage, BuildMember {
     }
 
     @Override
-    public Messenger message(String message) {
+    public CompletedMessenger message(String message) {
         this.message = Optional.of(message);
         this.embed = Optional.empty();
         return this;
     }
 
     @Override
-    public Messenger message(EmbedBuilder embed) {
+    public CompletedMessenger message(EmbedBuilder embed) {
         this.message = Optional.empty();
         this.embed = Optional.of(embed.build());
         return this;
@@ -48,7 +48,7 @@ public class Messenger implements BuildChannel, BuildMessage, BuildMember {
      * 
      * @param block
      */
-    public static void toChannel(Function<BuildChannel, Messenger> block) {
+    public static void toChannel(Function<BuildChannel, CompletedMessenger> block) {
         Messenger messenger = new Messenger();
         block.apply(messenger);
         messenger.send();
@@ -59,7 +59,7 @@ public class Messenger implements BuildChannel, BuildMessage, BuildMember {
      * 
      * @param block
      */
-    public static void toUser(Function<BuildMember, Messenger> block) {
+    public static void toUser(Function<BuildMember, CompletedMessenger> block) {
         Messenger messenger = new Messenger();
         block.apply(messenger);
         messenger.sendDirectMessage();
