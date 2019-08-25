@@ -1,8 +1,11 @@
 package com.jvmrally.lambda.utility.messaging;
 
+import java.util.Optional;
 import java.util.function.Function;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
 /**
  * Messenger
@@ -10,7 +13,8 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 public class Messenger implements BuildChannel, BuildMessage, BuildMember {
 
     private MessageChannel channel;
-    private String message;
+    private Optional<String> message;
+    private Optional<MessageEmbed> embed;
     private Member member;
 
     @Override
@@ -21,7 +25,15 @@ public class Messenger implements BuildChannel, BuildMessage, BuildMember {
 
     @Override
     public Messenger message(String message) {
-        this.message = message;
+        this.message = Optional.of(message);
+        this.embed = Optional.empty();
+        return this;
+    }
+
+    @Override
+    public Messenger message(EmbedBuilder embed) {
+        this.message = Optional.empty();
+        this.embed = Optional.of(embed.build());
         return this;
     }
 
@@ -57,14 +69,17 @@ public class Messenger implements BuildChannel, BuildMessage, BuildMember {
      * Send a direct message
      */
     private void sendDirectMessage() {
-        member.getUser().openPrivateChannel()
-                .queue(privateChannel -> privateChannel.sendMessage(message).queue());
+        member.getUser().openPrivateChannel().queue(privateChannel -> {
+            message.ifPresent(m -> privateChannel.sendMessage(m).queue());
+            embed.ifPresent(e -> privateChannel.sendMessage(e).queue());
+        });
     }
 
     /**
      * Send a message to a channel
      */
     private void send() {
-        channel.sendMessage(message).queue();
+        message.ifPresent(m -> channel.sendMessage(m).queue());
+        embed.ifPresent(e -> channel.sendMessage(e).queue());
     }
 }
