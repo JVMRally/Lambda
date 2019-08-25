@@ -5,7 +5,6 @@ import com.jvmrally.lambda.command.entites.UserRequest;
 import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import disparse.parser.reflection.CommandHandler;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
