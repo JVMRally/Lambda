@@ -3,6 +3,7 @@ package com.jvmrally.lambda.utility;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -61,11 +62,23 @@ public class Util {
     }
 
     /**
-     * Returns a single member from the mentioned members. If 0 or more than 1 member is mentioned,
-     * returnsan empty optional
+     * Checks whether the target user has a specific role
      * 
-     * @param e
+     * @param member     the user to check
+     * @param targetRole the name of the target role
      * @return
+     */
+    public static boolean hasRole(Member member, String targetRole) {
+        return member.getRoles().stream().filter(role -> role.getName().equals(targetRole))
+                .collect(Collectors.toList()).size() == 1;
+    }
+
+    /**
+     * Returns a single member from the mentioned members. If 0 or more than 1 member is mentioned,
+     * returns an empty optional
+     * 
+     * @param e the message event
+     * @return the mentioned member
      */
     public static Optional<Member> getMentionedMember(MessageReceivedEvent e) {
         List<Member> members = e.getMessage().getMentionedMembers();
@@ -77,10 +90,10 @@ public class Util {
     }
 
     /**
+     * Returns a list of mentioned members. If no members are mentioned return an empty optional
      * 
-     * 
-     * @param e
-     * @return
+     * @param e the message event
+     * @return list of members
      */
     public static Optional<List<Member>> getMentionedMembers(MessageReceivedEvent e) {
         List<Member> members = e.getMessage().getMentionedMembers();

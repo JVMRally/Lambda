@@ -14,13 +14,13 @@ public class UnMute {
 
     @CommandHandler(commandName = "unmute", description = "Unmute mentioned users.")
     public static void mute(DSLContext dsl, MessageReceivedEvent e) {
-        Util.getRole(e.getGuild(), "muted").ifPresentOrElse(role -> {
-            Util.getMentionedMembers(e).ifPresentOrElse(members -> members.forEach(member -> {
-                e.getGuild().removeRoleFromMember(member, role);
-                dsl.deleteFrom(MUTE).where(MUTE.USERID.eq(member.getIdLong())).execute();
-            }), () -> Messenger.toChannel(messenger -> messenger.to(e.getChannel())
-                    .message("Must mention at least one user")));
-        }, () -> Messenger.toChannel(
-                messenger -> messenger.to(e.getChannel()).message("Role does not exist")));
+        Util.getRole(e.getGuild(), "muted").ifPresentOrElse(role -> Util.getMentionedMembers(e)
+                .ifPresentOrElse(members -> members.forEach(member -> {
+                    e.getGuild().removeRoleFromMember(member, role);
+                    dsl.deleteFrom(MUTE).where(MUTE.USERID.eq(member.getIdLong())).execute();
+                }), () -> Messenger.toChannel(messenger -> messenger.to(e.getChannel())
+                        .message("Must mention at least one user"))),
+                () -> Messenger.toChannel(
+                        messenger -> messenger.to(e.getChannel()).message("Role does not exist")));
     }
 }
