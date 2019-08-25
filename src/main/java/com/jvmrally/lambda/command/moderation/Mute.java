@@ -34,19 +34,16 @@ public class Mute {
             for (Member member : members) {
                 if (!member.getRoles().contains(r)) {
                     e.getGuild().addRoleToMember(member, r).queue();
-                    logMute(dsl, member, e, req);
+                    logMute(dsl, member, req);
                     audit.log(AuditAction.MUTED, e.getAuthor().getIdLong(), member.getIdLong(),
                             req.getReason());
                 }
             }
         }, () -> Messenger.toChannel(
                 messenger -> messenger.to(e.getChannel()).message("Role does not exist")));
-
     }
 
-    private static void logMute(DSLContext dsl, Member member, MessageReceivedEvent e,
-            TimedReasonRequest req) {
-        dsl.insertInto(MUTE).values(member.getIdLong(), req.getExpiry())
-                .execute();
+    private static void logMute(DSLContext dsl, Member member, TimedReasonRequest req) {
+        dsl.insertInto(MUTE).values(member.getIdLong(), req.getExpiry()).execute();
     }
 }
