@@ -1,6 +1,5 @@
 package com.jvmrally.lambda.command.misc;
 
-import java.awt.Color;
 import java.util.stream.Collectors;
 import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;

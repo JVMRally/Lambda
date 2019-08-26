@@ -1,11 +1,12 @@
 package com.jvmrally.lambda;
 
+import java.lang.reflect.Constructor;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import javax.security.auth.login.LoginException;
 import com.jvmrally.lambda.annotation.Task;
 import com.jvmrally.lambda.config.JooqCodeGen;
-import com.jvmrally.lambda.listener.DirectMessageListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.flywaydb.core.Flyway;
@@ -14,6 +15,7 @@ import disparse.discord.Dispatcher;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 /**
  * App Entry
@@ -26,11 +28,33 @@ public class App {
 
     public static void main(String[] args) throws LoginException, InterruptedException {
         initDatabase(args);
-        JDA jda = Dispatcher.init(new JDABuilder(System.getenv(TOKEN)), PREFIX)
-                .addEventListeners(new DirectMessageListener()).build();
+        JDA jda = addListeners(Dispatcher.init(new JDABuilder(System.getenv(TOKEN)), PREFIX));
         jda.awaitReady();
         jda.getPresence().setActivity(Activity.playing("DM to contact staff"));
         registerScheduledTasks(jda);
+    }
+
+    private static JDA addListeners(JDABuilder jdaBuilder) throws LoginException {
+        var reflections = new Reflections("com.jvmrally.lambda.listener");
+        Set<Class<? extends ListenerAdapter>> classes =
+                reflections.getSubTypesOf(ListenerAdapter.class);
+        ListenerAdapter[] listeners = new ListenerAdapter[classes.size()];
+        Iterator<Class<? extends ListenerAdapter>> itr = classes.iterator();
+        int i = 0;
+        while (itr.hasNext()) {
+            var obj = itr.next();
+            try {
+                logger.info("Added {} Listener", obj.getName());
+                // Constructor ctor = Class.forName(obj.getName()).getConstructor();
+                listeners[i] = (ListenerAdapter) Class.forName(obj.getName()).getDeclaredConstructor()
+                        .newInstance();
+            } catch (ReflectiveOperationException e) {
+                logger.error("Error", e);
+            }
+        }
+
+        jdaBuilder.addEventListeners((Object[]) listeners);
+        return jdaBuilder.build();
     }
 
     /**
@@ -43,19 +67,21 @@ public class App {
         var scheduler = Executors.newSingleThreadScheduledExecutor();
         var reflections = new Reflections("com.jvmrally.lambda.tasks");
         Set<Class<? extends Runnable>> classes = reflections.getSubTypesOf(Runnable.class);
-        for (Class<? extends Runnable> c : classes) {
-            if (c.isAnnotationPresent(Task.class)) {
-                Task task = c.getAnnotation(Task.class);
+        for (var clazz : classes) {
+            if (clazz.isAnnotationPresent(Task.class)) {
+                Task task = clazz.getAnnotation(Task.class);
                 try {
-                    scheduler.scheduleAtFixedRate((Runnable) Class.forName(c.getName())
-                            .getConstructor(JDA.class).newInstance(jda), 0, task.frequency(),
-                            task.unit());
-                    logger.info("Registered {} Task", c.getName());
+                    scheduler
+                            .scheduleAtFixedRate(
+                                    (Runnable) Class.forName(clazz.getName())
+                                            .getConstructor(JDA.class).newInstance(jda),
+                                    0, task.frequency(), task.unit());
+                    logger.info("Registered {} Task", clazz.getName());
                 } catch (ReflectiveOperationException e) {
                     logger.error("Error registering tasks", e);
                 }
             } else {
-                logger.error("Task {} does not have the @Task annotation", c.getName());
+                logger.error("Task {} does not have the @Task annotation", clazz.getName());
             }
         }
     }
