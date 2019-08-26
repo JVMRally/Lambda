@@ -32,6 +32,8 @@ public enum AuditAction implements EnumType {
 
     WARNED("WARNED"),
 
+    AUTOMATED_WARN("AUTOMATED_WARN"),
+
     MUTED("MUTED"),
 
     UNMUTED("UNMUTED"),
