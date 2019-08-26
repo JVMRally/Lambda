@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import javax.security.auth.login.LoginException;
 import com.jvmrally.lambda.annotation.Task;
 import com.jvmrally.lambda.config.JooqCodeGen;
+import com.jvmrally.lambda.listener.DirectMessageListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.flywaydb.core.Flyway;
@@ -45,14 +46,13 @@ public class App {
             var obj = itr.next();
             try {
                 logger.info("Added {} Listener", obj.getName());
-                // Constructor ctor = Class.forName(obj.getName()).getConstructor();
-                listeners[i] = (ListenerAdapter) Class.forName(obj.getName()).getDeclaredConstructor()
-                        .newInstance();
+                listeners[i] = (ListenerAdapter) Class.forName(obj.getName())
+                        .getDeclaredConstructor().newInstance();
             } catch (ReflectiveOperationException e) {
                 logger.error("Error", e);
             }
+            i++;
         }
-
         jdaBuilder.addEventListeners((Object[]) listeners);
         return jdaBuilder.build();
     }
