@@ -15,6 +15,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class DirectMessageListener extends ListenerAdapter {
     private static DSLContext dsl = JooqConn.getJooqContext();
 
+    public DirectMessageListener() {
+    }
+
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent e) {
         if (e.getAuthor().isBot()) {

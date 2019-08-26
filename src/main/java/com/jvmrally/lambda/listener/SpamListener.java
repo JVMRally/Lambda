@@ -16,6 +16,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
  */
 public class SpamListener extends ListenerAdapter {
 
+    public SpamListener() {
+    }
+
     private static final String WARNING =
             "Your last message was deleted by our spam filter. Try not to ping everyone, mention lots of users, or post invite links to other servers.";
 
