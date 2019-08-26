@@ -1,13 +1,11 @@
 package com.jvmrally.lambda;
 
-import java.lang.reflect.Constructor;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import javax.security.auth.login.LoginException;
 import com.jvmrally.lambda.annotation.Task;
 import com.jvmrally.lambda.config.JooqCodeGen;
-import com.jvmrally.lambda.listener.DirectMessageListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.flywaydb.core.Flyway;
