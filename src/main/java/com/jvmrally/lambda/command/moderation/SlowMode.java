@@ -20,7 +20,7 @@ public class SlowMode {
 
         @Flag(shortName = 'r', longName = "reset",
                 description = "Whether or not to reset the slowmode time.")
-        private Boolean reset = false;
+        private Boolean reset = Boolean.FALSE;
     }
 
     /**

@@ -3,7 +3,6 @@ package com.jvmrally.lambda.utility;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -70,7 +69,7 @@ public class Util {
      */
     public static boolean hasRole(Member member, String targetRole) {
         return member.getRoles().stream().filter(role -> role.getName().equals(targetRole))
-                .collect(Collectors.toList()).size() == 1;
+                .count() == 1;
     }
 
     /**

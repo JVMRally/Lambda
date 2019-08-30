@@ -45,7 +45,7 @@ public class Ban {
      */
     public static void banUser(DSLContext dsl, Member member, BanRequest req) {
         int deleteDays = req.shouldClear() ? DELETE_DAYS : 0;
-        member.ban(deleteDays, req.getReason());
+        member.ban(deleteDays, req.getReason()).queue();
         dsl.insertInto(BAN).values(member.getIdLong(), req.getExpiry()).execute();
     }
 }
