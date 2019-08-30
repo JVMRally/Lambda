@@ -16,7 +16,7 @@ public class UnMute {
     public static void mute(DSLContext dsl, MessageReceivedEvent e) {
         Util.getRole(e.getGuild(), "muted").ifPresentOrElse(role -> Util.getMentionedMembers(e)
                 .ifPresentOrElse(members -> members.forEach(member -> {
-                    e.getGuild().removeRoleFromMember(member, role);
+                    e.getGuild().removeRoleFromMember(member, role).queue();
                     dsl.deleteFrom(MUTE).where(MUTE.USERID.eq(member.getIdLong())).execute();
                 }), () -> Messenger.toChannel(messenger -> messenger.to(e.getChannel())
                         .message("Must mention at least one user"))),

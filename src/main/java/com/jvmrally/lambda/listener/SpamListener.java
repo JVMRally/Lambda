@@ -9,11 +9,8 @@ import com.jvmrally.lambda.db.enums.AuditAction;
 import com.jvmrally.lambda.injectable.Auditor;
 import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -22,12 +19,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
  */
 public class SpamListener extends ListenerAdapter {
 
-    private static final Logger logger = LogManager.getLogger(SpamListener.class);
-
     private static final String ATTACHMENT_FILTER = "^.*\\.(jpg|jpeg|gif|png|mov|mp4|webm)";
-
-    public SpamListener() {
-    }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent e) {
@@ -35,12 +27,6 @@ public class SpamListener extends ListenerAdapter {
             return;
         }
         Message message = e.getMessage();
-        logger.info("Attachments: {}", message.getAttachments().size());
-        logger.info("Attachment name: {}", message.getAttachments().stream()
-                .map(Attachment::getFileName).collect(Collectors.joining(" - ")));
-        logger.info("Mentions: {}", message.getMentionedMembers().size());
-        logger.info("Channels: {}", message.getMentionedChannels().size());
-        logger.info("Invites: {}", message.getInvites());
         if (testMessage(message, getMessagePredicates())) {
             message.delete().queue();
             Messenger.toUser(m -> m.to(e.getMember()).message(getWarning()));

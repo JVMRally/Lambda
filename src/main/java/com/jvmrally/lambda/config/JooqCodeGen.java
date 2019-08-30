@@ -22,10 +22,10 @@ public class JooqCodeGen {
                                 .withGenerator(new Generator().withDatabase(new Database()
                                                 .withExcludes("flyway_schema_history|information_schema.*|pg_.*")
                                                 .withInputSchema("public")
-                                                .withOutputSchemaToDefault(true))
-                                                .withGenerate(new Generate().withPojos(true)
+                                                .withOutputSchemaToDefault(Boolean.TRUE))
+                                                .withGenerate(new Generate().withPojos(Boolean.TRUE)
                                                                 .withDeprecationOnUnknownTypes(
-                                                                                false))
+                                                                                Boolean.FALSE))
                                                 .withTarget(new Target().withPackageName(
                                                                 "com.jvmrally.lambda.db")
                                                                 .withDirectory("src/main/java")));
