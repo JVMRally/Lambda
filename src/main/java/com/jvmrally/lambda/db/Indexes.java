@@ -8,6 +8,7 @@ import com.jvmrally.lambda.db.tables.Audit;
 import com.jvmrally.lambda.db.tables.Ban;
 import com.jvmrally.lambda.db.tables.DmTimeouts;
 import com.jvmrally.lambda.db.tables.Mute;
+import com.jvmrally.lambda.db.tables.Tags;
 
 import javax.annotation.Generated;
 
@@ -37,6 +38,8 @@ public class Indexes {
     public static final Index BAN_PKEY = Indexes0.BAN_PKEY;
     public static final Index DM_TIMEOUTS_PKEY = Indexes0.DM_TIMEOUTS_PKEY;
     public static final Index MUTE_PKEY = Indexes0.MUTE_PKEY;
+    public static final Index TAGS_PKEY = Indexes0.TAGS_PKEY;
+    public static final Index TAGS_TAGNAME_KEY = Indexes0.TAGS_TAGNAME_KEY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -47,5 +50,7 @@ public class Indexes {
         public static Index BAN_PKEY = Internal.createIndex("ban_pkey", Ban.BAN, new OrderField[] { Ban.BAN.USERID }, true);
         public static Index DM_TIMEOUTS_PKEY = Internal.createIndex("dm_timeouts_pkey", DmTimeouts.DM_TIMEOUTS, new OrderField[] { DmTimeouts.DM_TIMEOUTS.USERID }, true);
         public static Index MUTE_PKEY = Internal.createIndex("mute_pkey", Mute.MUTE, new OrderField[] { Mute.MUTE.USERID }, true);
+        public static Index TAGS_PKEY = Internal.createIndex("tags_pkey", Tags.TAGS, new OrderField[] { Tags.TAGS.ID }, true);
+        public static Index TAGS_TAGNAME_KEY = Internal.createIndex("tags_tagname_key", Tags.TAGS, new OrderField[] { Tags.TAGS.TAGNAME }, true);
     }
 }

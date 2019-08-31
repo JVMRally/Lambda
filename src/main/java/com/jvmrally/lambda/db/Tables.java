@@ -8,6 +8,7 @@ import com.jvmrally.lambda.db.tables.Audit;
 import com.jvmrally.lambda.db.tables.Ban;
 import com.jvmrally.lambda.db.tables.DmTimeouts;
 import com.jvmrally.lambda.db.tables.Mute;
+import com.jvmrally.lambda.db.tables.Tags;
 
 import javax.annotation.Generated;
 
@@ -44,4 +45,9 @@ public class Tables {
      * The table <code>mute</code>.
      */
     public static final Mute MUTE = com.jvmrally.lambda.db.tables.Mute.MUTE;
+
+    /**
+     * The table <code>tags</code>.
+     */
+    public static final Tags TAGS = com.jvmrally.lambda.db.tables.Tags.TAGS;
 }
