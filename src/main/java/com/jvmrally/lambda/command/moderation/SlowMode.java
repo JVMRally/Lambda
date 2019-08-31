@@ -33,11 +33,10 @@ public class SlowMode {
     @CommandHandler(commandName = "slow",
             description = "Modifies the slowmode of mentioned channels. If no channel is mentioned it defaults to the current channel.")
     public static void slow(SlowModeRequest req, MessageReceivedEvent e) {
-        List<TextChannel> channels = Util.getTargetChannels(e);
         if (req.reset) {
             req.time = 0;
         }
-        for (TextChannel channel : channels) {
+        for (TextChannel channel : Util.getTargetChannels(e)) {
             setSlowMode(channel, req.time);
         }
     }

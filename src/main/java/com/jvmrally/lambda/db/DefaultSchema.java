@@ -8,6 +8,7 @@ import com.jvmrally.lambda.db.tables.Audit;
 import com.jvmrally.lambda.db.tables.Ban;
 import com.jvmrally.lambda.db.tables.DmTimeouts;
 import com.jvmrally.lambda.db.tables.Mute;
+import com.jvmrally.lambda.db.tables.Tags;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +35,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefaultSchema extends SchemaImpl {
 
-    private static final long serialVersionUID = 417539251;
+    private static final long serialVersionUID = -1402532013;
 
     /**
      * The reference instance of <code></code>
@@ -62,6 +63,11 @@ public class DefaultSchema extends SchemaImpl {
     public final Mute MUTE = com.jvmrally.lambda.db.tables.Mute.MUTE;
 
     /**
+     * The table <code>tags</code>.
+     */
+    public final Tags TAGS = com.jvmrally.lambda.db.tables.Tags.TAGS;
+
+    /**
      * No further instances allowed
      */
     private DefaultSchema() {
@@ -86,7 +92,8 @@ public class DefaultSchema extends SchemaImpl {
 
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
-            Sequences.AUDIT_SERIAL);
+            Sequences.AUDIT_SERIAL,
+            Sequences.TAGS_ID_SEQ);
     }
 
     @Override
@@ -101,6 +108,7 @@ public class DefaultSchema extends SchemaImpl {
             Audit.AUDIT,
             Ban.BAN,
             DmTimeouts.DM_TIMEOUTS,
-            Mute.MUTE);
+            Mute.MUTE,
+            Tags.TAGS);
     }
 }

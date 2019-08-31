@@ -27,4 +27,9 @@ public class Sequences {
      * The sequence <code>audit_serial</code>
      */
     public static final Sequence<Integer> AUDIT_SERIAL = new SequenceImpl<Integer>("audit_serial", DefaultSchema.DEFAULT_SCHEMA, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
+
+    /**
+     * The sequence <code>tags_id_seq</code>
+     */
+    public static final Sequence<Integer> TAGS_ID_SEQ = new SequenceImpl<Integer>("tags_id_seq", DefaultSchema.DEFAULT_SCHEMA, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
 }
