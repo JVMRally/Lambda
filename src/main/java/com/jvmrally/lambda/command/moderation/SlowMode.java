@@ -1,6 +1,5 @@
 package com.jvmrally.lambda.command.moderation;
 
-import java.util.List;
 import com.jvmrally.lambda.utility.Util;
 import disparse.parser.reflection.CommandHandler;
 import disparse.parser.reflection.Flag;
@@ -18,20 +17,18 @@ public class SlowMode {
         @Flag(shortName = 't', longName = "time", description = "The time for the slowmode.")
         private Integer time = 0;
 
-        @Flag(shortName = 'r', longName = "reset",
-                description = "Whether or not to reset the slowmode time.")
+        @Flag(shortName = 'r', longName = "reset", description = "Whether or not to reset the slowmode time.")
         private Boolean reset = Boolean.FALSE;
     }
 
     /**
-     * Modifies the slowmode of mentioned channels. If no channels are mentioned, it defaults to the
-     * channel of the received message.
+     * Modifies the slowmode of mentioned channels. If no channels are mentioned, it
+     * defaults to the channel of the received message.
      * 
      * @param req the request entity containing command flags and values
      * @param e   the message entity received
      */
-    @CommandHandler(commandName = "slow",
-            description = "Modifies the slowmode of mentioned channels. If no channel is mentioned it defaults to the current channel.")
+    @CommandHandler(commandName = "slow", description = "Modifies the slowmode of mentioned channels. If no channel is mentioned it defaults to the current channel.")
     public static void slow(SlowModeRequest req, MessageReceivedEvent e) {
         if (req.reset) {
             req.time = 0;
