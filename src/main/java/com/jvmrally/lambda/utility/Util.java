@@ -30,6 +30,20 @@ public class Util {
     }
 
     /**
+     * Returns a list of channel targetted for a command.
+     * 
+     * @param e the message event
+     * @return a list of TextChannels
+     */
+    public static Optional<TextChannel> getTargetChannel(MessageReceivedEvent e) {
+        List<TextChannel> channels = e.getMessage().getMentionedChannels();
+        if (channels.isEmpty() || channels.size() != 1) {
+            return Optional.empty();
+        }
+        return Optional.of(channels.get(0));
+    }
+
+    /**
      * Takes the list of arguments passed to a command method and rebuilds them into a single
      * string.
      * 
