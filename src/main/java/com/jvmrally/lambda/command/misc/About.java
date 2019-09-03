@@ -15,7 +15,7 @@ public class About {
     public static void execute(MessageReceivedEvent e) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("**Lambda Bot**");
-        eb.addField("Source Code", "https://www.github.com/TobyLarone85/Lambda", false);
+        eb.addField("Source Code", "https://www.github.com/Toby-Larone/Lambda", false);
         eb.setColor(Color.WHITE);
         eb.setThumbnail(e.getJDA().getSelfUser().getEffectiveAvatarUrl());
         Messenger.toChannel(messenger -> messenger.to(e.getChannel()).message(eb));

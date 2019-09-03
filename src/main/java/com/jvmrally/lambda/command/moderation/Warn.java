@@ -22,7 +22,8 @@ public final class Warn {
 	 * @param e   the message entity received
 	 */
 	@CommandHandler(commandName = "warn",
-			description = "Give an official warning to a user. The user will receive a direct message informing them of the reason.")
+			description = "Give an official warning to a user. The user will receive a direct message informing them of the reason.",
+			roles = "admin")
 	public static void warn(DSLContext dsl, Auditor auditor, ReasonRequest req,
 			MessageReceivedEvent e) {
 		Util.getMentionedMember(e).ifPresentOrElse(member -> {

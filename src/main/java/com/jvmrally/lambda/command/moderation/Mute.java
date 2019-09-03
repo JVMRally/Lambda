@@ -17,7 +17,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class Mute {
 
     @CommandHandler(commandName = "mute",
-            description = "Mute someone for the specified amount of time. Defaults to 1 hour.")
+            description = "Mute someone for the specified amount of time. Defaults to 1 hour.",
+            roles = "admin")
     public static void mute(Auditor audit, DSLContext dsl, TimedReasonRequest req,
             MessageReceivedEvent e) {
         Util.getRole(e.getGuild(), "muted").ifPresentOrElse(role -> Util.getMentionedMembers(e)

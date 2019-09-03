@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class ModMail {
 
     @CommandHandler(commandName = "modmail",
-            description = "Reply to a user via the bot via direct message.")
+            description = "Reply to a user via the bot via direct message.", roles = "admin")
     public static void modmail(List<String> args, MessageReceivedEvent e) {
         Util.getMentionedMember(e).ifPresentOrElse(member -> {
             String message = "**Staff Reply: ** " + Util.rebuildArgsToString(args);

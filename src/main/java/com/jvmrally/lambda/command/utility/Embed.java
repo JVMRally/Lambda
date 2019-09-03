@@ -1,6 +1,5 @@
 package com.jvmrally.lambda.command.utility;
 
-import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,10 +20,10 @@ public class Embed {
     static class EmbedRequest {
         @Flag(shortName = 'j', longName = "json", description = "Json input to create embed.")
         private String json;
-
     }
 
-    @CommandHandler(commandName = "embed", description = "Create and post an embed from json input")
+    @CommandHandler(commandName = "embed", description = "Create and post an embed from json input",
+            roles = "admin")
     public static void execute(EmbedRequest req, MessageReceivedEvent e)
             throws JsonMappingException, JsonProcessingException {
         ObjectMapper om = new ObjectMapper();

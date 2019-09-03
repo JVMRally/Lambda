@@ -36,7 +36,8 @@ public class DeleteMessage {
      * @param e   the message entity received
      */
     @CommandHandler(commandName = "delete",
-            description = "Deletes messages sent by mentioned users from all mentioned channels. Defaults to the last 25 messages.")
+            description = "Deletes messages sent by mentioned users from all mentioned channels. Defaults to the last 25 messages.",
+            roles = "admin")
     public static void delete(DeleteRequest req, MessageReceivedEvent e) {
         List<TextChannel> channels = Util.getTargetChannels(e);
         for (Member member : e.getMessage().getMentionedMembers()) {
