@@ -12,7 +12,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  */
 public class UnMute {
 
-    @CommandHandler(commandName = "unmute", description = "Unmute mentioned users.")
+    @CommandHandler(commandName = "unmute", description = "Unmute mentioned users.",
+            roles = "admin")
     public static void mute(DSLContext dsl, MessageReceivedEvent e) {
         Util.getRole(e.getGuild(), "muted").ifPresentOrElse(role -> Util.getMentionedMembers(e)
                 .ifPresentOrElse(members -> members.forEach(member -> {
