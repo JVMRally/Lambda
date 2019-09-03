@@ -82,8 +82,8 @@ public class Util {
      * @return
      */
     public static boolean hasRole(Member member, String targetRole) {
-        return member.getRoles().stream().filter(role -> role.getName().equals(targetRole))
-                .count() == 1;
+        return member.getRoles().stream()
+                .filter(role -> role.getName().equalsIgnoreCase(targetRole)).count() == 1;
     }
 
     /**
