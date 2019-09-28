@@ -7,6 +7,7 @@ package com.jvmrally.lambda.db;
 import com.jvmrally.lambda.db.tables.Audit;
 import com.jvmrally.lambda.db.tables.Ban;
 import com.jvmrally.lambda.db.tables.DmTimeouts;
+import com.jvmrally.lambda.db.tables.Jeps;
 import com.jvmrally.lambda.db.tables.Mute;
 import com.jvmrally.lambda.db.tables.Tags;
 
@@ -40,6 +41,11 @@ public class Tables {
      * The table <code>dm_timeouts</code>.
      */
     public static final DmTimeouts DM_TIMEOUTS = com.jvmrally.lambda.db.tables.DmTimeouts.DM_TIMEOUTS;
+
+    /**
+     * The table <code>jeps</code>.
+     */
+    public static final Jeps JEPS = com.jvmrally.lambda.db.tables.Jeps.JEPS;
 
     /**
      * The table <code>mute</code>.
