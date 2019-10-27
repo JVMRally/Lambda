@@ -28,9 +28,7 @@ public class Embed {
             throws JsonMappingException, JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
         EmbedMessage embed = om.readValue(req.json, EmbedMessage.class);
-        Util.getTargetChannel(e).ifPresentOrElse(
-                channel -> Messenger.toChannel(m -> m.to(channel).message(embed.build())),
-                () -> Messenger.toChannel(
-                        m -> m.to(e.getChannel()).message("Must provide a target channel")));
+        Util.getTargetChannel(e).ifPresentOrElse(channel -> Messenger.send(channel, embed.build()),
+                () -> Messenger.send(e.getChannel(), "Must provide a target channel"));
     }
 }

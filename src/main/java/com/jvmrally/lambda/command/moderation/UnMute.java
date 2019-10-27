@@ -19,9 +19,7 @@ public class UnMute {
                 .ifPresentOrElse(members -> members.forEach(member -> {
                     e.getGuild().removeRoleFromMember(member, role).queue();
                     dsl.deleteFrom(MUTE).where(MUTE.USERID.eq(member.getIdLong())).execute();
-                }), () -> Messenger.toChannel(messenger -> messenger.to(e.getChannel())
-                        .message("Must mention at least one user"))),
-                () -> Messenger.toChannel(
-                        messenger -> messenger.to(e.getChannel()).message("Role does not exist")));
+                }), () -> Messenger.send(e.getChannel(), "Must mention at least one user")),
+                () -> Messenger.send(e.getChannel(), "Role does not exist."));
     }
 }

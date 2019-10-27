@@ -25,8 +25,7 @@ public class Tag {
             MessageReceivedEvent e) {
         if (req.isManipulatingTag()) {
             if (!Util.hasRole(e.getMember(), "admin")) {
-                Messenger.toChannel(
-                        m -> m.to(e.getChannel()).message("You don't have permission to do that"));
+                Messenger.send(e.getChannel(), "You don't have permission to do that");
                 return;
             }
             manipulateTag(auditor, dsl, req, e);
@@ -38,11 +37,8 @@ public class Tag {
         }
         if (!req.getName().isEmpty()) {
             dsl.selectFrom(TAGS).where(TAGS.TAGNAME.eq(req.getName())).fetchOptionalInto(Tags.class)
-                    .ifPresentOrElse(
-                            tag -> Messenger
-                                    .toChannel(m -> m.to(e.getChannel()).message(tag.getContent())),
-                            () -> Messenger.toChannel(
-                                    m -> m.to(e.getChannel()).message("Tag does not exist")));
+                    .ifPresentOrElse(tag -> Messenger.send(e.getChannel(), tag.getContent()),
+                            () -> Messenger.send(e.getChannel(), "Tag does not exist"));
         }
     }
 
@@ -67,20 +63,14 @@ public class Tag {
         if (isContentEmpty(req, e)) {
             return;
         }
-        findTag(dsl,
-                req.getName())
-                        .ifPresentOrElse(
-                                tag -> Messenger.toChannel(m -> m.to(e.getChannel())
-                                        .message("Tag `" + tag.getTagname() + "` already exists.")),
-                                () -> {
-                                    dsl.insertInto(TAGS)
-                                            .columns(TAGS.TAGNAME, TAGS.CONTENT, TAGS.UPDATED_AT)
-                                            .values(req.getName(), req.getContent(),
-                                                    OffsetDateTime.now())
-                                            .execute();
-                                    auditor.log(AuditAction.CREATED_TAG, e.getAuthor().getIdLong());
-                                });
-        Messenger.toChannel(m -> m.to(e.getChannel()).message("Tag created!"));
+        findTag(dsl, req.getName()).ifPresentOrElse(tag -> Messenger.send(e.getChannel(),
+                "Tag `" + tag.getTagname() + "` already exists."), () -> {
+                    dsl.insertInto(TAGS).columns(TAGS.TAGNAME, TAGS.CONTENT, TAGS.UPDATED_AT)
+                            .values(req.getName(), req.getContent(), OffsetDateTime.now())
+                            .execute();
+                    auditor.log(AuditAction.CREATED_TAG, e.getAuthor().getIdLong());
+                });
+        Messenger.send(e.getChannel(), "Tag created!");
     }
 
     private static void editTag(Auditor auditor, DSLContext dsl, TagRequest req,
@@ -92,7 +82,7 @@ public class Tag {
             dsl.update(TAGS).set(TAGS.CONTENT, req.getContent()).set(TAGS.UPDATED_AT,
                     OffsetDateTime.now());
             auditor.log(AuditAction.EDITED_TAG, e.getAuthor().getIdLong());
-        }, () -> Messenger.toChannel(m -> m.to(e.getChannel()).message("Tag does not exist.")));
+        }, () -> Messenger.send(e.getChannel(), "Tag does not exist."));
     }
 
     private static void deleteTag(Auditor auditor, DSLContext dsl, TagRequest req,
@@ -100,9 +90,8 @@ public class Tag {
         findTag(dsl, req.getName()).ifPresentOrElse(tag -> {
             dsl.deleteFrom(TAGS).where(TAGS.TAGNAME.eq(tag.getTagname())).execute();
             auditor.log(AuditAction.DELETED_TAG, e.getAuthor().getIdLong());
-            Messenger.toChannel(m -> m.to(e.getChannel())
-                    .message("Tag `" + tag.getTagname() + "` has been deleted."));
-        }, () -> Messenger.toChannel(m -> m.to(e.getChannel()).message("Tag does not exist.")));
+            Messenger.send(e.getChannel(), "Tag `" + tag.getTagname() + "` has been deleted.");
+        }, () -> Messenger.send(e.getChannel(), "Tag does not exist."));
     }
 
     /**
@@ -119,7 +108,7 @@ public class Tag {
         } else {
             response = "**Tags: **" + String.join(", ", tags);
         }
-        Messenger.toChannel(m -> m.to(e.getChannel()).message(response));
+        Messenger.send(e.getChannel(), response);
     }
 
     /**
@@ -142,7 +131,7 @@ public class Tag {
      */
     private static boolean isContentEmpty(TagRequest req, MessageReceivedEvent e) {
         if (req.getContent().isEmpty()) {
-            Messenger.toChannel(m -> m.to(e.getChannel()).message("You must supply content."));
+            Messenger.send(e.getChannel(), "You must supply content.");
             return true;
         }
         return false;

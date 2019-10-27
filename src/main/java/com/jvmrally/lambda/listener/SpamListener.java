@@ -11,6 +11,7 @@ import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -29,14 +30,14 @@ public class SpamListener extends ListenerAdapter {
         Message message = e.getMessage();
         if (testMessage(message, getMessagePredicates())) {
             message.delete().queue();
-            Messenger.toUser(m -> m.to(e.getMember()).message(getWarning()));
+            Messenger.send(e.getMember(), getWarning());
             Auditor.getAuditor().log(AuditAction.AUTOMATED_WARN,
                     e.getJDA().getSelfUser().getIdLong(), e.getMember().getIdLong(),
                     "Automatic warning from spam prevention.");
         }
     }
 
-    private EmbedBuilder getWarning() {
+    private MessageEmbed getWarning() {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("**Warning**");
         eb.setColor(Color.RED);
@@ -47,7 +48,7 @@ public class SpamListener extends ListenerAdapter {
         eb.addField("Attachments",
                 "We only allow images and videos as attachments. If you're trying to post some code, please use a code sharing site and post the link.",
                 false);
-        return eb;
+        return eb.build();
     }
 
     private boolean testMessage(Message message, List<Predicate<Message>> predicates) {

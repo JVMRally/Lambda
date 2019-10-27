@@ -17,10 +17,8 @@ public class Whois {
     @CommandHandler(commandName = "whois", description = "Details information about a user")
     public static void execute(MessageReceivedEvent e) {
         Util.getMentionedMember(e).ifPresentOrElse(
-                member -> Messenger
-                        .toChannel(m -> m.to(e.getChannel()).message(prepareWhoisEmbed(member))),
-                () -> Messenger
-                        .toChannel(m -> m.to(e.getChannel()).message("Must provide a user")));
+                member -> Messenger.send(e.getChannel(), prepareWhoisEmbed(member).build()),
+                () -> Messenger.send(e.getChannel(), "Must provide a user"));
     }
 
     private static EmbedBuilder prepareWhoisEmbed(Member member) {

@@ -4,6 +4,7 @@ import java.awt.Color;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
 /**
  * Embed
@@ -27,7 +28,7 @@ public class EmbedMessage {
         this.fields = fields;
     }
 
-    public EmbedBuilder build() {
+    public MessageEmbed build() {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(title);
         eb.setDescription(description);
@@ -36,6 +37,6 @@ public class EmbedMessage {
         for (EmbedField field : fields) {
             eb.addField(field.getTitle(), field.getContent(), field.isInline());
         }
-        return eb;
+        return eb.build();
     }
 }
