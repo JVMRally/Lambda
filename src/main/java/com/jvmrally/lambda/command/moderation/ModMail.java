@@ -16,8 +16,7 @@ public class ModMail {
     public static void modmail(List<String> args, MessageReceivedEvent e) {
         Util.getMentionedMember(e).ifPresentOrElse(member -> {
             String message = "**Staff Reply: ** " + Util.rebuildArgsToString(args);
-            Messenger.toUser(messenger -> messenger.to(member).message(message));
-        }, () -> Messenger.toChannel(
-                messenger -> messenger.to(e.getChannel()).message("Must provide a user")));
+            Messenger.send(member, message);
+        }, () -> Messenger.send(e.getChannel(), "Must provide a user"));
     }
 }

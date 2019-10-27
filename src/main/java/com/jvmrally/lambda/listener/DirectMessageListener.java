@@ -75,7 +75,6 @@ public class DirectMessageListener extends ListenerAdapter {
         String message = "User: " + e.getAuthor().getAsMention() + " sent message: "
                 + e.getMessage().getContentRaw();
         var channels = e.getJDA().getTextChannelsByName("modmail", true);
-        channels.forEach(channel -> Messenger
-                .toChannel(messenger -> messenger.to(channel).message(message)));
+        channels.forEach(channel -> Messenger.send(channel, message));
     }
 }

@@ -18,6 +18,6 @@ public class About {
         eb.addField("Source Code", "https://www.github.com/Toby-Larone/Lambda", false);
         eb.setColor(Color.WHITE);
         eb.setThumbnail(e.getJDA().getSelfUser().getEffectiveAvatarUrl());
-        Messenger.toChannel(messenger -> messenger.to(e.getChannel()).message(eb));
+        Messenger.send(e.getChannel(), eb.build());
     }
 }

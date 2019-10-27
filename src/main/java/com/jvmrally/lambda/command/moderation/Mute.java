@@ -29,10 +29,8 @@ public class Mute {
                         audit.log(AuditAction.MUTED, e.getAuthor().getIdLong(), member.getIdLong(),
                                 req.getReason());
                     }
-                }), () -> Messenger.toChannel(messenger -> messenger.to(e.getChannel())
-                        .message("Must mention at least one user"))),
-                () -> Messenger.toChannel(
-                        messenger -> messenger.to(e.getChannel()).message("Role does not exist")));
+                }), () -> Messenger.send(e.getChannel(), "Must mention at least one user")),
+                () -> Messenger.send(e.getChannel(), "Role does not exist."));
     }
 
     private static void logMute(DSLContext dsl, Member member, TimedReasonRequest req) {

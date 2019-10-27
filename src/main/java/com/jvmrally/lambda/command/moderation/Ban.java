@@ -33,8 +33,7 @@ public class Ban {
             banUser(dsl, member, req);
             auditor.log(AuditAction.WARNED, e.getAuthor().getIdLong(), member.getIdLong(),
                     req.getReason());
-        }, () -> Messenger.toChannel(
-                messenger -> messenger.to(e.getChannel()).message("Must provide a user")));
+        }, () -> Messenger.send(e.getChannel(), "Must provide a user"));
     }
 
     /**

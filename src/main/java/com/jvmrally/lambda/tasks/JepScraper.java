@@ -91,7 +91,7 @@ public class JepScraper implements Runnable {
         eb.addBlankField(true);
         eb.addField("URL", jep.getUrl(), false);
         eb.setColor(EMBED_COLOR);
-        Messenger.toChannel(m -> m.to(channel).message(eb));
+        Messenger.send(channel, eb.build());
     }
 
     private void insertJep(Jep jep) {
@@ -100,8 +100,7 @@ public class JepScraper implements Runnable {
 
     private void insertJeps(List<Jep> jeps) {
         DSLContext dsl = JooqConn.getJooqContext();
-        List<JepsRecord> jepRecords =
-                jeps.stream().map(Jep::toRecord).collect(Collectors.toList());
+        List<JepsRecord> jepRecords = jeps.stream().map(Jep::toRecord).collect(Collectors.toList());
         dsl.batchInsert(jepRecords).execute();
         for (Jep jep : jeps) {
             sendEmbed(jep, "NEW");
