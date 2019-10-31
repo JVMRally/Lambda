@@ -67,7 +67,7 @@ public class JepScraper implements Runnable {
                 if (jep.getId() == existingJep.getId()) {
                     existingJeps.remove(existingJep);
                     if (!jep.equals(existingJep)) {
-                        updateJep(jep);
+                        updateJep(existingJep, jep);
                     }
                     jepFound = true;
                     break;
@@ -79,10 +79,28 @@ public class JepScraper implements Runnable {
         }
     }
 
-    private void sendEmbed(Jep jep, String type) {
+    private void sendEmbed(Jep existingJep, Jep jep) {
         TextChannel channel = jda.getTextChannelsByName("java_updates", true).get(0);
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("**" + type + " " + jep.getId() + ": " + jep.getTitle() + "**");
+        eb.setTitle("**UPDATED " + jep.getId() + ": " + jep.getTitle() + "**");
+        eb.addField("Type", composeField(existingJep.getJepType().name(), jep.getJepType().name()),
+                true);
+        eb.addField("Status", composeField(existingJep.getStatus().name(), jep.getStatus().name()),
+                true);
+        eb.addBlankField(true);
+        eb.addField("Java Release", composeField(existingJep.getRelease(), jep.getRelease()), true);
+        eb.addField("JDK Component", composeField(existingJep.getComponent(), jep.getComponent()),
+                true);
+        eb.addBlankField(true);
+        eb.addField("URL", jep.getUrl(), false);
+        eb.setColor(EMBED_COLOR);
+        Messenger.send(channel, eb.build());
+    }
+
+    private void sendEmbed(Jep jep) {
+        TextChannel channel = jda.getTextChannelsByName("java_updates", true).get(0);
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setTitle("**NEW " + jep.getId() + ": " + jep.getTitle() + "**");
         eb.addField("Type", jep.getJepType().name(), true);
         eb.addField("Status", jep.getStatus().name(), true);
         eb.addBlankField(true);
@@ -94,6 +112,14 @@ public class JepScraper implements Runnable {
         Messenger.send(channel, eb.build());
     }
 
+    private String composeField(String existingText, String newText) {
+        if (existingText.equals(newText)) {
+            return newText;
+        } else {
+            return existingText + "->" + newText;
+        }
+    }
+
     private void insertJep(Jep jep) {
         insertJeps(List.of(jep));
     }
@@ -103,17 +129,17 @@ public class JepScraper implements Runnable {
         List<JepsRecord> jepRecords = jeps.stream().map(Jep::toRecord).collect(Collectors.toList());
         dsl.batchInsert(jepRecords).execute();
         for (Jep jep : jeps) {
-            sendEmbed(jep, "NEW");
+            sendEmbed(jep);
         }
     }
 
-    private void updateJep(Jep jep) {
+    private void updateJep(Jep existingJep, Jep jep) {
         DSLContext dsl = JooqConn.getJooqContext();
         dsl.update(JEPS).set(JEPS.JEP_STATUS, jep.getStatus().name())
                 .set(JEPS.JEP_TYPE, jep.getJepType().name()).set(JEPS.COMPONENT, jep.getComponent())
                 .set(JEPS.RELEASE, jep.getRelease()).set(JEPS.TITLE, jep.getTitle())
                 .where(JEPS.ID.eq(jep.getId())).execute();
-        sendEmbed(jep, "UPDATED");
+        sendEmbed(existingJep, jep);
     }
 
     private List<Jep> getSiteJeps() throws IOException {
