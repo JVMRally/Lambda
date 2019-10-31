@@ -78,8 +78,9 @@ public class Tag {
 
     private static void editTag(Auditor auditor, DSLContext dsl, TagRequest req,
             MessageReceivedEvent e) {
-        dsl.update(TAGS).set(TAGS.CONTENT, req.getContent()).set(TAGS.UPDATED_AT,
-                OffsetDateTime.now());
+        dsl.update(TAGS).set(TAGS.CONTENT, req.getContent())
+                .set(TAGS.UPDATED_AT, OffsetDateTime.now()).where(TAGS.TAGNAME.eq(req.getName()))
+                .execute();
         auditor.log(AuditAction.EDITED_TAG, e.getAuthor().getIdLong());
     }
 
