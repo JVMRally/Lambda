@@ -61,9 +61,6 @@ public class Tag {
     @CommandHandler(commandName = "tag.admin.delete", description = "Delete a tag", roles = "admin")
     public static void delete(Auditor auditor, DSLContext dsl, TagRequest req,
             MessageReceivedEvent e) {
-        if (isContentEmpty(req, e)) {
-            return;
-        }
         findTag(dsl, req.getName()).ifPresentOrElse(tag -> deleteTag(auditor, dsl, tag, e),
                 () -> Messenger.send(e.getChannel(), "Tag does not exist."));
     }
