@@ -27,7 +27,7 @@ import java.awt.Color;
 /**
  * JepScraper
  */
-@Task(unit = TimeUnit.HOURS, frequency = 12)
+@Task(unit = TimeUnit.HOURS, frequency = 3)
 public class JepScraper implements Runnable {
 
     private static final Logger logger = LogManager.getLogger(JepScraper.class);
