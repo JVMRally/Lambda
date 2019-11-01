@@ -14,6 +14,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  */
 public class Util {
 
+    private Util() {
+    }
+
     /**
      * Returns a list of channels targetted for a command. If no channels are mentioned in the
      * command message, it returns the channel the received message was sent to.

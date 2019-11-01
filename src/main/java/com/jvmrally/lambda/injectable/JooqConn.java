@@ -18,6 +18,9 @@ public class JooqConn {
     private static HikariConfig config = null;
     private static DSLContext dsl = null;
 
+    private JooqConn() {
+    }
+
     @Injectable
     public static DSLContext getJooqContext() {
         if (dsl == null && config == null) {

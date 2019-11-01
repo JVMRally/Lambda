@@ -10,6 +10,9 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
  */
 public class Messenger {
 
+    private Messenger() {
+    }
+
     public static void send(MessageChannel channel, String message) {
         channel.sendMessage(message).queue();
     }

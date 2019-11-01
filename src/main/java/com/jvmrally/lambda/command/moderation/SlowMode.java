@@ -12,6 +12,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  */
 public class SlowMode {
 
+    private SlowMode() {
+    }
+
     @ParsedEntity
     static class SlowModeRequest {
         @Flag(shortName = 't', longName = "time", description = "The time for the slowmode.")
@@ -33,7 +36,7 @@ public class SlowMode {
             description = "Modifies the slowmode of mentioned channels. If no channel is mentioned it defaults to the current channel.",
             roles = "admin")
     public static void slow(SlowModeRequest req, MessageReceivedEvent e) {
-        if (req.reset) {
+        if (Boolean.TRUE.equals(req.reset)) {
             req.time = 0;
         }
         for (TextChannel channel : Util.getTargetChannels(e)) {

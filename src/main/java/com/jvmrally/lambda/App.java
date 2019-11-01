@@ -94,7 +94,7 @@ public class App {
         String user = System.getenv("LAMBDA_DB_USER");
         String password = System.getenv("LAMBDA_DB_PASSWORD");
         Flyway.configure().dataSource(url, user, password).load().migrate();
-        if (args.length == 1 && args[0].equals("--generate")) {
+        if (args.length == 1 && "--generate".equals(args[0])) {
             try {
                 JooqCodeGen.runJooqCodeGen(url, user, password);
             } catch (Exception e) {

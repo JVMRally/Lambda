@@ -44,45 +44,39 @@ public class JepScraper implements Runnable {
 
     @Override
     public void run() {
-        logger.info("Running OpenJDK Scraper");
-        List<Jep> jeps = new ArrayList<>();
         try {
-            jeps = getSiteJeps();
-        } catch (IOException e) {
-            logger.error("Error scraping jdk website.", e);
-        }
-
-        List<Jep> dbJeps = getDbJeps();
-        if (dbJeps.isEmpty()) {
-            insertJeps(jeps);
-        } else {
-            updateAndPostJeps(jeps, dbJeps);
+            logger.info("Running OpenJDK Scraper");
+            List<Jep> jeps = getSiteJeps();
+            List<Jep> dbJeps = getDbJeps();
+            if (dbJeps.isEmpty()) {
+                insertJeps(jeps);
+            } else {
+                updateAndPostJeps(jeps, dbJeps);
+            }
+        } catch (Exception e) {
+            logger.error("Error scraping jeps", e);
         }
     }
 
     private void updateAndPostJeps(List<Jep> scrapedJeps, List<Jep> existingJeps) {
-        try {
-            List<Jep> newJeps = new ArrayList<>();
-            for (Jep jep : scrapedJeps) {
-                boolean jepFound = false;
-                for (Jep existingJep : existingJeps) {
-                    if (jep.getId() == existingJep.getId()) {
-                        existingJeps.remove(existingJep);
-                        if (!jep.equals(existingJep)) {
-                            updateJep(existingJep, jep);
-                        }
-                        jepFound = true;
-                        break;
+        List<Jep> newJeps = new ArrayList<>();
+        for (Jep jep : scrapedJeps) {
+            boolean jepFound = false;
+            for (Jep existingJep : existingJeps) {
+                if (jep.getId() == existingJep.getId()) {
+                    existingJeps.remove(existingJep);
+                    if (!jep.equals(existingJep)) {
+                        updateJep(existingJep, jep);
                     }
-                }
-                if (!jepFound) {
-                    newJeps.add(jep);
+                    jepFound = true;
+                    break;
                 }
             }
-            insertJeps(newJeps);
-        } catch (Throwable e) {
-            logger.error(e);
+            if (!jepFound) {
+                newJeps.add(jep);
+            }
         }
+        insertJeps(newJeps);
     }
 
     private void sendUpdatedEmbed(Jep existingJep, Jep jep) {
@@ -118,21 +112,21 @@ public class JepScraper implements Runnable {
 
     private String getChanges(Jep existingJep, Jep jep) {
         StringBuilder changes = new StringBuilder();
-        if (!existingJep.getJepType().equals(jep.getJepType())) {
+        if (existingJep.getJepType() != jep.getJepType()) {
             changes.append(existingJep.getJepType().name()).append(" -> ")
-                    .append(jep.getJepType().name()).append("\n");
+                    .append(jep.getJepType().name()).append('\n');
         }
-        if (!existingJep.getStatus().equals(jep.getStatus())) {
+        if (existingJep.getStatus() != jep.getStatus()) {
             changes.append(existingJep.getStatus().name()).append(" -> ")
-                    .append(jep.getStatus().name()).append("\n");
+                    .append(jep.getStatus().name()).append('\n');
         }
         if (!existingJep.getRelease().equals(jep.getRelease())) {
             changes.append(existingJep.getRelease()).append(" -> ").append(jep.getRelease())
-                    .append("\n");
+                    .append('\n');
         }
         if (!existingJep.getComponent().equals(jep.getComponent())) {
             changes.append(existingJep.getComponent()).append(" -> ").append(jep.getComponent())
-                    .append("\n");
+                    .append('\n');
         }
         return changes.toString();
     }
@@ -173,7 +167,7 @@ public class JepScraper implements Runnable {
     private List<Jep> getDbJeps() {
         DSLContext dsl = JooqConn.getJooqContext();
         List<Jeps> dbJeps = dsl.selectFrom(JEPS).orderBy(JEPS.ID).fetchInto(Jeps.class);
-        return dbJeps.stream().map(jep -> new Jep(jep)).collect(Collectors.toList());
+        return dbJeps.stream().map(Jep::new).collect(Collectors.toList());
     }
 
 }

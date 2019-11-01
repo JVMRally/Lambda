@@ -18,6 +18,9 @@ public class Ban {
 
     private static final int DELETE_DAYS = 7;
 
+    private Ban() {
+    }
+
     /**
      * Bans a user
      * 

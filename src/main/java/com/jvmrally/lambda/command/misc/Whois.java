@@ -14,6 +14,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  */
 public class Whois {
 
+    private Whois() {
+    }
+
     @CommandHandler(commandName = "whois", description = "Details information about a user")
     public static void execute(MessageReceivedEvent e) {
         Util.getMentionedMember(e).ifPresentOrElse(

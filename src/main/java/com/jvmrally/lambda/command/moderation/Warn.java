@@ -15,6 +15,9 @@ import static com.jvmrally.lambda.db.tables.Audit.AUDIT;
  */
 public final class Warn {
 
+    private Warn() {
+    }
+
     /**
      * Gives a warning to a user
      * 

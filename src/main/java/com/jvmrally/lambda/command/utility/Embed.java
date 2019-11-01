@@ -1,7 +1,6 @@
 package com.jvmrally.lambda.command.utility;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import java.io.IOException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.EmbedMessage;
@@ -16,6 +15,9 @@ import disparse.parser.reflection.Flag;
  */
 public class Embed {
 
+    private Embed() {
+    }
+
     @ParsedEntity
     static class EmbedRequest {
         @Flag(shortName = 'j', longName = "json", description = "Json input to create embed.")
@@ -24,8 +26,7 @@ public class Embed {
 
     @CommandHandler(commandName = "embed", description = "Create and post an embed from json input",
             roles = "admin")
-    public static void execute(EmbedRequest req, MessageReceivedEvent e)
-            throws JsonMappingException, JsonProcessingException {
+    public static void execute(EmbedRequest req, MessageReceivedEvent e) throws IOException {
         ObjectMapper om = new ObjectMapper();
         EmbedMessage embed = om.readValue(req.json, EmbedMessage.class);
         Util.getTargetChannel(e).ifPresentOrElse(channel -> Messenger.send(channel, embed.build()),

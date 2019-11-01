@@ -11,6 +11,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  */
 public class About {
 
+    private About() {
+    }
+
     @CommandHandler(commandName = "about", description = "Details information about the bot.")
     public static void execute(MessageReceivedEvent e) {
         EmbedBuilder eb = new EmbedBuilder();
