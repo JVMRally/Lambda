@@ -86,18 +86,21 @@ public class JepScraper implements Runnable {
     }
 
     private void sendUpdatedEmbed(Jep existingJep, Jep jep) {
-        TextChannel channel = jda.getTextChannelsByName("java_updates", true).get(0);
         EmbedBuilder eb = new EmbedBuilder();
         buildJepEmbed(eb, jep, "UPDATED");
         eb.addBlankField(false);
         eb.addField("Changes", getChanges(existingJep, jep), false);
-        Messenger.send(channel, eb.build());
+        sendEmbed(eb);
     }
 
     private void sendNewEmbed(Jep jep) {
-        TextChannel channel = jda.getTextChannelsByName("java_updates", true).get(0);
         EmbedBuilder eb = new EmbedBuilder();
         buildJepEmbed(eb, jep, "NEW");
+        sendEmbed(eb);
+    }
+
+    private void sendEmbed(EmbedBuilder eb) {
+        TextChannel channel = jda.getTextChannelsByName("java_updates", true).get(0);
         Messenger.send(channel, eb.build());
     }
 
