@@ -16,6 +16,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  */
 public class Mute {
 
+    private Mute() {
+    }
+
     @CommandHandler(commandName = "mute",
             description = "Mute someone for the specified amount of time. Defaults to 1 hour.",
             roles = "admin")

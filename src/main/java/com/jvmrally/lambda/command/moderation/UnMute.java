@@ -12,6 +12,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  */
 public class UnMute {
 
+    private UnMute() {
+    }
+
     @CommandHandler(commandName = "unmute", description = "Unmute mentioned users.",
             roles = "admin")
     public static void mute(DSLContext dsl, MessageReceivedEvent e) {

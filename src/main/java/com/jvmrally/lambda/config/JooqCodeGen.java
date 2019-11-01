@@ -13,23 +13,26 @@ import org.jooq.meta.jaxb.Target;
  */
 public class JooqCodeGen {
 
-        public static void runJooqCodeGen(String url, String user, String password)
-                        throws Exception {
-                var driver = System.getenv("LAMBDA_DB_DRIVER");
-                Configuration configuration = new Configuration()
-                                .withJdbc(new Jdbc().withDriver(driver).withUrl(url).withUser(user)
-                                                .withPassword(password))
-                                .withGenerator(new Generator().withDatabase(new Database()
-                                                .withExcludes("flyway_schema_history|information_schema.*|pg_.*")
-                                                .withInputSchema("public")
-                                                .withOutputSchemaToDefault(Boolean.TRUE))
-                                                .withGenerate(new Generate().withPojos(Boolean.TRUE)
-                                                                .withDeprecationOnUnknownTypes(
-                                                                                Boolean.FALSE))
-                                                .withTarget(new Target().withPackageName(
-                                                                "com.jvmrally.lambda.db")
-                                                                .withDirectory("src/main/java")));
+    private JooqCodeGen() {
+    }
 
-                GenerationTool.generate(configuration);
-        }
+    public static void runJooqCodeGen(String url, String user, String password) throws Exception {
+        var driver = System.getenv("LAMBDA_DB_DRIVER");
+        Configuration configuration =
+                new Configuration()
+                        .withJdbc(new Jdbc().withDriver(driver).withUrl(url).withUser(user)
+                                .withPassword(password))
+                        .withGenerator(new Generator()
+                                .withDatabase(new Database()
+                                        .withExcludes(
+                                                "flyway_schema_history|information_schema.*|pg_.*")
+                                        .withInputSchema("public")
+                                        .withOutputSchemaToDefault(Boolean.TRUE))
+                                .withGenerate(new Generate().withPojos(Boolean.TRUE)
+                                        .withDeprecationOnUnknownTypes(Boolean.FALSE))
+                                .withTarget(new Target().withPackageName("com.jvmrally.lambda.db")
+                                        .withDirectory("src/main/java")));
+
+        GenerationTool.generate(configuration);
+    }
 }

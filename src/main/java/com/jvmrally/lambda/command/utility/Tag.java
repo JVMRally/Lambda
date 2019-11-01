@@ -18,6 +18,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  */
 public class Tag {
 
+    private Tag() {
+    }
+
     @CommandHandler(commandName = "tag",
             description = "Create, edit, or display useful messages. For creating and editing, place all message content between two `\"`")
     public static void displayTag(DSLContext dsl, TagRequest req, MessageReceivedEvent e) {

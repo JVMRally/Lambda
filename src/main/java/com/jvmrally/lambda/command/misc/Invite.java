@@ -9,6 +9,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  */
 public class Invite {
 
+    private Invite() {
+    }
+
     @CommandHandler(commandName = "invite", description = "Contains the invite link.")
     public static void invite(MessageReceivedEvent e) {
         Messenger.send(e.getChannel(), "https://discord.gg/MuZKQWM");

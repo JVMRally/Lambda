@@ -21,6 +21,9 @@ public class DeleteMessage {
     private static final Logger logger = LogManager.getLogger(DeleteMessage.class);
     private static final int HISTORY_LIMIT = 10000;
 
+    private DeleteMessage() {
+    }
+
     @ParsedEntity
     static class DeleteRequest {
         @Flag(shortName = 'l', longName = "limit",
