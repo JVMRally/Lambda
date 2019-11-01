@@ -24,6 +24,9 @@ public class Unban implements Runnable {
         this.jda = jda;
     }
 
+    /**
+     * Periodically unban users where their ban time has expired
+     */
     @Override
     public void run() {
         DSLContext dsl = JooqConn.getJooqContext();

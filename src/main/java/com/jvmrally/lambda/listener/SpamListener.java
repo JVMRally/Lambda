@@ -37,6 +37,11 @@ public class SpamListener extends ListenerAdapter {
         }
     }
 
+    /**
+     * Build the embed warning message that is sent to users that trigger a message predicate
+     * 
+     * @return the message embed
+     */
     private MessageEmbed getWarning() {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("**Warning**");
@@ -51,6 +56,13 @@ public class SpamListener extends ListenerAdapter {
         return eb.build();
     }
 
+    /**
+     * Tests the input message against a collection of predicates
+     * 
+     * @param message    the message to test
+     * @param predicates the predicates to test against
+     * @return true if a message evaluates truthfully against one of the predicates
+     */
     private boolean testMessage(Message message, List<Predicate<Message>> predicates) {
         for (var predicate : predicates) {
             if (predicate.test(message)) {
@@ -60,6 +72,11 @@ public class SpamListener extends ListenerAdapter {
         return false;
     }
 
+    /**
+     * Returns a list of message predicates
+     * 
+     * @return the list of predicates
+     */
     private List<Predicate<Message>> getMessagePredicates() {
         List<Predicate<Message>> messagePredicates = new ArrayList<>();
         messagePredicates.add(Message::mentionsEveryone);
@@ -71,5 +88,4 @@ public class SpamListener extends ListenerAdapter {
                 .collect(Collectors.toList()).isEmpty());
         return messagePredicates;
     }
-
 }

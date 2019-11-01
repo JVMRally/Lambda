@@ -26,6 +26,9 @@ public class Unmute implements Runnable {
         this.jda = jda;
     }
 
+    /**
+     * Periodically unmute any user where their mute time has expired
+     */
     @Override
     public void run() {
         DSLContext dsl = JooqConn.getJooqContext();
