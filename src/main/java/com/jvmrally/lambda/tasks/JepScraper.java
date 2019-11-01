@@ -61,46 +61,48 @@ public class JepScraper implements Runnable {
     }
 
     private void updateAndPostJeps(List<Jep> scrapedJeps, List<Jep> existingJeps) {
-        for (Jep jep : scrapedJeps) {
-            boolean jepFound = false;
-            for (Jep existingJep : existingJeps) {
-                if (jep.getId() == existingJep.getId()) {
-                    existingJeps.remove(existingJep);
-                    if (!jep.equals(existingJep)) {
-                        updateJep(existingJep, jep);
+        try {
+            List<Jep> newJeps = new ArrayList<>();
+            for (Jep jep : scrapedJeps) {
+                boolean jepFound = false;
+                for (Jep existingJep : existingJeps) {
+                    if (jep.getId() == existingJep.getId()) {
+                        existingJeps.remove(existingJep);
+                        if (!jep.equals(existingJep)) {
+                            updateJep(existingJep, jep);
+                        }
+                        jepFound = true;
+                        break;
                     }
-                    jepFound = true;
-                    break;
+                }
+                if (!jepFound) {
+                    newJeps.add(jep);
                 }
             }
-            if (!jepFound) {
-                insertJep(jep);
-            }
+            insertJeps(newJeps);
+        } catch (Throwable e) {
+            logger.error(e);
         }
     }
 
-    private void sendEmbed(Jep existingJep, Jep jep) {
+    private void sendUpdatedEmbed(Jep existingJep, Jep jep) {
         TextChannel channel = jda.getTextChannelsByName("java_updates", true).get(0);
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("**UPDATED " + jep.getId() + ": " + jep.getTitle() + "**");
-        eb.addField("Type", composeField(existingJep.getJepType().name(), jep.getJepType().name()),
-                true);
-        eb.addField("Status", composeField(existingJep.getStatus().name(), jep.getStatus().name()),
-                true);
-        eb.addBlankField(true);
-        eb.addField("Java Release", composeField(existingJep.getRelease(), jep.getRelease()), true);
-        eb.addField("JDK Component", composeField(existingJep.getComponent(), jep.getComponent()),
-                true);
-        eb.addBlankField(true);
-        eb.addField("URL", jep.getUrl(), false);
-        eb.setColor(EMBED_COLOR);
+        buildJepEmbed(eb, jep, "UPDATED");
+        eb.addBlankField(false);
+        eb.addField("Changes", getChanges(existingJep, jep), false);
         Messenger.send(channel, eb.build());
     }
 
-    private void sendEmbed(Jep jep) {
+    private void sendNewEmbed(Jep jep) {
         TextChannel channel = jda.getTextChannelsByName("java_updates", true).get(0);
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("**NEW " + jep.getId() + ": " + jep.getTitle() + "**");
+        buildJepEmbed(eb, jep, "NEW");
+        Messenger.send(channel, eb.build());
+    }
+
+    private void buildJepEmbed(EmbedBuilder eb, Jep jep, String type) {
+        eb.setTitle("**" + type + " " + jep.getId() + ": " + jep.getTitle() + "**");
         eb.addField("Type", jep.getJepType().name(), true);
         eb.addField("Status", jep.getStatus().name(), true);
         eb.addBlankField(true);
@@ -109,19 +111,27 @@ public class JepScraper implements Runnable {
         eb.addBlankField(true);
         eb.addField("URL", jep.getUrl(), false);
         eb.setColor(EMBED_COLOR);
-        Messenger.send(channel, eb.build());
     }
 
-    private String composeField(String existingText, String newText) {
-        if (existingText.equals(newText)) {
-            return newText;
-        } else {
-            return existingText + "->" + newText;
+    private String getChanges(Jep existingJep, Jep jep) {
+        StringBuilder changes = new StringBuilder();
+        if (!existingJep.getJepType().equals(jep.getJepType())) {
+            changes.append(existingJep.getJepType().name()).append(" -> ")
+                    .append(jep.getJepType().name()).append("\n");
         }
-    }
-
-    private void insertJep(Jep jep) {
-        insertJeps(List.of(jep));
+        if (!existingJep.getStatus().equals(jep.getStatus())) {
+            changes.append(existingJep.getStatus().name()).append(" -> ")
+                    .append(jep.getStatus().name()).append("\n");
+        }
+        if (!existingJep.getRelease().equals(jep.getRelease())) {
+            changes.append(existingJep.getRelease()).append(" -> ").append(jep.getRelease())
+                    .append("\n");
+        }
+        if (!existingJep.getComponent().equals(jep.getComponent())) {
+            changes.append(existingJep.getComponent()).append(" -> ").append(jep.getComponent())
+                    .append("\n");
+        }
+        return changes.toString();
     }
 
     private void insertJeps(List<Jep> jeps) {
@@ -129,7 +139,7 @@ public class JepScraper implements Runnable {
         List<JepsRecord> jepRecords = jeps.stream().map(Jep::toRecord).collect(Collectors.toList());
         dsl.batchInsert(jepRecords).execute();
         for (Jep jep : jeps) {
-            sendEmbed(jep);
+            sendNewEmbed(jep);
         }
     }
 
@@ -139,7 +149,7 @@ public class JepScraper implements Runnable {
                 .set(JEPS.JEP_TYPE, jep.getJepType().name()).set(JEPS.COMPONENT, jep.getComponent())
                 .set(JEPS.RELEASE, jep.getRelease()).set(JEPS.TITLE, jep.getTitle())
                 .where(JEPS.ID.eq(jep.getId())).execute();
-        sendEmbed(existingJep, jep);
+        sendUpdatedEmbed(existingJep, jep);
     }
 
     private List<Jep> getSiteJeps() throws IOException {
@@ -159,7 +169,7 @@ public class JepScraper implements Runnable {
 
     private List<Jep> getDbJeps() {
         DSLContext dsl = JooqConn.getJooqContext();
-        List<Jeps> dbJeps = dsl.selectFrom(JEPS).fetchInto(Jeps.class);
+        List<Jeps> dbJeps = dsl.selectFrom(JEPS).orderBy(JEPS.ID).fetchInto(Jeps.class);
         return dbJeps.stream().map(jep -> new Jep(jep)).collect(Collectors.toList());
     }
 
