@@ -28,6 +28,11 @@ public class EmbedMessage {
         this.fields = fields;
     }
 
+    /**
+     * Return an embed message from the fields created from the json input
+     * 
+     * @return a complete embed message
+     */
     public MessageEmbed build() {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(title);
