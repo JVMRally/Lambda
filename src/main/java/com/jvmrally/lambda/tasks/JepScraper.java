@@ -25,7 +25,9 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.awt.Color;
 
 /**
- * JepScraper
+ * JepScraper is task which is used to scrap JEP pages (https://openjdk.java.net/jeps/0) 
+ * for updates, add them (if they exist) to the database and post an update via Messenger.
+ *   
  */
 @Task(unit = TimeUnit.HOURS, frequency = 3)
 public class JepScraper implements Runnable {
@@ -58,7 +60,15 @@ public class JepScraper implements Runnable {
         }
     }
 
+    /**
+     * Searches trough list of existing jeps list for news and changes from scraped jeps list.
+     * Updates all existing Jeps if there are changes and adds all non existing jeps to list.
+     * 
+     * @param scrapedJeps
+     * @param existingJeps
+     */
     private void updateAndPostJeps(List<Jep> scrapedJeps, List<Jep> existingJeps) {
+
         List<Jep> newJeps = new ArrayList<>();
         for (Jep jep : scrapedJeps) {
             boolean jepFound = false;
@@ -79,6 +89,12 @@ public class JepScraper implements Runnable {
         insertJeps(newJeps);
     }
 
+    /**
+     * Builds new JepEmbed message for updated JEP and sends it via Messenger to appropriate channel.
+     * 
+     * @param existingJep
+     * @param jep
+     */
     private void sendUpdatedEmbed(Jep existingJep, Jep jep) {
         EmbedBuilder eb = new EmbedBuilder();
         buildJepEmbed(eb, jep, "UPDATED");
@@ -87,14 +103,25 @@ public class JepScraper implements Runnable {
         sendEmbed(eb);
     }
 
+    /**
+     * Builds new JepEmbed message for new JEP and sends it via Messenger to appropriate channel
+     * 
+     * @param jep
+     */
     private void sendNewEmbed(Jep jep) {
         EmbedBuilder eb = new EmbedBuilder();
         buildJepEmbed(eb, jep, "NEW");
         sendEmbed(eb);
     }
 
+    /**
+     * Used to send embed message via Messenger to "java_updates" channel
+     *  
+     * @param eb builder of the message
+     */
     private void sendEmbed(EmbedBuilder eb) {
-        TextChannel channel = jda.getTextChannelsByName("java_updates", true).get(0);
+        // TODO at least pull out constant for channel name
+        TextChannel channel = jda.getTextChannelsByName("java_updates", true).get(0); 
         Messenger.send(channel, eb.build());
     }
 
@@ -110,6 +137,15 @@ public class JepScraper implements Runnable {
         eb.setColor(EMBED_COLOR);
     }
 
+
+    /**
+     * 
+     * Builds string of changes between 2 Jep objects - new one and old one.
+     * 
+     * @param existingJep old one that has changes
+     * @param jep         one that carries wind of change
+     * @return string of changes
+     */
     private String getChanges(Jep existingJep, Jep jep) {
         StringBuilder changes = new StringBuilder();
         if (existingJep.getJepType() != jep.getJepType()) {
@@ -131,15 +167,26 @@ public class JepScraper implements Runnable {
         return changes.toString();
     }
 
+    /**
+     *  Currently does 2 jobs: 1. Inserting list of Jeps into the database
+     *                         2. Sending every inserted Jep to the appropriate channel via Messenger
+     * @param jeps
+     */
     private void insertJeps(List<Jep> jeps) {
         DSLContext dsl = JooqConn.getJooqContext();
         List<JepsRecord> jepRecords = jeps.stream().map(Jep::toRecord).collect(Collectors.toList());
         dsl.batchInsert(jepRecords).execute();
-        for (Jep jep : jeps) {
-            sendNewEmbed(jep);
-        }
+
+        jeps.forEach(this::sendNewEmbed);
     }
 
+    /**
+     * Currently does 2 jobs: 1. Updating JEP entity in the database
+     *                        2. Sending update message to the appropriate channel via Messenger 
+     * 
+     * @param existingJep Jep to be updated
+     * @param jep         One that carries the update
+     */
     private void updateJep(Jep existingJep, Jep jep) {
         DSLContext dsl = JooqConn.getJooqContext();
         dsl.update(JEPS).set(JEPS.JEP_STATUS, jep.getStatus().name())
@@ -149,6 +196,12 @@ public class JepScraper implements Runnable {
         sendUpdatedEmbed(existingJep, jep);
     }
 
+    /**
+     * Uses Jsoup to connect to JEP_URL in order to scrap html into com.jvmrally.lambda.jdk.Jep objects.
+     * 
+     * @return List of scrapped jeps
+     * @throws IOException caught by run() method if fails
+     */
     private List<Jep> getSiteJeps() throws IOException {
         Document doc = Jsoup.connect(JEP_URL).userAgent(USER_AGENT).get();
         Elements jepTables = doc.getElementsByClass("jeps");
@@ -164,6 +217,11 @@ public class JepScraper implements Runnable {
         return jeps;
     }
 
+    /**
+     * Queries the db for all Jeps contained and returns them in list of com.jvmrally.lambda.jdk.Jep objects. 
+     *  
+     * @return list of JEPs.
+     */
     private List<Jep> getDbJeps() {
         DSLContext dsl = JooqConn.getJooqContext();
         List<Jeps> dbJeps = dsl.selectFrom(JEPS).orderBy(JEPS.ID).fetchInto(Jeps.class);
