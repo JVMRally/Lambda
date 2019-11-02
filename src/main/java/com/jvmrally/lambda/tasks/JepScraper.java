@@ -61,7 +61,7 @@ public class JepScraper implements Runnable {
     }
 
     /**
-     * Searches trough list of existing jeps list for news and changes from scraped jeps list.
+     * Searches through list of existing jeps list for news and changes from scraped jeps list.
      * Updates all existing Jeps if there are changes and adds all non existing jeps to list.
      * 
      * @param scrapedJeps
@@ -197,7 +197,7 @@ public class JepScraper implements Runnable {
     }
 
     /**
-     * Uses Jsoup to connect to JEP_URL in order to scrap html into com.jvmrally.lambda.jdk.Jep objects.
+     * Uses Jsoup to connect to JEP_URL in order to scrape html into com.jvmrally.lambda.jdk.Jep objects.
      * 
      * @return List of scrapped jeps
      * @throws IOException caught by run() method if fails
