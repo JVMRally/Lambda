@@ -60,12 +60,10 @@ public class Mute implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Mute (");
-
-        sb.append(userid);
-        sb.append(", ").append(muteExpiry);
-
-        sb.append(")");
-        return sb.toString();
+        return new StringBuilder("Mute (")
+            .append(userid)
+            .append(", ")
+            .append(muteExpiry)
+            .append(")").toString();
     }
 }

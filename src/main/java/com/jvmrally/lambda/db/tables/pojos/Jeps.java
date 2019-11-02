@@ -120,17 +120,13 @@ public class Jeps implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Jeps (");
-
-        sb.append(id);
-        sb.append(", ").append(title);
-        sb.append(", ").append(jepType);
-        sb.append(", ").append(jepStatus);
-        sb.append(", ").append(release);
-        sb.append(", ").append(component);
-        sb.append(", ").append(jepUrl);
-
-        sb.append(")");
-        return sb.toString();
+        return new StringBuilder("Jeps (")
+                        .append(id)
+                        .append(", ").append(title)
+                        .append(", ").append(jepType)
+                        .append(", ").append(jepStatus)
+                        .append(", ").append(release)
+                        .append(", ").append(component)
+                        .append(", ").append(jepUrl).toString();
     }
 }

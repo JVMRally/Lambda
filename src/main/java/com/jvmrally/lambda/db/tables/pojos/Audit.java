@@ -111,16 +111,12 @@ public class Audit implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Audit (");
-
-        sb.append(id);
-        sb.append(", ").append(userId);
-        sb.append(", ").append(modAction);
-        sb.append(", ").append(targetUser);
-        sb.append(", ").append(reason);
-        sb.append(", ").append(created);
-
-        sb.append(")");
-        return sb.toString();
+        return new StringBuilder("Audit (")
+                            .append(id)
+                            .append(", ").append(userId)
+                            .append(", ").append(modAction)
+                            .append(", ").append(targetUser)
+                            .append(", ").append(reason)
+                            .append(", ").append(created).toString();
     }
 }

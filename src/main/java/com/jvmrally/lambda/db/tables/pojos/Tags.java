@@ -85,14 +85,14 @@ public class Tags implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Tags (");
-
-        sb.append(id);
-        sb.append(", ").append(tagname);
-        sb.append(", ").append(content);
-        sb.append(", ").append(updatedAt);
-
-        sb.append(")");
-        return sb.toString();
+        return new StringBuilder("Tags (")
+                        .append(id)
+                        .append(", ")
+                        .append(tagname)
+                        .append(", ")
+                        .append(content)
+                        .append(", ")
+                        .append(updatedAt)
+                        .append(")").toString();
     }
 }
