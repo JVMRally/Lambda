@@ -43,17 +43,18 @@ public class SpamListener extends ListenerAdapter {
      * @return the message embed
      */
     private MessageEmbed getWarning() {
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("**Warning**");
-        eb.setColor(Color.RED);
-        eb.setDescription("Your last message was deleted by our spam filter.");
-        eb.addField("Invites", "We don't allow advertising. Don't post invite links.", false);
-        eb.addField("Channel Mentions", "Don't spam channel mentions in messages.", false);
-        eb.addField("User Mentions", "Don't spam user mentions in messages.", false);
-        eb.addField("Attachments",
-                "We only allow images and videos as attachments. If you're trying to post some code, please use a code sharing site and post the link.",
-                false);
-        return eb.build();
+
+        return new EmbedBuilder()
+                    .setTitle("**Warning**")
+                    .setColor(Color.RED)
+                    .setDescription("Your last message was deleted by our spam filter.")
+                    .addField("Invites", "We don't allow advertising. Don't post invite links.", false)
+                    .addField("Channel Mentions", "Don't spam channel mentions in messages.", false)
+                    .addField("User Mentions", "Don't spam user mentions in messages.", false)
+                    .addField("Attachments",
+                            "We only allow images and videos as attachments. If you're trying to post some code, please use a code sharing site and post the link.",
+                            false)
+                            .build();
     }
 
     /**
@@ -63,13 +64,8 @@ public class SpamListener extends ListenerAdapter {
      * @param predicates the predicates to test against
      * @return true if a message evaluates truthfully against one of the predicates
      */
-    private boolean testMessage(Message message, List<Predicate<Message>> predicates) {
-        for (var predicate : predicates) {
-            if (predicate.test(message)) {
-                return true;
-            }
-        }
-        return false;
+    private boolean testMessage(final Message message, final List<Predicate<Message>> predicates) {
+        return predicates.stream().anyMatch(e-> e.test(message));
     }
 
     /**
