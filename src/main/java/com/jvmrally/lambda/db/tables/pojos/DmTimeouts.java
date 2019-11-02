@@ -60,12 +60,10 @@ public class DmTimeouts implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("DmTimeouts (");
-
-        sb.append(userid);
-        sb.append(", ").append(lastMessageTime);
-
-        sb.append(")");
-        return sb.toString();
+        return new StringBuilder("DmTimeouts (")
+                    .append(userid)
+                    .append(", ")
+                    .append(lastMessageTime)
+                    .append(")").toString();
     }
 }
