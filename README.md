@@ -17,4 +17,4 @@ LAMBDA_DB_DRIVER = org.postgresql.Driver
 
 ## Contributing
 
-See [the contributing guide](contributing)
+See [the contributing guide](CONTRIBUTING.md)
