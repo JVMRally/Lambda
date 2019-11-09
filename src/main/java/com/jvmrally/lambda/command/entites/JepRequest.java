@@ -6,7 +6,7 @@ import disparse.parser.reflection.ParsedEntity;
 @ParsedEntity
 public class JepRequest {
 
-    @Flag(longName = "jepId", description = "ID of the JEP")
+    @Flag(longName = "id", description = "ID of the JEP")
     private Integer jepId = -1;
 
     @Flag(shortName = 's', longName = "search", description = "Searches JEP list by title")

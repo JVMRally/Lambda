@@ -51,7 +51,7 @@ public class JepCommand {
 
         // add status filter
         if(!request.getStatusName().isEmpty()){
-            result = result.and(JEPS.JEP_STATUS.equal(request.getStatusName()));
+            result = result.and(JEPS.JEP_STATUS.equal(request.getStatusName().toUpperCase()));
         }
 
         // add release filter
@@ -61,7 +61,7 @@ public class JepCommand {
 
         // add type filter
         if(!request.getType().isEmpty()){
-          result = result.and(JEPS.JEP_TYPE.equal(request.getType()));
+          result = result.and(JEPS.JEP_TYPE.equal(request.getType().toUpperCase()));
         }
 
         final List<Jep> filtered = JooqConn.getJooqContext()
@@ -78,7 +78,7 @@ public class JepCommand {
             return;
         }
 
-        // If filtered > 3 send only 3 and for rest use TITLE : ID pairs
+        //TODO: If filtered > 3 send only 3 and for rest use TITLE : ID pairs
 
         filtered.forEach( j -> sendFiltered(e.getChannel(), j));
     }
