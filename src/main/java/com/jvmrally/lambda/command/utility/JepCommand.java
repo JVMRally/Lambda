@@ -7,9 +7,10 @@ import com.jvmrally.lambda.db.tables.pojos.Jeps;
 import com.jvmrally.lambda.injectable.JooqConn;
 import com.jvmrally.lambda.jdk.Jep;
 import com.jvmrally.lambda.utility.messaging.Messenger;
-
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
+import org.postgresql.translation.messages_bg;
+
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import disparse.parser.reflection.CommandHandler;
@@ -37,7 +38,7 @@ public class JepCommand {
 
             Jep found = jep.isEmpty() ? null : new Jep(jep.get(0));
 
-            sendFiltered(e.getChannel(), found);
+            sendJepEmbed(e.getChannel(), found);
 
             return;
         }
@@ -74,16 +75,30 @@ public class JepCommand {
                         .collect(Collectors.toList());
 
         if(filtered.isEmpty()){
-            sendFiltered(e.getChannel(), null);
+            sendJepEmbed(e.getChannel(), null);
             return;
         }
 
         //TODO: If filtered > 3 send only 3 and for rest use TITLE : ID pairs
+        if(filtered.size() < 3){
+            filtered.forEach( j -> sendJepEmbed(e.getChannel(), j));
+        
+        }else{
 
-        filtered.forEach( j -> sendFiltered(e.getChannel(), j));
+            for(int i = 0; i < 3; i++){
+                sendJepEmbed(e.getChannel(), filtered.get(i));
+            }
+
+            EmbedBuilder eb = new EmbedBuilder().setTitle("**" + "Found " + filtered.size() + " results. Showing first 20." + "**");
+            for(int i = 3; i < filtered.size() && i < 20 ; i++){
+                eb.addField( filtered.get(i).getTitle() + ": ", "id:" + filtered.get(i).getId() , false);
+            }
+
+            Messenger.send(e.getChannel(), eb.build());
+        }
     }
 
-    private static void sendFiltered(final MessageChannel channel, final Jep jep){
+    private static void sendJepEmbed(final MessageChannel channel, final Jep jep){
 
         if(jep == null){
             Messenger.send(channel, "No JEP matching the criteria.");
@@ -92,6 +107,7 @@ public class JepCommand {
 
         MessageEmbed message = new EmbedBuilder()
                                 .setTitle("**" + jep.getJepType() + " " + jep.getId() + ": " + jep.getTitle() + "**")
+                
                                 .addField("Type", jep.getJepType().name(), true)
                                 .addField("Status", jep.getStatus().name(), true)
                                 .addBlankField(true)
