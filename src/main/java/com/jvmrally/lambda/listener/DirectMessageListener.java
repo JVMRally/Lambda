@@ -4,8 +4,10 @@ import static com.jvmrally.lambda.db.tables.DmTimeouts.DM_TIMEOUTS;
 import java.util.concurrent.TimeUnit;
 import com.jvmrally.lambda.db.tables.pojos.DmTimeouts;
 import com.jvmrally.lambda.injectable.JooqConn;
+import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import org.jooq.DSLContext;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -18,6 +20,13 @@ public class DirectMessageListener extends ListenerAdapter {
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent e) {
         if (e.getAuthor().isBot()) {
+            return;
+        }
+        if (e.getMessage().getContentRaw().equalsIgnoreCase("ACK")) {
+            for (Guild guild : e.getJDA().getGuilds()) {
+                Util.removeRoleFromUser(guild, guild.getMember(e.getAuthor()), "warned");
+            }
+            logMessage(e);
             return;
         }
         long authorId = e.getAuthor().getIdLong();
