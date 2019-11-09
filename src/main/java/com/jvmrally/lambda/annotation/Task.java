@@ -15,4 +15,6 @@ public @interface Task {
     int frequency();
 
     TimeUnit unit();
+    
+    boolean delayStart() default false;
 }

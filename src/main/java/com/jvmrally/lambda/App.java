@@ -1,11 +1,13 @@
 package com.jvmrally.lambda;
 
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import javax.security.auth.login.LoginException;
 import com.jvmrally.lambda.annotation.Task;
 import com.jvmrally.lambda.config.JooqCodeGen;
+import com.jvmrally.lambda.tasks.DelayedTask;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.flywaydb.core.Flyway;
@@ -69,12 +71,16 @@ public class App {
             if (clazz.isAnnotationPresent(Task.class)) {
                 Task task = clazz.getAnnotation(Task.class);
                 try {
-                    scheduler
-                            .scheduleAtFixedRate(
-                                    (Runnable) Class.forName(clazz.getName())
-                                            .getConstructor(JDA.class).newInstance(jda),
-                                    0, task.frequency(), task.unit());
-                    logger.info("Registered {} Task", clazz.getName());
+                    long initialDelay = 0;
+                    Object taskObject = Class.forName(clazz.getName()).getConstructor(JDA.class)
+                            .newInstance(jda);
+                    if (DelayedTask.class.isAssignableFrom(clazz)) {
+                        Method getDelay = clazz.getMethod("getTaskDelay");
+                        initialDelay = (long) getDelay.invoke(taskObject);
+                    }
+                    scheduler.scheduleAtFixedRate((Runnable) taskObject, initialDelay,
+                            task.frequency(), task.unit());
+                    logger.info("Registered {} Task with delay {}", clazz.getName(), initialDelay);
                 } catch (ReflectiveOperationException e) {
                     logger.error("Error registering tasks", e);
                 }
