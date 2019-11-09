@@ -89,6 +89,14 @@ public class Util {
                 .filter(role -> role.getName().equalsIgnoreCase(targetRole)).count() == 1;
     }
 
+    public static void addRoleToUser(Guild guild, Member member, String role) {
+        getRole(guild, role).ifPresent(r -> guild.addRoleToMember(member, r).queue());
+    }
+
+    public static void removeRoleFromUser(Guild guild, Member member, String role) {
+        getRole(guild, role).ifPresent(r -> guild.removeRoleFromMember(member, r).queue());
+    }
+
     /**
      * Returns a single member from the mentioned members. If 0 or more than 1 member is mentioned,
      * returns an empty optional
