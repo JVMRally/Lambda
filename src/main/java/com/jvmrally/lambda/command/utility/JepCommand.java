@@ -79,23 +79,26 @@ public class JepCommand {
             return;
         }
 
-        //TODO: If filtered > 3 send only 3 and for rest use TITLE : ID pairs
-        if(filtered.size() < 3){
-            filtered.forEach( j -> sendJepEmbed(e.getChannel(), j));
-        
-        }else{
+        final int FULL_EMBED_LIMIT = 3; 
+        final int SHORT_MESSAGE_LIMIT = 20;
 
-            for(int i = 0; i < 3; i++){
-                sendJepEmbed(e.getChannel(), filtered.get(i));
-            }
-
-            EmbedBuilder eb = new EmbedBuilder().setTitle("**" + "Found " + filtered.size() + " results. Showing first 20." + "**");
-            for(int i = 3; i < filtered.size() && i < 20 ; i++){
-                eb.addField( filtered.get(i).getTitle() + ": ", "id:" + filtered.get(i).getId() , false);
-            }
-
-            Messenger.send(e.getChannel(), eb.build());
+        for(int i = 0; i < filtered.size() && i < FULL_EMBED_LIMIT; i++){
+            sendJepEmbed(e.getChannel(), filtered.get(i));
         }
+
+        EmbedBuilder eb = new EmbedBuilder();
+
+        if(filtered.size() == FULL_EMBED_LIMIT + 1 ){
+            eb.setTitle("**" + "Showing 1 more result." + "**");
+        }else if (filtered.size() > FULL_EMBED_LIMIT + 1 ){
+            eb.setTitle("**" + "There are " + (filtered.size() - 3) + " more results. You may want to narrow your search."  + " Showing up to 20." + "**");
+        }
+        
+        for(int i = FULL_EMBED_LIMIT; i < filtered.size() && i < FULL_EMBED_LIMIT + SHORT_MESSAGE_LIMIT ; i++){
+            eb.addField( filtered.get(i).getTitle() + ": ", "id:" + filtered.get(i).getId() , false);
+        }
+
+        Messenger.send(e.getChannel(), eb.build());
     }
 
     private static void sendJepEmbed(final MessageChannel channel, final Jep jep){
@@ -107,7 +110,6 @@ public class JepCommand {
 
         MessageEmbed message = new EmbedBuilder()
                                 .setTitle("**" + jep.getJepType() + " " + jep.getId() + ": " + jep.getTitle() + "**")
-                
                                 .addField("Type", jep.getJepType().name(), true)
                                 .addField("Status", jep.getStatus().name(), true)
                                 .addBlankField(true)
