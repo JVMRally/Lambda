@@ -24,7 +24,7 @@ public class JepCommand {
     private JepCommand() {
     }
 
-    @CommandHandler(commandName = "jep", description = "Details information about the bot.")
+    @CommandHandler(commandName = "jep", description = "Used to search JEPs.")
     public static void execute(final MessageReceivedEvent e, final JepRequest request) {
      
         // filter by id, return straight away if id present
@@ -79,22 +79,25 @@ public class JepCommand {
             return;
         }
 
+        // output results via Messenger
         final int FULL_EMBED_LIMIT = 3; 
-        final int SHORT_MESSAGE_LIMIT = 20;
+        final int SHORT_EMBED_LIMIT = 20;
 
+        // outputs "full" embed for first N jeps up to FULL_EMBED_LIMIT 
         for(int i = 0; i < filtered.size() && i < FULL_EMBED_LIMIT; i++){
             sendJepEmbed(e.getChannel(), filtered.get(i));
         }
 
+        // outputs jep  title and id for rest jeps up to SHORT_MESSAGE_LIMIT
         EmbedBuilder eb = new EmbedBuilder();
-
+        
         if(filtered.size() == FULL_EMBED_LIMIT + 1 ){
             eb.setTitle("**" + "Showing 1 more result." + "**");
         }else if (filtered.size() > FULL_EMBED_LIMIT + 1 ){
-            eb.setTitle("**" + "There are " + (filtered.size() - 3) + " more results. You may want to narrow your search."  + " Showing up to 20." + "**");
+            eb.setTitle("**" + "There are " + (filtered.size() - FULL_EMBED_LIMIT) + " more results. You may want to narrow your search."  + " Showing up to 20." + "**");
         }
         
-        for(int i = FULL_EMBED_LIMIT; i < filtered.size() && i < FULL_EMBED_LIMIT + SHORT_MESSAGE_LIMIT ; i++){
+        for(int i = FULL_EMBED_LIMIT; i < filtered.size() && i < FULL_EMBED_LIMIT + SHORT_EMBED_LIMIT; i++){
             eb.addField( filtered.get(i).getTitle() + ": ", "id:" + filtered.get(i).getId() , false);
         }
 
