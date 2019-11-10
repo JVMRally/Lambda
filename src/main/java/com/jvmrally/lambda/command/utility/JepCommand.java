@@ -9,8 +9,6 @@ import com.jvmrally.lambda.jdk.Jep;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
-import org.postgresql.translation.messages_bg;
-
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import disparse.parser.reflection.CommandHandler;
@@ -21,106 +19,115 @@ import static com.jvmrally.lambda.db.Tables.JEPS;
 
 public class JepCommand {
 
+    static final int FULL_EMBED_LIMIT = 3;
+    static final int SHORT_EMBED_LIMIT = 20;
+
     private JepCommand() {
     }
 
     @CommandHandler(commandName = "jep", description = "Used to search JEPs.")
     public static void execute(final MessageReceivedEvent e, final JepRequest request) {
-     
-        // filter by id, return straight away if id present
-        if(request.getJepId() != -1){
 
-            var jep = JooqConn.getJooqContext()
-                                        .select()
-                                        .from(JEPS)
-                                        .where(JEPS.ID.equal(request.getJepId()))
-                                        .fetchInto(Jeps.class);
+        final Condition result = buildFilteringCondition(request);
 
-            Jep found = jep.isEmpty() ? null : new Jep(jep.get(0));
+        final List<Jep> filtered = JooqConn.getJooqContext().select().from(JEPS).where(result)
+                .fetchInto(Jeps.class).stream().map(Jep::new).collect(Collectors.toList());
 
-            sendJepEmbed(e.getChannel(), found);
-
+        if (filtered.isEmpty()) {
+            Messenger.send(e.getChannel(), "No JEP matching the criteria.");
             return;
         }
 
+        sendJeps(e.getChannel(), filtered);
+    }
+
+    /**
+     * Builds JOOQ condition to filter out JEPs by parameters provided with flags. If id flag is set
+     * it will return condition straight away.
+     * 
+     * @param request
+     * @return
+     */
+    private static Condition buildFilteringCondition(final JepRequest request) {
         Condition result = DSL.trueCondition();
 
+        // id search filter
+        if (request.getJepId() != -1) {
+            return result.and(JEPS.ID.equal(request.getJepId()));
+        }
+
         // add title search filter
-        if (!request.getSearchParam().isEmpty()){
+        if (!request.getSearchParam().isEmpty()) {
             result = result.and(JEPS.TITLE.like("%" + request.getSearchParam() + "%"));
         }
 
         // add status filter
-        if(!request.getStatusName().isEmpty()){
+        if (!request.getStatusName().isEmpty()) {
             result = result.and(JEPS.JEP_STATUS.equal(request.getStatusName().toUpperCase()));
         }
 
         // add release filter
-        if(request.getTarget() != -1){
+        if (request.getTarget() != -1) {
             result = result.and(JEPS.RELEASE.contains(Integer.toString(request.getTarget())));
         }
 
         // add type filter
-        if(!request.getType().isEmpty()){
-          result = result.and(JEPS.JEP_TYPE.equal(request.getType().toUpperCase()));
+        if (!request.getType().isEmpty()) {
+            result = result.and(JEPS.JEP_TYPE.equal(request.getType().toUpperCase()));
         }
 
-        final List<Jep> filtered = JooqConn.getJooqContext()
-                        .select()
-                        .from(JEPS)
-                        .where(result)
-                        .fetchInto(Jeps.class)
-                        .stream()
-                        .map(Jep::new)
-                        .collect(Collectors.toList());
-
-        if(filtered.isEmpty()){
-            sendJepEmbed(e.getChannel(), null);
-            return;
-        }
-
-        // output results via Messenger
-        final int FULL_EMBED_LIMIT = 3; 
-        final int SHORT_EMBED_LIMIT = 20;
-
-        // outputs "full" embed for first N jeps up to FULL_EMBED_LIMIT 
-        for(int i = 0; i < filtered.size() && i < FULL_EMBED_LIMIT; i++){
-            sendJepEmbed(e.getChannel(), filtered.get(i));
-        }
-
-        // outputs jep  title and id for rest jeps up to SHORT_MESSAGE_LIMIT
-        EmbedBuilder eb = new EmbedBuilder();
-        
-        if(filtered.size() == FULL_EMBED_LIMIT + 1 ){
-            eb.setTitle("**" + "Showing 1 more result." + "**");
-        }else if (filtered.size() > FULL_EMBED_LIMIT + 1 ){
-            eb.setTitle("**" + "There are " + (filtered.size() - FULL_EMBED_LIMIT) + " more results. You may want to narrow your search."  + " Showing up to 20." + "**");
-        }
-        
-        for(int i = FULL_EMBED_LIMIT; i < filtered.size() && i < FULL_EMBED_LIMIT + SHORT_EMBED_LIMIT; i++){
-            eb.addField( filtered.get(i).getTitle() + ": ", "id:" + filtered.get(i).getId() , false);
-        }
-
-        Messenger.send(e.getChannel(), eb.build());
+        return result;
     }
 
-    private static void sendJepEmbed(final MessageChannel channel, final Jep jep){
+    /**
+     * Function which sends list of JEPs via Messenger. Outputs "full" embed for first N jeps up to
+     * FULL_EMBED_LIMIT. Outputs JEP title and id for rest jeps up to SHORT_MESSAGE_LIMIT.
+     * 
+     * @param channel
+     * @param jepList
+     */
+    private static void sendJeps(final MessageChannel channel, final List<Jep> jepList) {
 
-        if(jep == null){
-            Messenger.send(channel, "No JEP matching the criteria.");
+        for (int i = 0; i < jepList.size() && i < FULL_EMBED_LIMIT; i++) {
+            sendJepEmbed(channel, jepList.get(i));
+        }
+
+        if (jepList.size() <= FULL_EMBED_LIMIT) {
             return;
         }
 
+        EmbedBuilder eb = new EmbedBuilder();
+
+        if (jepList.size() == FULL_EMBED_LIMIT + 1) {
+            eb.setTitle("**" + "Showing 1 more result." + "**");
+        } else if (jepList.size() > FULL_EMBED_LIMIT + 1) {
+            eb.setTitle("** There are " + (jepList.size() - FULL_EMBED_LIMIT) + " more results."
+                    + "You may want to narrow your search. Showing up to 20.**");
+        }
+
+        for (int i = FULL_EMBED_LIMIT; i < jepList.size()
+                && i < FULL_EMBED_LIMIT + SHORT_EMBED_LIMIT; i++) {
+
+            eb.addField(jepList.get(i).getTitle() + ": ", "id:" + jepList.get(i).getId(), false);
+        }
+        Messenger.send(channel, eb.build());
+    }
+
+    /**
+     * Uses Messenger to send full description of JEP passed as argument.
+     * 
+     * @param channel
+     * @param jep
+     */
+    private static void sendJepEmbed(final MessageChannel channel, final Jep jep) {
+
         MessageEmbed message = new EmbedBuilder()
-                                .setTitle("**" + jep.getJepType() + " " + jep.getId() + ": " + jep.getTitle() + "**")
-                                .addField("Type", jep.getJepType().name(), true)
-                                .addField("Status", jep.getStatus().name(), true)
-                                .addBlankField(true)
-                                .addField("Java Release", jep.getRelease(), true)
-                                .addField("JDK Component", jep.getComponent(), true)
-                                .addBlankField(true)
-                                .addField("URL", jep.getUrl(), false)
-                                .build();
+                .setTitle("**" + jep.getJepType() + " " + jep.getId() + ":" + jep.getTitle() + "**")
+                .addField("Type", jep.getJepType().name(), true)
+                .addField("Status", jep.getStatus().name(), true).addBlankField(true)
+                .addField("Java Release", jep.getRelease(), true)
+                .addField("JDK Component", jep.getComponent(), true).addBlankField(true)
+                .addField("URL", jep.getUrl(), false).build();
 
         Messenger.send(channel, message);
     }
