@@ -32,12 +32,17 @@ public class Ban {
             roles = "admin")
     public static void execute(DSLContext dsl, Auditor auditor, BanRequest req,
             MessageReceivedEvent e) {
-        Util.getMentionedMember(e).ifPresentOrElse(member -> {
-            banUser(dsl, member, req);
-            auditor.log(AuditAction.WARNED, e.getAuthor().getIdLong(), member.getIdLong(),
-                    req.getReason());
-        }, () -> Messenger.send(e.getChannel(), "Must provide a user"));
+        Util.getMentionedMember(e).ifPresentOrElse(
+                member -> executeBan(dsl, auditor, req, e, member),
+                () -> Messenger.send(e.getChannel(), "Must provide a user"));
     }
+
+    private static void executeBan(DSLContext dsl, Auditor auditor, BanRequest req,
+            MessageReceivedEvent e, Member member) {
+        banUser(dsl, member, req);
+        logBan(dsl, auditor, req, e, member);
+    }
+
 
     /**
      * If the clear flag is true, will delete the last 7 days of messages from the target user
@@ -49,6 +54,12 @@ public class Ban {
     public static void banUser(DSLContext dsl, Member member, BanRequest req) {
         int deleteDays = req.shouldClear() ? DELETE_DAYS : 0;
         member.ban(deleteDays, req.getReason()).queue();
+    }
+
+    private static void logBan(DSLContext dsl, Auditor auditor, BanRequest req,
+            MessageReceivedEvent e, Member member) {
         dsl.insertInto(BAN).values(member.getIdLong(), req.getExpiry()).execute();
+        auditor.log(AuditAction.WARNED, e.getAuthor().getIdLong(), member.getIdLong(),
+                req.getReason());
     }
 }
