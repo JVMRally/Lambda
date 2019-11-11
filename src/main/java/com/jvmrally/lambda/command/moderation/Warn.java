@@ -42,7 +42,7 @@ public final class Warn {
     }
 
     private static String buildWarning(int warnings, String reason) {
-        return "**Warning #" + warnings + "**\n"
+        return "**Warning #" + warnings + 1 + "**\n"
                 + "You have been warned by a member of staff. Please read our rules for guidelines of how you should behave.\n "
                 + "You have been warned for the following reason: " + reason + "\n\n"
                 + "To ensure you have received and understood this, you have been automatically muted. Respond with `ACK` and you will be unmuted.";

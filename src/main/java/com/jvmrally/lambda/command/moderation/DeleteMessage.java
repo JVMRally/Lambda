@@ -58,13 +58,17 @@ public class DeleteMessage {
      * @param limit   the maximum number of messages to delete
      */
     private static void deleteMessages(TextChannel channel, Member member, int limit) {
-        List<Message> messages = channel.getIterableHistory().stream().limit(HISTORY_LIMIT)
-                .filter(isMemberEqualToAuthor(member)).limit(limit).collect(Collectors.toList());
+        List<Message> messages = getMessageHistory(channel, member, limit);
         logger.info("Deleting {} messages in channel {} by user {}", messages.size(),
                 channel.getName(), member.getUser().getName());
         for (Message message : messages) {
             message.delete().queue();
         }
+    }
+
+    private static List<Message> getMessageHistory(TextChannel channel, Member member, int limit) {
+        return channel.getIterableHistory().stream().limit(HISTORY_LIMIT)
+                .filter(isMemberEqualToAuthor(member)).limit(limit).collect(Collectors.toList());
     }
 
     /**
