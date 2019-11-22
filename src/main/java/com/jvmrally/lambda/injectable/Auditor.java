@@ -18,6 +18,10 @@ public class Auditor {
         return new Auditor();
     }
 
+    public Auditor(DSLContext dsl) {
+        this.dsl = dsl;
+    }
+
     private Auditor() {
         this.dsl = JooqConn.getJooqContext();
     }

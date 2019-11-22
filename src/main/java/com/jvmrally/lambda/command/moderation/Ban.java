@@ -1,9 +1,9 @@
 package com.jvmrally.lambda.command.moderation;
 
 import static com.jvmrally.lambda.db.tables.Ban.BAN;
+import com.jvmrally.lambda.command.AuditedPersistenceAwareCommand;
 import com.jvmrally.lambda.command.entites.BanRequest;
 import com.jvmrally.lambda.db.enums.AuditAction;
-import com.jvmrally.lambda.injectable.Auditor;
 import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import org.jooq.DSLContext;
@@ -14,11 +14,14 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 /**
  * Ban
  */
-public class Ban {
+public class Ban extends AuditedPersistenceAwareCommand {
 
     private static final int DELETE_DAYS = 7;
+    private final BanRequest req;
 
-    private Ban() {
+    private Ban(MessageReceivedEvent e, DSLContext dsl, BanRequest req) {
+        super(e, dsl);
+        this.req = req;
     }
 
     /**
@@ -30,36 +33,33 @@ public class Ban {
     @CommandHandler(commandName = "ban",
             description = "Give an official warning to a user. The user will receive a direct message informing them of the reason.",
             roles = "admin")
-    public static void execute(DSLContext dsl, Auditor auditor, BanRequest req,
-            MessageReceivedEvent e) {
-        Util.getMentionedMember(e).ifPresentOrElse(
-                member -> executeBan(dsl, auditor, req, e, member),
-                () -> Messenger.send(e.getChannel(), "Must provide a user"));
+    public static void execute(MessageReceivedEvent e, DSLContext dsl, BanRequest req) {
+        Ban ban = new Ban(e, dsl, req);
+        Util.getMentionedMember(e).ifPresentOrElse(ban::executeBan, ban::sendMissingUserError);
     }
 
-    private static void executeBan(DSLContext dsl, Auditor auditor, BanRequest req,
-            MessageReceivedEvent e, Member member) {
-        banUser(dsl, member, req);
-        logBan(dsl, auditor, req, e, member);
+    private void sendMissingUserError() {
+        Messenger.send(e.getChannel(), "Must provide a user");
     }
 
+    private void executeBan(Member member) {
+        banUser(member);
+        logBan(member);
+    }
 
     /**
      * If the clear flag is true, will delete the last 7 days of messages from the target user
      * 
-     * @param dsl
      * @param member the target member
-     * @param req
      */
-    public static void banUser(DSLContext dsl, Member member, BanRequest req) {
+    public void banUser(Member member) {
         int deleteDays = req.shouldClear() ? DELETE_DAYS : 0;
         member.ban(deleteDays, req.getReason()).queue();
     }
 
-    private static void logBan(DSLContext dsl, Auditor auditor, BanRequest req,
-            MessageReceivedEvent e, Member member) {
+    private void logBan(Member member) {
         dsl.insertInto(BAN).values(member.getIdLong(), req.getExpiry()).execute();
-        auditor.log(AuditAction.WARNED, e.getAuthor().getIdLong(), member.getIdLong(),
+        audit.log(AuditAction.WARNED, e.getAuthor().getIdLong(), member.getIdLong(),
                 req.getReason());
     }
 }

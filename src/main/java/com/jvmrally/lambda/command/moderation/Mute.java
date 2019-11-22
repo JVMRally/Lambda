@@ -2,9 +2,10 @@ package com.jvmrally.lambda.command.moderation;
 
 import static com.jvmrally.lambda.db.tables.Mute.MUTE;
 import java.util.List;
+import javax.management.relation.RoleNotFoundException;
+import com.jvmrally.lambda.command.AuditedPersistenceAwareCommand;
 import com.jvmrally.lambda.command.entites.TimedReasonRequest;
 import com.jvmrally.lambda.db.enums.AuditAction;
-import com.jvmrally.lambda.injectable.Auditor;
 import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import org.jooq.DSLContext;
@@ -16,36 +17,32 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 /**
  * Mute
  */
-public class Mute {
+public class Mute extends AuditedPersistenceAwareCommand {
 
-    private Auditor audit;
-    private DSLContext dsl;
-    private TimedReasonRequest req;
-    private MessageReceivedEvent e;
+    private static final String MUTED_ROLE = "muted";
+    private final TimedReasonRequest request;
 
-    private Mute() {
-    }
-
-    private Mute(Auditor audit, DSLContext dsl, TimedReasonRequest req, MessageReceivedEvent e) {
-        this.audit = audit;
-        this.dsl = dsl;
-        this.req = req;
-        this.e = e;
+    private Mute(MessageReceivedEvent e, DSLContext dsl, TimedReasonRequest req) {
+        super(e, dsl);
+        this.request = req;
     }
 
     @CommandHandler(commandName = "mute",
             description = "Mute someone for the specified amount of time. Defaults to 1 hour.",
             roles = "admin")
-    public static void execute(Auditor audit, DSLContext dsl, TimedReasonRequest req,
-            MessageReceivedEvent e) {
-        Mute mute = new Mute(audit, dsl, req, e);
+    public static void execute(MessageReceivedEvent e, DSLContext dsl, TimedReasonRequest req) {
+        Mute mute = new Mute(e, dsl, req);
         Util.getRole(e.getGuild(), "muted").ifPresentOrElse(mute::muteMembers,
-                () -> Messenger.send(e.getChannel(), "Role does not exist."));
+                () -> new RoleNotFoundException(MUTED_ROLE));
     }
 
     private void muteMembers(Role role) {
         Util.getMentionedMembers(e).ifPresentOrElse(members -> filterMembers(role, members),
-                () -> Messenger.send(e.getChannel(), "Must mention at least one user"));
+                this::sendMissingUserError);
+    }
+
+    private void sendMissingUserError() {
+        Messenger.send(e.getChannel(), "Must mention at least one user");
     }
 
     private void filterMembers(Role role, List<Member> members) {
@@ -69,7 +66,7 @@ public class Mute {
     private void logMute(Member member) {
         saveMute(member);
         audit.log(AuditAction.MUTED, e.getAuthor().getIdLong(), member.getIdLong(),
-                req.getReason());
+                request.getReason());
     }
 
     /**
@@ -78,6 +75,6 @@ public class Mute {
      * @param member
      */
     private void saveMute(Member member) {
-        dsl.insertInto(MUTE).values(member.getIdLong(), req.getExpiry()).execute();
+        dsl.insertInto(MUTE).values(member.getIdLong(), request.getExpiry()).execute();
     }
 }

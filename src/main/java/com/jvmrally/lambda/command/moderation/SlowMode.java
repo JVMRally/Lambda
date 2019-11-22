@@ -1,5 +1,6 @@
 package com.jvmrally.lambda.command.moderation;
 
+import com.jvmrally.lambda.command.Command;
 import com.jvmrally.lambda.utility.Util;
 import disparse.parser.reflection.CommandHandler;
 import disparse.parser.reflection.Flag;
@@ -10,9 +11,13 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 /**
  * SlowMode
  */
-public class SlowMode {
+public class SlowMode extends Command {
 
-    private SlowMode() {
+    private final SlowModeRequest req;
+
+    private SlowMode(MessageReceivedEvent e, SlowModeRequest req) {
+        super(e);
+        this.req = req;
     }
 
     @ParsedEntity
@@ -35,22 +40,23 @@ public class SlowMode {
     @CommandHandler(commandName = "slow",
             description = "Modifies the slowmode of mentioned channels. If no channel is mentioned it defaults to the current channel.",
             roles = "admin")
-    public static void slow(SlowModeRequest req, MessageReceivedEvent e) {
-        if (Boolean.TRUE.equals(req.reset)) {
-            req.time = 0;
-        }
-        for (TextChannel channel : Util.getTargetChannels(e)) {
-            setSlowMode(channel, req.time);
-        }
+    public static void execute(MessageReceivedEvent e, SlowModeRequest req) {
+        new SlowMode(e, req).configureSlowMode();
+    }
+
+    private void configureSlowMode() {
+        int time = Boolean.TRUE.equals(req.reset) ? 0 : req.time;
+        setSlowMode(time);
     }
 
     /**
-     * Set the slowmode of a text channel
+     * Set the slowmode of targeted text channel
      * 
-     * @param channel the channel to modify
-     * @param time    the number of seconds to set. 0 will remove slow mode
+     * @param time the number of seconds to set. 0 will remove slow mode
      */
-    private static void setSlowMode(TextChannel channel, int time) {
-        channel.getManager().setSlowmode(time).queue();
+    private void setSlowMode(int time) {
+        for (TextChannel channel : Util.getTargetChannels(e)) {
+            channel.getManager().setSlowmode(time).queue();
+        }
     }
 }
