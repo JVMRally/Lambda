@@ -18,8 +18,8 @@ public class JepRequest {
     @Flag(longName = "type", description = "Returns list of all JEPs for specified type")
     private String type = "";
 
-    @Flag(longName = "release", description = "Returns list of all JEPs for specified target")
-    private Integer target = -1;
+    @Flag(longName = "release", description = "Returns list of all JEPs for specified java version")
+    private String release = "";
 
     public Integer getJepId() {
         return jepId;
@@ -30,14 +30,14 @@ public class JepRequest {
     }
 
     public String getStatusName() {
-        return statusName;
+        return statusName.toUpperCase();
     }
 
     public String getType() {
-        return type;
+        return type.toUpperCase();
     }
 
-    public Integer getTarget() {
-        return target;
+    public String getRelease() {
+        return release;
     }
 }

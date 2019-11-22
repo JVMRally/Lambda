@@ -1,21 +1,26 @@
 package com.jvmrally.lambda.command.moderation;
 
-import com.jvmrally.lambda.utility.Util;
+import static com.jvmrally.lambda.db.tables.Audit.AUDIT;
+import com.jvmrally.lambda.command.AuditedPersistenceAwareCommand;
 import com.jvmrally.lambda.command.entites.ReasonRequest;
 import com.jvmrally.lambda.db.enums.AuditAction;
-import com.jvmrally.lambda.injectable.Auditor;
+import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import org.jooq.DSLContext;
 import disparse.parser.reflection.CommandHandler;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import static com.jvmrally.lambda.db.tables.Audit.AUDIT;
 
 /**
  * Warn
  */
-public final class Warn {
+public final class Warn extends AuditedPersistenceAwareCommand {
 
-    private Warn() {
+    private final ReasonRequest req;
+
+    private Warn(MessageReceivedEvent e, DSLContext dsl, ReasonRequest req) {
+        super(e, dsl);
+        this.req = req;
     }
 
     /**
@@ -27,18 +32,44 @@ public final class Warn {
     @CommandHandler(commandName = "warn",
             description = "Give an official warning to a user. The user will receive a direct message informing them of the reason.",
             roles = "admin")
-    public static void warn(DSLContext dsl, Auditor auditor, ReasonRequest req,
-            MessageReceivedEvent e) {
-        Util.getMentionedMember(e).ifPresentOrElse(member -> {
-            int warnings = dsl.fetchCount(dsl.selectFrom(AUDIT).where(AUDIT.MOD_ACTION
-                    .eq(AuditAction.WARNED).and(AUDIT.TARGET_USER.eq(member.getIdLong()))));
-            String warning = buildWarning(warnings, req.getReason());
-            Messenger.send(member, warning);
-            auditor.log(AuditAction.WARNED, e.getAuthor().getIdLong(), member.getIdLong(),
-                    req.getReason());
-            Messenger.send(e.getChannel(), "Warning has been sent to the user and logged.");
-            Util.addRoleToUser(e.getGuild(), member, "warned");
-        }, () -> Messenger.send(e.getChannel(), "Must mention at least one user"));
+    public static void warn(MessageReceivedEvent e, DSLContext dsl, ReasonRequest req) {
+        Warn warn = new Warn(e, dsl, req);
+        Util.getMentionedMember(e).ifPresentOrElse(warn::warnMember, warn::userError);
+    }
+
+    private void warnMember(Member member) {
+        sendWarningMessage(member);
+        auditWarning(member);
+        sendWarningAcknowledgement();
+        addWarnedRoleToMember(member);
+    }
+
+    private void addWarnedRoleToMember(Member member) {
+        Util.addRoleToUser(e.getGuild(), member, "warned");
+    }
+
+    private void sendWarningAcknowledgement() {
+        Messenger.send(e.getChannel(), "Warning has been sent to the user and logged.");
+    }
+
+    private void auditWarning(Member member) {
+        audit.log(AuditAction.WARNED, e.getAuthor().getIdLong(), member.getIdLong(),
+                req.getReason());
+    }
+
+    private void sendWarningMessage(Member member) {
+        int warnings = getNumberOfCurrentWarnings(member);
+        String warning = buildWarning(warnings, req.getReason());
+        Messenger.send(member, warning);
+    }
+
+    private int getNumberOfCurrentWarnings(Member member) {
+        return dsl.fetchCount(dsl.selectFrom(AUDIT).where(AUDIT.MOD_ACTION.eq(AuditAction.WARNED)
+                .and(AUDIT.TARGET_USER.eq(member.getIdLong()))));
+    }
+
+    private void userError() {
+        Messenger.send(e.getChannel(), "Must mention at least one user");
     }
 
     private static String buildWarning(int warnings, String reason) {
