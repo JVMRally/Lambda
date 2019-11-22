@@ -17,7 +17,7 @@
     <db.user>${env.LAMBDA_DB_USER}</db.user>
     <db.password>${env.LAMBDA_DB_PASSWORD}</db.password>
   
-    <java.version>11</java.version>
+    <java.version>13</java.version>
     <disparse.version>master-SNAPSHOT</disparse.version>
     <jda.version>4.BETA.0_33</jda.version>
     <log4j.version>2.12.0</log4j.version>
