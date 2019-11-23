@@ -16,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -39,7 +40,7 @@ public class WeeklyDiscussion implements Runnable, DelayedTask {
 
     @Override
     public void run() {
-        getChannel(DISCUSSION_CHANNEL).ifPresent(channel -> deleteDiscussion(channel));
+        getChannel(DISCUSSION_CHANNEL).ifPresent(this::deleteDiscussion);
         createNewDiscussion();
     }
 
@@ -49,12 +50,25 @@ public class WeeklyDiscussion implements Runnable, DelayedTask {
             var guild = guilds.get(0);
             var categories = guild.getCategoriesByName(CATEGORY, true);
             if (categories.size() == 1) {
-                var category = categories.get(0);
-                category.createTextChannel(DISCUSSION_CHANNEL).setTopic(getChannelTopic())
-                        .setSlowmode(5).queue();
-                logger.info("Channel created.");
+                createChannel(categories.get(0));
             }
         }
+    }
+
+    private void createChannel(Category category) {
+        var createdChannel = category.createTextChannel(DISCUSSION_CHANNEL)
+                .setTopic(getChannelTopic()).setSlowmode(5).complete();
+        sendInitialMessage(createdChannel);
+        logger.info("Channel created.");
+    }
+
+    private void sendInitialMessage(TextChannel channel) {
+        Messenger.send(channel,
+                "Here you can talk about anything that you're going to do for the upcoming week,"
+                        + " whether it's for work, a personal project, something for your studies,"
+                        + " or something else. We of course appreciate some people may not be"
+                        + " willing or able (nda's etc.) to go into too much detail regarding"
+                        + " their work so don't worry about keeping things vague.");
     }
 
     private String getChannelTopic() {
