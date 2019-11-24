@@ -1,6 +1,7 @@
 package com.jvmrally.lambda.listener;
 
 import static com.jvmrally.lambda.db.tables.DmTimeouts.DM_TIMEOUTS;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import com.jvmrally.lambda.db.tables.pojos.DmTimeouts;
 import com.jvmrally.lambda.injectable.JooqConn;
@@ -23,25 +24,44 @@ public class DirectMessageListener extends ListenerAdapter {
             return;
         }
         if (e.getMessage().getContentRaw().equalsIgnoreCase("ACK")) {
-            for (Guild guild : e.getJDA().getGuilds()) {
-                Util.removeRoleFromUser(guild, guild.getMember(e.getAuthor()), "warned");
-            }
-            logMessage(e);
+            handleWarningAcknowledgement(e);
             return;
         }
+        handleModmailMessage(e);
+    }
+
+    private void handleModmailMessage(PrivateMessageReceivedEvent e) {
         long authorId = e.getAuthor().getIdLong();
         long now = System.currentTimeMillis();
-        dsl.selectFrom(DM_TIMEOUTS).where(DM_TIMEOUTS.USERID.eq(authorId))
-                .fetchOptionalInto(DmTimeouts.class).ifPresentOrElse(timeout -> {
-                    updateTimeout(timeout, now);
-                    if (now - timeout.getLastMessageTime() > TimeUnit.HOURS.toMillis(2)) {
-                        sendAcknowledgement(e);
-                    }
-                }, () -> {
-                    insertTimeout(authorId, now);
-                    sendAcknowledgement(e);
-                });
+        getUserMessageTimeouts(authorId).ifPresentOrElse(
+                timeout -> updateResponseTimeout(e, now, timeout),
+                () -> insertNewResponseTimeout(e, authorId, now));
         logMessage(e);
+    }
+
+    private void insertNewResponseTimeout(PrivateMessageReceivedEvent e, long authorId, long now) {
+        insertTimeout(authorId, now);
+        sendAcknowledgement(e);
+    }
+
+    private Optional<DmTimeouts> getUserMessageTimeouts(long authorId) {
+        return dsl.selectFrom(DM_TIMEOUTS).where(DM_TIMEOUTS.USERID.eq(authorId))
+                .fetchOptionalInto(DmTimeouts.class);
+    }
+
+    private void handleWarningAcknowledgement(PrivateMessageReceivedEvent e) {
+        for (Guild guild : e.getJDA().getGuilds()) {
+            Util.removeRoleFromUser(guild, guild.getMember(e.getAuthor()), "warned");
+        }
+        logMessage(e);
+    }
+
+    private void updateResponseTimeout(PrivateMessageReceivedEvent e, long now,
+            DmTimeouts timeout) {
+        updateTimeout(timeout, now);
+        if (now - timeout.getLastMessageTime() > TimeUnit.HOURS.toMillis(24)) {
+            sendAcknowledgement(e);
+        }
     }
 
     /**
