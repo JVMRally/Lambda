@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Task
+ * Annotation to define a repeatable Task
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
