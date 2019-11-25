@@ -27,15 +27,31 @@ public class App {
     private static final String PREFIX = "!";
     private static final Logger logger = LogManager.getLogger(App.class);
 
+    private String[] args;
+    private JDA jda;
+
     public static void main(String[] args) throws LoginException, InterruptedException {
-        initDatabase(args);
-        JDA jda = addListeners(Dispatcher.init(new JDABuilder(System.getenv(TOKEN)), PREFIX));
-        jda.awaitReady();
-        jda.getPresence().setActivity(Activity.playing("DM to contact staff"));
-        registerScheduledTasks(jda);
+        App app = new App(args);
+        app.start();
     }
 
-    private static JDA addListeners(JDABuilder jdaBuilder) throws LoginException {
+    public App(String[] args) {
+        this.args = args;
+    }
+
+    private void start() throws LoginException, InterruptedException {
+        initDatabase();
+        initJDA();
+    }
+
+    private void initJDA() throws LoginException, InterruptedException {
+        jda = addListeners(Dispatcher.init(new JDABuilder(System.getenv(TOKEN)), PREFIX));
+        jda.awaitReady();
+        jda.getPresence().setActivity(Activity.playing("DM to contact staff"));
+        registerScheduledTasks();
+    }
+
+    private JDA addListeners(JDABuilder jdaBuilder) throws LoginException {
         var reflections = new Reflections("com.jvmrally.lambda.listener");
         Set<Class<? extends ListenerAdapter>> classes =
                 reflections.getSubTypesOf(ListenerAdapter.class);
@@ -63,7 +79,7 @@ public class App {
      * 
      * @param jda the jda instance
      */
-    private static void registerScheduledTasks(JDA jda) {
+    private void registerScheduledTasks() {
         var scheduler = Executors.newSingleThreadScheduledExecutor();
         var reflections = new Reflections("com.jvmrally.lambda.tasks");
         Set<Class<? extends Runnable>> classes = reflections.getSubTypesOf(Runnable.class);
@@ -95,7 +111,7 @@ public class App {
      * 
      * @param args command line args
      */
-    private static void initDatabase(String[] args) {
+    private void initDatabase() {
         String url = System.getenv("LAMBDA_DB_HOST");
         String user = System.getenv("LAMBDA_DB_USER");
         String password = System.getenv("LAMBDA_DB_PASSWORD");
