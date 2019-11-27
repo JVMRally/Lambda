@@ -10,7 +10,7 @@ public enum Status {
 
     ACTIVE("Active"), CLOSED("Closed / Delivered"), WITHDRAWN("Closed / Withdrawn"), CANDIDATE(
             "Candidate"), DRAFT("Draft"), TARGETED("Targeted"), PROPOSED_TO_TARGET(
-                    "Proposed to Target"), SUBMITTED("Submitted"), INTEGRATED("Integrated");
+                    "Proposed to Target"), SUBMITTED("Submitted"), INTEGRATED("Integrated"), COMPLETED("Completed");
 
     private final String sourceName;
     private static final Map<String, Status> lookup = new HashMap<>();
