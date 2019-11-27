@@ -1,5 +1,6 @@
 package com.jvmrally.lambda.command.utility;
 
+import java.awt.Color;
 import java.util.List;
 import com.jvmrally.lambda.command.Command;
 import com.jvmrally.lambda.utility.Util;
@@ -48,7 +49,7 @@ public class Suggestion extends Command {
 
     private MessageEmbed buildEmbedMessage() {
         return new EmbedBuilder().setTitle(e.getAuthor().getName() + "'s suggestion")
-                .setDescription(message).build();
+                .setDescription(message).setColor(Color.WHITE).build();
     }
 
     private List<TextChannel> getApprovalChannels() {
