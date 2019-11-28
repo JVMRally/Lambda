@@ -27,7 +27,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 public class WeeklyDiscussion implements Runnable, DelayedTask {
 
     private static final Logger logger = LogManager.getLogger(WeeklyDiscussion.class);
-    private static final String DISCUSSION_CHANNEL = "weekly_discussion";
+    private static final String DISCUSSION_CHANNEL = "weekly_standup";
     private static final String CATEGORY = "general";
     private static final DayOfWeek TARGET_DAY = DayOfWeek.MONDAY;
     private static final LocalTime TARGET_TIME = LocalTime.of(9, 0);
