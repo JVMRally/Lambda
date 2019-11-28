@@ -1,6 +1,7 @@
 package com.jvmrally.lambda.listener;
 
 import com.jvmrally.lambda.utility.messaging.Messenger;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -30,7 +31,7 @@ public class SuggestionApproval extends ListenerAdapter {
                 postSuggestion();
                 deleteSuggestion();
             } else if (emoji.equals("👎")) {
-                deleteSuggestion();
+                denySuggestion();
             }
         }
     }
@@ -54,6 +55,21 @@ public class SuggestionApproval extends ListenerAdapter {
 
     private void deleteSuggestion() {
         e.getChannel().deleteMessageById(e.getMessageId()).queue();
+    }
+
+    private void denySuggestion() {
+        Message message = e.getChannel().retrieveMessageById(e.getMessageId()).complete();
+        var embeds = message.getEmbeds();
+        for (MessageEmbed embed : embeds) {
+            editEmbed(message, embed);
+        }
+    }
+
+    private void editEmbed(Message message, MessageEmbed embed) {
+        MessageEmbed newEmbed = new EmbedBuilder().setTitle("DENIED: " + embed.getTitle())
+                .setDescription(embed.getDescription()).build();
+        message.editMessage(newEmbed).queue();
+        message.clearReactions().queue();
     }
 
     private boolean channelIsCorrect() {

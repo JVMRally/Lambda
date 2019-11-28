@@ -1,6 +1,7 @@
 package com.jvmrally.lambda.command.misc;
 
 import java.util.stream.Collectors;
+import com.jvmrally.lambda.command.Command;
 import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import disparse.parser.reflection.CommandHandler;
@@ -12,19 +13,31 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 /**
  * Whois
  */
-public class Whois {
+public class Whois extends Command {
 
-    private Whois() {
+    private Whois(MessageReceivedEvent e) {
+        super(e);
     }
 
     @CommandHandler(commandName = "whois", description = "Details information about a user")
     public static void execute(MessageReceivedEvent e) {
-        Util.getMentionedMember(e).ifPresentOrElse(
-                member -> Messenger.send(e.getChannel(), prepareWhoisEmbed(member).build()),
-                () -> Messenger.send(e.getChannel(), "Must provide a user"));
+        new Whois(e).execute();
     }
 
-    private static EmbedBuilder prepareWhoisEmbed(Member member) {
+    private void execute() {
+        Util.getMentionedMember(e).ifPresentOrElse(this::sendWhoisEmbed,
+                this::sendMissingUserError);
+    }
+
+    private void sendWhoisEmbed(Member member) {
+        Messenger.send(e.getChannel(), prepareWhoisEmbed(member).build());
+    }
+
+    private void sendMissingUserError() {
+        Messenger.send(e.getChannel(), "Must provide a user");
+    }
+
+    private EmbedBuilder prepareWhoisEmbed(Member member) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("**" + member.getUser().getName() + "**");
         eb.setColor(member.getColor());
