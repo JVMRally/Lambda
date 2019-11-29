@@ -1,6 +1,5 @@
 package com.jvmrally.lambda.tasks;
 
-import java.awt.Color;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -17,16 +16,17 @@ import org.apache.logging.log4j.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Category;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /**
- * WeeklyDiscussion
+ * WeeklyStandup
  */
 @Task(unit = TimeUnit.SECONDS, frequency = 604_800, delayStart = true)
-public class WeeklyDiscussion implements Runnable, DelayedTask {
+public class WeeklyStandup implements Runnable, DelayedTask {
 
-    private static final Logger logger = LogManager.getLogger(WeeklyDiscussion.class);
+    private static final Logger logger = LogManager.getLogger(WeeklyStandup.class);
     private static final String DISCUSSION_CHANNEL = "weekly_standup";
     private static final String CATEGORY = "general";
     private static final DayOfWeek TARGET_DAY = DayOfWeek.MONDAY;
@@ -34,24 +34,24 @@ public class WeeklyDiscussion implements Runnable, DelayedTask {
 
     private final JDA jda;
 
-    public WeeklyDiscussion(JDA jda) {
+    public WeeklyStandup(JDA jda) {
         this.jda = jda;
     }
 
     @Override
     public void run() {
-        getChannel(DISCUSSION_CHANNEL).ifPresent(this::deleteDiscussion);
-        createNewDiscussion();
+        getChannel(DISCUSSION_CHANNEL).ifPresentOrElse(this::updateDiscussion,
+                this::createNewDiscussion);
     }
 
     private void createNewDiscussion() {
         var guilds = jda.getGuilds();
-        if (guilds.size() == 1) {
-            var guild = guilds.get(0);
+        for (Guild guild : guilds) {
             var categories = guild.getCategoriesByName(CATEGORY, true);
             if (categories.size() == 1) {
                 createChannel(categories.get(0));
             }
+
         }
     }
 
@@ -64,32 +64,30 @@ public class WeeklyDiscussion implements Runnable, DelayedTask {
 
     private void sendInitialMessage(TextChannel channel) {
         Messenger.send(channel,
-                "Here you can talk about anything that you're going to do for the upcoming week,"
-                        + " whether it's for work, a personal project, something for your studies,"
-                        + " or something else. We of course appreciate some people may not be"
-                        + " willing or able (nda's etc.) to go into too much detail regarding"
-                        + " their work so don't worry about keeping things vague.");
+                "It's a new week! \n\nHere you can talk about anything that you're going to do"
+                        + " for the upcoming week, whether it's for work, a personal project,"
+                        + " something for your studies, or something else.\nWe of course"
+                        + " appreciate some people may not be willing or able (nda's etc.)"
+                        + " to go into too much detail regarding their work so don't worry"
+                        + " about keeping things vague.");
     }
 
     private String getChannelTopic() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
-        sb.append(" - Language agnostic open discussion on what you're working on this week!");
-        return sb.toString();
+        return "Language agnostic open discussion on what you're working on this week!";
     }
 
-    private void deleteDiscussion(TextChannel channel) {
-        getChannel("archive").ifPresent(archive -> {
-            for (Message message : channel.getIterableHistory()) {
-                EmbedBuilder eb = new EmbedBuilder();
-                eb.setTitle("**" + message.getAuthor().getName() + "'s message**");
-                eb.setDescription(message.getContentRaw());
-                eb.setColor(Color.WHITE);
-                Messenger.send(archive, eb.build());
-            }
-        });
-        channel.delete().queue();
-        logger.info("Channel deleted.");
+    private void updateDiscussion(TextChannel channel) {
+        Messenger.send(channel, getUpdateEmbed());
+        sendInitialMessage(channel);
+    }
+
+    private MessageEmbed getUpdateEmbed() {
+        return new EmbedBuilder()
+                .setTitle("Weekly Standup - "
+                        + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
+                .setDescription(
+                        "Language agnostic open discussion on what you're working on this week!")
+                .build();
     }
 
     private Optional<TextChannel> getChannel(String channelName) {
