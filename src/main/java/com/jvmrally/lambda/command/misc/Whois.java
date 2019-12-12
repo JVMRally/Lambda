@@ -2,7 +2,6 @@ package com.jvmrally.lambda.command.misc;
 
 import java.util.stream.Collectors;
 import com.jvmrally.lambda.command.Command;
-import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -25,8 +24,7 @@ public class Whois extends Command {
     }
 
     private void execute() {
-        Util.getMentionedMember(e).ifPresentOrElse(this::sendWhoisEmbed,
-                this::sendMissingUserError);
+        getMentionedMember().ifPresentOrElse(this::sendWhoisEmbed, this::sendMissingUserError);
     }
 
     private void sendWhoisEmbed(Member member) {

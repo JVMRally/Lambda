@@ -3,7 +3,6 @@ package com.jvmrally.lambda.command.utility;
 import java.io.IOException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jvmrally.lambda.command.Command;
-import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.EmbedMessage;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import disparse.parser.reflection.CommandHandler;
@@ -44,7 +43,7 @@ public class Embed extends Command {
             e.printStackTrace();
             return;
         }
-        Util.getTargetChannel(e).ifPresentOrElse(channel -> Messenger.send(channel, embed.build()),
+        getTargetChannel().ifPresentOrElse(channel -> Messenger.send(channel, embed.build()),
                 this::sendMissingChannelError);
     }
 

@@ -34,7 +34,7 @@ public final class Warn extends AuditedPersistenceAwareCommand {
             roles = "admin")
     public static void warn(MessageReceivedEvent e, DSLContext dsl, ReasonRequest req) {
         Warn warn = new Warn(e, dsl, req);
-        Util.getMentionedMember(e).ifPresentOrElse(warn::warnMember, warn::userError);
+        warn.getMentionedMember().ifPresentOrElse(warn::warnMember, warn::userError);
     }
 
     private void warnMember(Member member) {

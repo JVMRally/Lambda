@@ -44,17 +44,15 @@ public class SpamListener extends ListenerAdapter {
      */
     private MessageEmbed getWarning() {
 
-        return new EmbedBuilder()
-                    .setTitle("**Warning**")
-                    .setColor(Color.RED)
-                    .setDescription("Your last message was deleted by our spam filter.")
-                    .addField("Invites", "We don't allow advertising. Don't post invite links.", false)
-                    .addField("Channel Mentions", "Don't spam channel mentions in messages.", false)
-                    .addField("User Mentions", "Don't spam user mentions in messages.", false)
-                    .addField("Attachments",
-                            "We only allow images and videos as attachments. If you're trying to post some code, please use a code sharing site and post the link.",
-                            false)
-                            .build();
+        return new EmbedBuilder().setTitle("**Warning**").setColor(Color.RED)
+                .setDescription("Your last message was deleted by our spam filter.")
+                .addField("Invites", "We don't allow advertising. Don't post invite links.", false)
+                .addField("Channel Mentions", "Don't spam channel mentions in messages.", false)
+                .addField("User Mentions", "Don't spam user mentions in messages.", false)
+                .addField("Attachments",
+                        "We only allow images and videos as attachments. If you're trying to post some code, please use a code sharing site and post the link.",
+                        false)
+                .build();
     }
 
     /**
@@ -65,7 +63,7 @@ public class SpamListener extends ListenerAdapter {
      * @return true if a message evaluates truthfully against one of the predicates
      */
     private boolean testMessage(final Message message, final List<Predicate<Message>> predicates) {
-        return predicates.stream().anyMatch(e-> e.test(message));
+        return predicates.stream().anyMatch(e -> e.test(message));
     }
 
     /**
