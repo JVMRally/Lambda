@@ -76,4 +76,15 @@ public class Messenger {
     public static Message sendReturning(MessageChannel channel, MessageEmbed message) {
         return channel.sendMessage(message).complete();
     }
+
+    /**
+     * Send a message to a channel and return the created message
+     * 
+     * @param channel the target channel
+     * @param message the message
+     * @return the created message
+     */
+    public static Message sendReturning(MessageChannel channel, Message message) {
+        return channel.sendMessage(message).complete();
+    }
 }
