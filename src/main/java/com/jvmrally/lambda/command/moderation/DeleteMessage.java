@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import com.jvmrally.lambda.command.Command;
-import com.jvmrally.lambda.utility.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import disparse.parser.reflection.CommandHandler;
@@ -52,7 +51,7 @@ public class DeleteMessage extends Command {
 
     private void deleteMessages() {
         for (Member member : e.getMessage().getMentionedMembers()) {
-            var channels = Util.getTargetChannels(e);
+            var channels = getTargetChannels();
             for (TextChannel channel : channels) {
                 deleteMessagesInChannel(channel, member, req.limit);
             }

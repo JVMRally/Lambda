@@ -37,7 +37,7 @@ public class Mute extends AuditedPersistenceAwareCommand {
     }
 
     private void muteMembers(Role role) {
-        Util.getMentionedMembers(e).ifPresentOrElse(members -> filterMembers(role, members),
+        getMentionedMembers().ifPresentOrElse(members -> filterMembers(role, members),
                 this::sendMissingUserError);
     }
 

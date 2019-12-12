@@ -35,7 +35,7 @@ public class UnMute extends PersistenceAwareCommand {
     }
 
     private void unmute() {
-        Util.getMentionedMembers(e).ifPresentOrElse(this::unmuteMembers, this::userError);
+        getMentionedMembers().ifPresentOrElse(this::unmuteMembers, this::userError);
     }
 
     private void unmuteMembers(List<Member> members) {

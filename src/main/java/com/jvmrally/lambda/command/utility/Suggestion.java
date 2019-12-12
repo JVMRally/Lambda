@@ -3,7 +3,6 @@ package com.jvmrally.lambda.command.utility;
 import java.awt.Color;
 import java.util.List;
 import com.jvmrally.lambda.command.Command;
-import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -21,7 +20,7 @@ public class Suggestion extends Command {
 
     private Suggestion(MessageReceivedEvent e, List<String> args) {
         super(e);
-        this.message = Util.rebuildArgsToString(args);
+        this.message = rebuildArgsToString(args);
     }
 
     @CommandHandler(commandName = "suggest", description = "Submit a suggestion for approval")

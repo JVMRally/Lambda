@@ -1,7 +1,6 @@
 package com.jvmrally.lambda.command.moderation;
 
 import com.jvmrally.lambda.command.Command;
-import com.jvmrally.lambda.utility.Util;
 import disparse.parser.reflection.CommandHandler;
 import disparse.parser.reflection.Flag;
 import disparse.parser.reflection.ParsedEntity;
@@ -55,7 +54,7 @@ public class SlowMode extends Command {
      * @param time the number of seconds to set. 0 will remove slow mode
      */
     private void setSlowMode(int time) {
-        for (TextChannel channel : Util.getTargetChannels(e)) {
+        for (TextChannel channel : getTargetChannels()) {
             channel.getManager().setSlowmode(time).queue();
         }
     }

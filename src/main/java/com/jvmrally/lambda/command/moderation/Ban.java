@@ -4,7 +4,6 @@ import static com.jvmrally.lambda.db.tables.Ban.BAN;
 import com.jvmrally.lambda.command.AuditedPersistenceAwareCommand;
 import com.jvmrally.lambda.command.entites.BanRequest;
 import com.jvmrally.lambda.db.enums.AuditAction;
-import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import org.jooq.DSLContext;
 import disparse.parser.reflection.CommandHandler;
@@ -35,7 +34,7 @@ public class Ban extends AuditedPersistenceAwareCommand {
             roles = "admin")
     public static void execute(MessageReceivedEvent e, DSLContext dsl, BanRequest req) {
         Ban ban = new Ban(e, dsl, req);
-        Util.getMentionedMember(e).ifPresentOrElse(ban::executeBan, ban::sendMissingUserError);
+        ban.getMentionedMember().ifPresentOrElse(ban::executeBan, ban::sendMissingUserError);
     }
 
     private void sendMissingUserError() {
