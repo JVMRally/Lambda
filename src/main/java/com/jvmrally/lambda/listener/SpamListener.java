@@ -77,8 +77,8 @@ public class SpamListener extends ListenerAdapter {
         messagePredicates.add(m -> m.getMentionedUsers().size() > 4);
         messagePredicates.add(m -> m.getMentionedChannels().size() > 4);
         messagePredicates.add(m -> !m.getInvites().isEmpty());
-        messagePredicates.add(m -> !m.getAttachments().stream()
-                .filter(attachment -> !attachment.getFileName().matches(ATTACHMENT_FILTER))
+        messagePredicates.add(m -> !m.getAttachments().stream().filter(
+                attachment -> !attachment.getFileName().toLowerCase().matches(ATTACHMENT_FILTER))
                 .collect(Collectors.toList()).isEmpty());
         return messagePredicates;
     }
