@@ -34,6 +34,7 @@ public class Giveaway extends Command {
             var channel = channels.get(0);
             var message = Messenger.sendReturning(channel, getGiveawayMessage());
             message.addReaction("🎉").queue();
+            selfDestruct();
         }
     }
 

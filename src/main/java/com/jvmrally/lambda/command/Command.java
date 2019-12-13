@@ -25,7 +25,7 @@ public class Command {
      * @param args the list of arguments to rebuild
      * @return a string
      */
-    public static String rebuildArgsToString(List<String> args) {
+    protected static String rebuildArgsToString(List<String> args) {
         StringJoiner sj = new StringJoiner(" ");
         for (String s : args) {
             sj.add(s);
@@ -40,7 +40,7 @@ public class Command {
      * @param e the message event
      * @return a list of TextChannels
      */
-    public List<TextChannel> getTargetChannels() {
+    protected List<TextChannel> getTargetChannels() {
         List<TextChannel> channels = e.getMessage().getMentionedChannels();
         if (channels.isEmpty()) {
             channels = List.of(e.getTextChannel());
@@ -54,7 +54,7 @@ public class Command {
      * @param e the message event
      * @return a list of TextChannels
      */
-    public Optional<TextChannel> getTargetChannel() {
+    protected Optional<TextChannel> getTargetChannel() {
         List<TextChannel> channels = e.getMessage().getMentionedChannels();
         if (channels.isEmpty() || channels.size() != 1) {
             return Optional.empty();
@@ -69,7 +69,7 @@ public class Command {
      * @param e the message event
      * @return the mentioned member
      */
-    public Optional<Member> getMentionedMember() {
+    protected Optional<Member> getMentionedMember() {
         List<Member> members = e.getMessage().getMentionedMembers();
         if (members.size() == 1) {
             return Optional.of(members.get(0));
@@ -84,7 +84,7 @@ public class Command {
      * @param e the message event
      * @return list of members
      */
-    public Optional<List<Member>> getMentionedMembers() {
+    protected Optional<List<Member>> getMentionedMembers() {
         List<Member> members = e.getMessage().getMentionedMembers();
         if (members.isEmpty()) {
             return Optional.empty();
@@ -92,4 +92,13 @@ public class Command {
             return Optional.of(members);
         }
     }
+
+    /**
+     * Delete original message containing command
+     */
+    protected void selfDestruct() {
+        e.getMessage().delete().queue();
+    }
+
+
 }
