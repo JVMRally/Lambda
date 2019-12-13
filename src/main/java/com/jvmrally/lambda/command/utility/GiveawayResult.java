@@ -49,10 +49,6 @@ public class GiveawayResult extends Command {
         }
     }
 
-    private void selfDestruct() {
-        e.getMessage().delete().queue();
-    }
-
     private void announceWinners(List<User> users, TextChannel channel) {
         StringBuilder sb = new StringBuilder();
         sb.append("Congratulations to");
