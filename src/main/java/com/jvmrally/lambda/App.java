@@ -3,11 +3,11 @@ package com.jvmrally.lambda;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.Executors;
 import javax.security.auth.login.LoginException;
 import com.jvmrally.lambda.annotation.Task;
 import com.jvmrally.lambda.config.JooqCodeGen;
 import com.jvmrally.lambda.tasks.DelayedTask;
+import com.jvmrally.lambda.tasks.TaskManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.flywaydb.core.Flyway;
@@ -49,6 +49,8 @@ public class App {
         jda.awaitReady();
         jda.getPresence().setActivity(Activity.playing("DM to contact staff"));
         registerScheduledTasks();
+
+
     }
 
     private JDA addListeners(JDABuilder jdaBuilder) throws LoginException {
@@ -80,12 +82,15 @@ public class App {
      * @param jda the jda instance
      */
     private void registerScheduledTasks() {
-        var scheduler = Executors.newSingleThreadScheduledExecutor();
+        TaskManager.MANAGER.setJDA(jda);
         var reflections = new Reflections("com.jvmrally.lambda.tasks");
         Set<Class<? extends Runnable>> classes = reflections.getSubTypesOf(Runnable.class);
         for (var clazz : classes) {
             if (clazz.isAnnotationPresent(Task.class)) {
                 Task task = clazz.getAnnotation(Task.class);
+                if (task.disabled()) {
+                    continue;
+                }
                 try {
                     long initialDelay = 0;
                     Object taskObject = Class.forName(clazz.getName()).getConstructor(JDA.class)
@@ -94,9 +99,7 @@ public class App {
                         Method getDelay = clazz.getMethod("getTaskDelay");
                         initialDelay = (long) getDelay.invoke(taskObject);
                     }
-                    scheduler.scheduleAtFixedRate((Runnable) taskObject, initialDelay,
-                            task.frequency(), task.unit());
-                    logger.info("Registered {} Task with delay {}", clazz.getName(), initialDelay);
+                    TaskManager.MANAGER.addTask(taskObject, initialDelay, task, clazz.getName());
                 } catch (ReflectiveOperationException e) {
                     logger.error("Error registering tasks", e);
                 }
