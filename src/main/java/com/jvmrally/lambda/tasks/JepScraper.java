@@ -29,7 +29,7 @@ import java.awt.Color;
  * updates, add them (if they exist) to the database and post an update via Messenger.
  * 
  */
-@Task(unit = TimeUnit.HOURS, frequency = 3)
+@Task(unit = TimeUnit.HOURS, frequency = 3, disabled = true)
 public class JepScraper implements Runnable {
 
     private static final Logger logger = LogManager.getLogger(JepScraper.class);
