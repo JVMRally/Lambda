@@ -40,4 +40,9 @@ public class JepRequest {
     public String getRelease() {
         return release;
     }
+
+    public boolean isEmptyRequest() {
+        throw new UnsupportedOperationException(
+                "Not implemented yet. Only there so no compile errors occur while writing tests.");
+    }
 }
