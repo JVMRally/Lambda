@@ -66,7 +66,7 @@ public class JepSearch extends PersistenceAwareCommand {
     }
 
     private void sendNoJepsFoundError() {
-        Messenger.send(e.getChannel(), "No JEPs matching the criteria.");
+        Messenger.send(e.getChannel(), "No JEPs matching the criteria: " + req.toHumanReadableString();
     }
 
     private void sendJeps(List<Jeps> jeps) {
@@ -81,12 +81,12 @@ public class JepSearch extends PersistenceAwareCommand {
 
     private void sendTooManyResultsMessage() {
         Messenger.send(e.getChannel(),
-                "More than " + SHORT_EMBED_LIMIT + " were found. Try limiting your query.");
+                "More than " + SHORT_EMBED_LIMIT + " were found for " + req.toHumanReadableString() + ". Try limiting your query.");
     }
 
     private void sendShortJepEmbed(List<Jeps> jeps) {
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("**" + jeps.size() + " results found." + "**");
+        eb.setTitle("**" + jeps.size() + " results found for " + req.toHumanReadableString() + "**");
         for (Jeps jep : jeps) {
             eb.addField(buildFieldTitle(jep), jep.getTitle(), false);
         }
