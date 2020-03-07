@@ -66,7 +66,7 @@ public class JepSearch extends PersistenceAwareCommand {
     }
 
     private void sendNoJepsFoundError() {
-        Messenger.send(e.getChannel(), "No JEPs matching the criteria: " + req.toHumanReadableString();
+        Messenger.send(e.getChannel(), "No JEPs matching the criteria: " + req.toHumanReadableString());
     }
 
     private void sendJeps(List<Jeps> jeps) {
