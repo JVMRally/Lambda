@@ -52,6 +52,42 @@ public class JepRequest {
     }
 
     public String toHumanReadableString() {
-        throw new UnsupportedOperationException("Not implemented yet. Only there so no compile errors occur while writing tests.");
+        final String FORMAT = "%s: '%s'";
+        final String DELIMITER = ", ";
+        var readableString = new StringBuilder();
+
+        if(!Objects.equals(jepId, -1)){
+            readableString.append(String.format(FORMAT, "id", getJepId()));
+        }
+
+        if(!searchParam.isEmpty()){
+            if(readableString.length() != 0){
+                readableString.append(DELIMITER);
+            }
+            readableString.append(String.format(FORMAT, "term", getSearchParam()));
+        }
+
+        if(!statusName.isEmpty() ){
+            if(readableString.length() != 0){
+                readableString.append(DELIMITER);
+            }
+            readableString.append(String.format(FORMAT, "status", getStatusName()));
+        }
+
+        if(!type.isEmpty() ){
+            if(readableString.length() != 0){
+                readableString.append(DELIMITER);
+            }
+            readableString.append(String.format(FORMAT, "type", getType()));
+        }
+
+        if(!release.isEmpty() ){
+            if(readableString.length() != 0){
+                readableString.append(DELIMITER);
+            }
+            readableString.append(String.format(FORMAT, "release", getRelease()));
+        }
+
+        return readableString.toString();
     }
 }
