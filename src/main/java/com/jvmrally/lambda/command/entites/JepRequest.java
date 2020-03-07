@@ -50,4 +50,8 @@ public class JepRequest {
             && type.isEmpty() 
             && release.isEmpty() ;
     }
+
+    public String toHumanReadableString() {
+        throw new UnsupportedOperationException("Not implemented yet. Only there so no compile errors occur while writing tests.");
+    }
 }
