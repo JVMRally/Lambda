@@ -16,11 +16,17 @@ public class ToHumanReadableStringTest {
     void testWithEmptyRequest() throws ReflectiveOperationException {
         var subject = JEP_REQUEST_BUILDER.build().toHumanReadableString();
         
-        assertFalse(subject.contains("id: '8240497'"));
-        assertFalse(subject.contains("term: 'exception'"));
-        assertFalse(subject.contains("status: 'DRAFT'"));
-        assertFalse(subject.contains("type: 'FEATURE'"));
-        assertFalse(subject.contains("release: '14'"));
+        assertFalse(subject.contains("id"));   
+        assertFalse(subject.contains("'8240497'"));    
+        assertFalse(subject.contains("'exception'"));
+        assertFalse(subject.contains("term"));
+        assertFalse(subject.contains("'DRAFT'"));
+        assertFalse(subject.contains("status:"));
+        assertFalse(subject.contains("'FEATURE'"));
+        assertFalse(subject.contains("type"));
+        assertFalse(subject.contains("'14'"));
+        assertFalse(subject.contains("release"));  
+
     }
 
     @Test
@@ -49,11 +55,15 @@ public class ToHumanReadableStringTest {
             .toHumanReadableString();
 
         assertTrue(subject.contains("id: '8240497'"));
-
-        assertFalse(subject.contains("term: 'exception'"));
-        assertFalse(subject.contains("status: 'DRAFT'"));
-        assertFalse(subject.contains("type: 'FEATURE'"));
-        assertFalse(subject.contains("release: '14'"));
+   
+        assertFalse(subject.contains("'exception'"));
+        assertFalse(subject.contains("term"));
+        assertFalse(subject.contains("'DRAFT'"));
+        assertFalse(subject.contains("status:"));
+        assertFalse(subject.contains("'FEATURE'"));
+        assertFalse(subject.contains("type"));
+        assertFalse(subject.contains("'14'"));
+        assertFalse(subject.contains("release"));  
     }
 
     @Test
@@ -65,10 +75,14 @@ public class ToHumanReadableStringTest {
 
         assertTrue(subject.contains("term: 'exception'"));
 
-        assertFalse(subject.contains("id: '8240497'"));
-        assertFalse(subject.contains("status: 'DRAFT'"));
-        assertFalse(subject.contains("type: 'FEATURE'"));
-        assertFalse(subject.contains("release: '14'"));
+        assertFalse(subject.contains("id"));   
+        assertFalse(subject.contains("'8240497'"));     
+        assertFalse(subject.contains("'DRAFT'"));
+        assertFalse(subject.contains("status:"));
+        assertFalse(subject.contains("'FEATURE'"));
+        assertFalse(subject.contains("type"));
+        assertFalse(subject.contains("'14'"));
+        assertFalse(subject.contains("release"));  
     }
 
     @Test
@@ -80,10 +94,14 @@ public class ToHumanReadableStringTest {
             
         assertTrue(subject.contains("status: 'DRAFT'"));
 
-        assertFalse(subject.contains("id: '8240497'"));
-        assertFalse(subject.contains("term: 'exception'"));
-        assertFalse(subject.contains("type: 'FEATURE'"));
-        assertFalse(subject.contains("release: '14'"));
+        assertFalse(subject.contains("id"));   
+        assertFalse(subject.contains("'8240497'"));     
+        assertFalse(subject.contains("'exception'"));
+        assertFalse(subject.contains("term"));
+        assertFalse(subject.contains("'FEATURE'"));
+        assertFalse(subject.contains("type"));
+        assertFalse(subject.contains("'14'"));
+        assertFalse(subject.contains("release"));  
     }
 
     @Test
@@ -95,10 +113,14 @@ public class ToHumanReadableStringTest {
             
         assertTrue(subject.contains("type: 'FEATURE'"));
 
-        assertFalse(subject.contains("id: '8240497'"));
-        assertFalse(subject.contains("term: 'exception'"));
-        assertFalse(subject.contains("status: 'DRAFT'"));
-        assertFalse(subject.contains("release: '14'"));
+        assertFalse(subject.contains("id"));   
+        assertFalse(subject.contains("'8240497'"));     
+        assertFalse(subject.contains("'exception'"));
+        assertFalse(subject.contains("term"));
+        assertFalse(subject.contains("'DRAFT'"));
+        assertFalse(subject.contains("status:"));
+        assertFalse(subject.contains("'14'"));
+        assertFalse(subject.contains("release"));  
     }
 
     @Test
@@ -110,10 +132,14 @@ public class ToHumanReadableStringTest {
             
         assertTrue(subject.contains("release: '14'"));
 
-        assertFalse(subject.contains("id: '8240497'"));
-        assertFalse(subject.contains("term: 'exception'"));
-        assertFalse(subject.contains("status: 'DRAFT'"));
-        assertFalse(subject.contains("type: 'FEATURE'"));
+        assertFalse(subject.contains("id"));   
+        assertFalse(subject.contains("'8240497'"));     
+        assertFalse(subject.contains("'exception'"));
+        assertFalse(subject.contains("term"));
+        assertFalse(subject.contains("'DRAFT'"));
+        assertFalse(subject.contains("status:"));
+        assertFalse(subject.contains("'FEATURE'"));
+        assertFalse(subject.contains("type"));
     }
 
     @Test
@@ -128,9 +154,11 @@ public class ToHumanReadableStringTest {
         assertTrue(subject.contains("id: '8240497'"));
         assertTrue(subject.contains("status: 'DRAFT'"));
         assertTrue(subject.contains("release: '14'"));
-
-        assertFalse(subject.contains("term: 'exception'"));
-        assertFalse(subject.contains("type: 'FEATURE'"));
+   
+        assertFalse(subject.contains("'exception'"));
+        assertFalse(subject.contains("term"));
+        assertFalse(subject.contains("'FEATURE'"));
+        assertFalse(subject.contains("type"));
     }
     
 }
