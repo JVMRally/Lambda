@@ -1,5 +1,7 @@
 package com.jvmrally.lambda.command.entites;
 
+import java.util.Objects;
+
 import disparse.parser.reflection.Flag;
 import disparse.parser.reflection.ParsedEntity;
 
@@ -42,7 +44,10 @@ public class JepRequest {
     }
 
     public boolean isEmptyRequest() {
-        throw new UnsupportedOperationException(
-                "Not implemented yet. Only there so no compile errors occur while writing tests.");
+        return Objects.equals(jepId, -1) 
+            && searchParam.isEmpty() 
+            && statusName.isEmpty() 
+            && type.isEmpty() 
+            && release.isEmpty() ;
     }
 }
