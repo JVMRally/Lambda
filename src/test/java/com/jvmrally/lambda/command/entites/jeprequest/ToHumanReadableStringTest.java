@@ -21,7 +21,7 @@ public class ToHumanReadableStringTest {
         assertFalse(subject.contains("'exception'"));
         assertFalse(subject.contains("term"));
         assertFalse(subject.contains("'DRAFT'"));
-        assertFalse(subject.contains("status:"));
+        assertFalse(subject.contains("status"));
         assertFalse(subject.contains("'FEATURE'"));
         assertFalse(subject.contains("type"));
         assertFalse(subject.contains("'14'"));

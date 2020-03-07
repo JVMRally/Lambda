@@ -23,6 +23,9 @@ public class JepRequest {
     @Flag(longName = "release", description = "Returns list of all JEPs for specified java version")
     private String release = "";
 
+    private final String DELIMITER = ", ";
+    private final String FORMAT = "%s: '%s'";
+
     public Integer getJepId() {
         return jepId;
     }
@@ -52,42 +55,28 @@ public class JepRequest {
     }
 
     public String toHumanReadableString() {
-        final String FORMAT = "%s: '%s'";
-        final String DELIMITER = ", ";
         var readableString = new StringBuilder();
 
         if(!Objects.equals(jepId, -1)){
             readableString.append(String.format(FORMAT, "id", getJepId()));
         }
 
-        if(!searchParam.isEmpty()){
-            if(readableString.length() != 0){
-                readableString.append(DELIMITER);
-            }
-            readableString.append(String.format(FORMAT, "term", getSearchParam()));
-        }
-
-        if(!statusName.isEmpty() ){
-            if(readableString.length() != 0){
-                readableString.append(DELIMITER);
-            }
-            readableString.append(String.format(FORMAT, "status", getStatusName()));
-        }
-
-        if(!type.isEmpty() ){
-            if(readableString.length() != 0){
-                readableString.append(DELIMITER);
-            }
-            readableString.append(String.format(FORMAT, "type", getType()));
-        }
-
-        if(!release.isEmpty() ){
-            if(readableString.length() != 0){
-                readableString.append(DELIMITER);
-            }
-            readableString.append(String.format(FORMAT, "release", getRelease()));
-        }
+        readableString.append(fieldToHumanReadableString("term", getSearchParam(), readableString.length() == 0));
+        readableString.append(fieldToHumanReadableString("status", getStatusName(), readableString.length() == 0));
+        readableString.append(fieldToHumanReadableString("type", getType(), readableString.length() == 0));
+        readableString.append(fieldToHumanReadableString("release", getRelease(), readableString.length() == 0));
 
         return readableString.toString();
+    }
+
+    private String fieldToHumanReadableString(String fieldName, String fieldValue, boolean delimit) {
+        var returnedString = new StringBuilder();
+        if(!fieldValue.isEmpty()){
+            if(delimit){
+                returnedString.append(DELIMITER);
+            }
+            return String.format(FORMAT, fieldName, fieldValue);
+        }
+        return returnedString.toString();
     }
 }
