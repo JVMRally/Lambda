@@ -75,7 +75,7 @@ public class JepRequest {
             if(delimit){
                 returnedString.append(DELIMITER);
             }
-            return String.format(FORMAT, fieldName, fieldValue);
+            returnedString.append(String.format(FORMAT, fieldName, fieldValue));
         }
         return returnedString.toString();
     }
