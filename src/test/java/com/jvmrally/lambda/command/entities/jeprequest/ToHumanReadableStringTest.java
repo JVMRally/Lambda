@@ -1,5 +1,6 @@
 package com.jvmrally.lambda.command.entities.jeprequest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -159,6 +160,38 @@ public class ToHumanReadableStringTest {
         assertFalse(subject.contains("term"));
         assertFalse(subject.contains("'FEATURE'"));
         assertFalse(subject.contains("type"));
+    }
+
+    @Test
+    void testCorrectCommaplacement() throws ReflectiveOperationException {
+        var subject = JEP_REQUEST_BUILDER
+            .jepId(8240497)
+            .statusName("draft")
+            .release("14")
+            .build()
+            .toHumanReadableString();
+
+        assertFalse(subject.trim().startsWith(","));
+        assertEquals(2, countCommas(subject));
+
+        subject = JEP_REQUEST_BUILDER
+            .release("14")
+            .build()
+            .toHumanReadableString();
+
+        
+        assertFalse(subject.trim().startsWith(","));
+        assertEquals(0, countCommas(subject));
+    }
+
+    private int countCommas(String input) {
+        int count = 0;
+        for(var c : input.toCharArray()) {
+            if(c == ',') {
+                count++;
+            }
+        }
+        return count;
     }
     
 }

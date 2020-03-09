@@ -61,10 +61,10 @@ public class JepRequest {
             readableString.append(String.format(FORMAT, "id", getJepId()));
         }
 
-        readableString.append(fieldToHumanReadableString("term", getSearchParam(), readableString.length() == 0));
-        readableString.append(fieldToHumanReadableString("status", getStatusName(), readableString.length() == 0));
-        readableString.append(fieldToHumanReadableString("type", getType(), readableString.length() == 0));
-        readableString.append(fieldToHumanReadableString("release", getRelease(), readableString.length() == 0));
+        readableString.append(fieldToHumanReadableString("term", getSearchParam(), readableString.length() != 0));
+        readableString.append(fieldToHumanReadableString("status", getStatusName(), readableString.length() != 0));
+        readableString.append(fieldToHumanReadableString("type", getType(), readableString.length() != 0));
+        readableString.append(fieldToHumanReadableString("release", getRelease(), readableString.length() != 0));
 
         return readableString.toString();
     }
