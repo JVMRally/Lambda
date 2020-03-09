@@ -2,7 +2,7 @@ package com.jvmrally.lambda.command.utility;
 
 import java.awt.Color;
 import com.jvmrally.lambda.command.Command;
-import com.jvmrally.lambda.command.entites.GiveawayRequest;
+import com.jvmrally.lambda.command.entities.GiveawayRequest;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.EmbedBuilder;

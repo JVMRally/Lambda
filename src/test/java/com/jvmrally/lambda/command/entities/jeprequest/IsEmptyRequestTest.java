@@ -1,4 +1,4 @@
-package com.jvmrally.lambda.command.entites.jeprequest;
+package com.jvmrally.lambda.command.entities.jeprequest;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

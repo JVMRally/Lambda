@@ -4,7 +4,7 @@ import static com.jvmrally.lambda.db.tables.Tags.TAGS;
 import java.util.List;
 import java.util.Optional;
 import com.jvmrally.lambda.command.PersistenceAwareCommand;
-import com.jvmrally.lambda.command.entites.TagRequest;
+import com.jvmrally.lambda.command.entities.TagRequest;
 import com.jvmrally.lambda.db.tables.pojos.Tags;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import org.jooq.DSLContext;

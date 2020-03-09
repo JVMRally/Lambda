@@ -4,7 +4,7 @@ import static com.jvmrally.lambda.db.tables.Mute.MUTE;
 import java.util.List;
 import javax.management.relation.RoleNotFoundException;
 import com.jvmrally.lambda.command.AuditedPersistenceAwareCommand;
-import com.jvmrally.lambda.command.entites.TimedReasonRequest;
+import com.jvmrally.lambda.command.entities.TimedReasonRequest;
 import com.jvmrally.lambda.db.enums.AuditAction;
 import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;

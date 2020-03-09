@@ -1,6 +1,6 @@
-package com.jvmrally.lambda.command.entites.jeprequest;
+package com.jvmrally.lambda.command.entities.jeprequest;
 
-import com.jvmrally.lambda.command.entites.JepRequest;
+import com.jvmrally.lambda.command.entities.JepRequest;
 
 /**
  * JepRequestFactory

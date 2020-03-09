@@ -2,7 +2,7 @@ package com.jvmrally.lambda.command.moderation;
 
 import static com.jvmrally.lambda.db.tables.Ban.BAN;
 import com.jvmrally.lambda.command.AuditedPersistenceAwareCommand;
-import com.jvmrally.lambda.command.entites.BanRequest;
+import com.jvmrally.lambda.command.entities.BanRequest;
 import com.jvmrally.lambda.db.enums.AuditAction;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import org.jooq.DSLContext;
