@@ -1,7 +1,7 @@
 package com.jvmrally.lambda.command.utility;
 
 import com.jvmrally.lambda.command.Command;
-import com.jvmrally.lambda.command.entites.ToggleRequest;
+import com.jvmrally.lambda.command.entities.ToggleRequest;
 import com.jvmrally.lambda.tasks.TaskManager;
 import disparse.parser.dispatch.CommandRegistrar;
 import disparse.parser.reflection.CommandHandler;

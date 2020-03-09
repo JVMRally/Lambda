@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import com.jvmrally.lambda.command.Command;
-import com.jvmrally.lambda.command.entites.GiveawayResultRequest;
+import com.jvmrally.lambda.command.entities.GiveawayResultRequest;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.entities.Message;

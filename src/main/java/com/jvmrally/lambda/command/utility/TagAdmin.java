@@ -4,7 +4,7 @@ import static com.jvmrally.lambda.db.tables.Tags.TAGS;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import com.jvmrally.lambda.command.AuditedPersistenceAwareCommand;
-import com.jvmrally.lambda.command.entites.TagRequest;
+import com.jvmrally.lambda.command.entities.TagRequest;
 import com.jvmrally.lambda.db.enums.AuditAction;
 import com.jvmrally.lambda.db.tables.pojos.Tags;
 import com.jvmrally.lambda.utility.messaging.Messenger;

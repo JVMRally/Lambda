@@ -2,7 +2,7 @@ package com.jvmrally.lambda.command.moderation;
 
 import static com.jvmrally.lambda.db.tables.Audit.AUDIT;
 import com.jvmrally.lambda.command.AuditedPersistenceAwareCommand;
-import com.jvmrally.lambda.command.entites.ReasonRequest;
+import com.jvmrally.lambda.command.entities.ReasonRequest;
 import com.jvmrally.lambda.db.enums.AuditAction;
 import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;

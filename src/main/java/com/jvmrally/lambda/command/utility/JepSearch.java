@@ -3,7 +3,7 @@ package com.jvmrally.lambda.command.utility;
 import static com.jvmrally.lambda.db.Tables.JEPS;
 import java.util.List;
 import com.jvmrally.lambda.command.PersistenceAwareCommand;
-import com.jvmrally.lambda.command.entites.JepRequest;
+import com.jvmrally.lambda.command.entities.JepRequest;
 import com.jvmrally.lambda.db.tables.pojos.Jeps;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import org.jooq.Condition;

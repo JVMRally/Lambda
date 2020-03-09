@@ -1,4 +1,4 @@
-package com.jvmrally.lambda.command.entites;
+package com.jvmrally.lambda.command.entities;
 
 import disparse.parser.reflection.Flag;
 
