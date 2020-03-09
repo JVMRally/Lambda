@@ -4,6 +4,8 @@
 [Intellij style](https://github.com/google/styleguide/blob/gh-pages/intellij-java-google-style.xml), [Eclipse style](https://github.com/google/styleguide/blob/gh-pages/eclipse-java-google-style.xml)
 
  - Prefix commit messages with feature/module. e.g. `[meta] Update readme`, or `[commands] Add new command`, or `[tasks] Add new task`
+
+ - Use Windows style line endings (CRLF) when commiting. Git can automatically do that for you. See [core.autocrlf](https://git-scm.com/book/tr/v2/Customizing-Git-Git-Configuration).
  
  - Branches will be rebased into master branch. See https://trunkbaseddevelopment.com/
  
