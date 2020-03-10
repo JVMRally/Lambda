@@ -44,3 +44,36 @@ LAMBDA_DB_DRIVER = org.postgresql.Driver
 
 * Run main method normally for Flyway to begin building database structure
 * To create/alter database structure create a new file in `resources/db/migration` formatted as `VX.X.X__Description_for_file.sql` (note the double underscore).
+
+## VSCode setup
+
+A good launchconfig would be
+```json
+// launch.json
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - App",
+            "request": "launch",
+            "mainClass": "com.jvmrally.lambda.App",
+            "projectName": "lambda"
+        },
+        {
+            "type": "java",
+            "name": "Generate and run",
+            "request": "launch",
+            "mainClass": "com.jvmrally.lambda.App",
+            "projectName": "lambda",
+            "args": "--generate",
+            "env": {
+                "LAMBDA_TOKEN": "YOUR_TOKEN",
+                "LAMBDA_DB_HOST": "jdbc:postgresql://localhost:5432/lambda",
+                "LAMBDA_DB_USER":"USER",
+                "LAMBDA_DB_PASSWORD":"PASSWORD",
+                "LAMBDA_DB_DRIVER":"org.postgresql.Driver"
+            },
+        }
+    ]
+}
+```
