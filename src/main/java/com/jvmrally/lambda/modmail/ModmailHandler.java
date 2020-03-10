@@ -1,5 +1,6 @@
 package com.jvmrally.lambda.modmail;
 
+import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +18,21 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
  */
 public class ModmailHandler {
 
+    private Category fetchModmailCategory(JDA jda) {
+        final String CATEGORY_NAME = "reports";
+        Optional<Category> potentialCategory = jda.getCategoriesByName(CATEGORY_NAME, false).stream()
+                .reduce((x, ignore) -> x);
+
+        if (!potentialCategory.isPresent()) {
+            throw new NoSuchCategoryException("Could not find a category named: " + CATEGORY_NAME);
+        }
+        return potentialCategory.get();
+    }
+
     private Optional<TextChannel> fetchOpenCaseChannel(User user, JDA jda) {
-        List<Category> categories = jda.getCategoriesByName("reports", false);
-        Optional<TextChannel> potentialChannel = categories.stream().map(x -> x.getTextChannels())
-                .flatMap(x -> x.stream()).filter(x -> x.getName().contains(user.getAsTag())).reduce((x, ignore) -> x);
+        Category category = fetchModmailCategory(jda);
+        Optional<TextChannel> potentialChannel = category.getTextChannels().stream()
+                .filter(x -> x.getName().contains(user.getAsTag())).reduce((x, ignore) -> x);
         return potentialChannel;
     }
 
