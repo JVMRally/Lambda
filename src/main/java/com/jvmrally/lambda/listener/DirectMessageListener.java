@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import com.jvmrally.lambda.db.tables.pojos.DmTimeouts;
 import com.jvmrally.lambda.injectable.JooqConn;
+import com.jvmrally.lambda.modmail.ModmailHandler;
 import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import org.jooq.DSLContext;
@@ -33,8 +34,7 @@ public class DirectMessageListener extends ListenerAdapter {
     private void handleModmailMessage(PrivateMessageReceivedEvent e) {
         long authorId = e.getAuthor().getIdLong();
         long now = System.currentTimeMillis();
-        getUserMessageTimeouts(authorId).ifPresentOrElse(
-                timeout -> updateResponseTimeout(e, now, timeout),
+        getUserMessageTimeouts(authorId).ifPresentOrElse(timeout -> updateResponseTimeout(e, now, timeout),
                 () -> insertNewResponseTimeout(e, authorId, now));
         logMessage(e);
     }
@@ -45,8 +45,7 @@ public class DirectMessageListener extends ListenerAdapter {
     }
 
     private Optional<DmTimeouts> getUserMessageTimeouts(long authorId) {
-        return dsl.selectFrom(DM_TIMEOUTS).where(DM_TIMEOUTS.USERID.eq(authorId))
-                .fetchOptionalInto(DmTimeouts.class);
+        return dsl.selectFrom(DM_TIMEOUTS).where(DM_TIMEOUTS.USERID.eq(authorId)).fetchOptionalInto(DmTimeouts.class);
     }
 
     private void handleWarningAcknowledgement(PrivateMessageReceivedEvent e) {
@@ -56,8 +55,7 @@ public class DirectMessageListener extends ListenerAdapter {
         logMessage(e);
     }
 
-    private void updateResponseTimeout(PrivateMessageReceivedEvent e, long now,
-            DmTimeouts timeout) {
+    private void updateResponseTimeout(PrivateMessageReceivedEvent e, long now, DmTimeouts timeout) {
         updateTimeout(timeout, now);
         if (now - timeout.getLastMessageTime() > TimeUnit.HOURS.toMillis(24)) {
             sendAcknowledgement(e);
@@ -101,9 +99,9 @@ public class DirectMessageListener extends ListenerAdapter {
      * @param e the received message event
      */
     private void logMessage(PrivateMessageReceivedEvent e) {
-        String message = "User: " + e.getAuthor().getAsMention() + " sent message: "
-                + e.getMessage().getContentRaw();
+        String message = "User: " + e.getAuthor().getAsMention() + " sent message: " + e.getMessage().getContentRaw();
         var channels = e.getJDA().getTextChannelsByName("modmail", true);
         channels.forEach(channel -> Messenger.send(channel, message));
+        new ModmailHandler(e.getJDA()).manageDirectMessage(e);
     }
 }

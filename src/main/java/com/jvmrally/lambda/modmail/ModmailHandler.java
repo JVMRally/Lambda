@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.Invite.Channel;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.RateLimitedException;
 
 /**
  * ModmailHandler
@@ -23,6 +24,23 @@ public class ModmailHandler {
 
     public ModmailHandler(JDA jda) {
         this.jda = Objects.requireNonNull(jda);
+    }
+
+    public void manageDirectMessage(PrivateMessageReceivedEvent event) {
+        var caseChannel = getCaseChannel(event.getAuthor());
+        caseChannel.sendMessage(event.getMessage().getContentRaw()).queue();
+    }
+
+    private String computeCaseChannelName(User user) {
+        return user.getAsTag().toLowerCase().replace("#", "");
+    }
+
+    private TextChannel getCaseChannel(User user) {
+        var potentialChannel = fetchOpenCaseChannel(user);
+        if (potentialChannel.isPresent()) {
+            return potentialChannel.get();
+        }
+        return openNewCaseChannel(user);
     }
 
     private Category fetchModmailCategory() {
@@ -37,15 +55,21 @@ public class ModmailHandler {
     }
 
     private Optional<TextChannel> fetchOpenCaseChannel(User user) {
+        var tag = user.getAsTag();
         Category category = fetchModmailCategory();
-        Optional<TextChannel> potentialChannel = category.getTextChannels().stream()
-                .filter(x -> x.getName().contains(user.getAsTag())).reduce((x, ignore) -> x);
+        var textChannels = category.getTextChannels();
+        Optional<TextChannel> potentialChannel = textChannels.stream()
+                .filter(x -> x.getName().contains(computeCaseChannelName(user))).reduce((x, ignore) -> x);
         return potentialChannel;
     }
 
     private TextChannel openNewCaseChannel(User user) {
         Category category = fetchModmailCategory();
-        category.createTextChannel(user.getAsTag()).queue();
+        var channelName = computeCaseChannelName(user);
+        try {
+            return category.createTextChannel(channelName).complete(true);
+        } catch (RateLimitedException e) {
+            throw new CouldNotCreateChannelException("Could not create channel: " + channelName, e);
+        }
     }
-
 }
