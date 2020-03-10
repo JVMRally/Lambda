@@ -43,4 +43,9 @@ public class ModmailHandler {
         return potentialChannel;
     }
 
+    private TextChannel openNewCaseChannel(User user) {
+        Category category = fetchModmailCategory();
+        category.createTextChannel(user.getAsTag()).queue();
+    }
+
 }
