@@ -3,6 +3,7 @@ package com.jvmrally.lambda.modmail;
 import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,13 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
  */
 public class ModmailHandler {
 
-    private Category fetchModmailCategory(JDA jda) {
+    private final JDA jda;
+
+    public ModmailHandler(JDA jda) {
+        this.jda = Objects.requireNonNull(jda);
+    }
+
+    private Category fetchModmailCategory() {
         final String CATEGORY_NAME = "reports";
         Optional<Category> potentialCategory = jda.getCategoriesByName(CATEGORY_NAME, false).stream()
                 .reduce((x, ignore) -> x);
@@ -29,8 +36,8 @@ public class ModmailHandler {
         return potentialCategory.get();
     }
 
-    private Optional<TextChannel> fetchOpenCaseChannel(User user, JDA jda) {
-        Category category = fetchModmailCategory(jda);
+    private Optional<TextChannel> fetchOpenCaseChannel(User user) {
+        Category category = fetchModmailCategory();
         Optional<TextChannel> potentialChannel = category.getTextChannels().stream()
                 .filter(x -> x.getName().contains(user.getAsTag())).reduce((x, ignore) -> x);
         return potentialChannel;
