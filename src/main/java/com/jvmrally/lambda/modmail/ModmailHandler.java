@@ -31,7 +31,12 @@ public class ModmailHandler {
 
     public void manageDirectMessage(PrivateMessageReceivedEvent event) {
         var caseChannel = getCaseChannel(event.getAuthor());
-        caseChannel.sendMessage(event.getMessage().getContentRaw()).queue();
+        caseChannel.sendMessage(formatDirectMessage(event)).queue();
+    }
+
+    private String formatDirectMessage(PrivateMessageReceivedEvent event) {
+        return String.format("User: %s sent message: %s", event.getAuthor().getAsMention(),
+                event.getMessage().getContentDisplay());
     }
 
     private String computeCaseChannelName(User user) {
