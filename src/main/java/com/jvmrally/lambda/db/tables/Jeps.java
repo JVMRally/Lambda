@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jeps extends TableImpl<JepsRecord> {
 
-    private static final long serialVersionUID = 1845467101;
+    private static final long serialVersionUID = -153974845;
 
     /**
      * The reference instance of <code>jeps</code>
@@ -136,7 +136,7 @@ public class Jeps extends TableImpl<JepsRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.JEPS_PKEY, Indexes.JEPS_TITLE_KEY);
+        return Arrays.<Index>asList(Indexes.JEPS_PKEY);
     }
 
     /**
@@ -152,7 +152,7 @@ public class Jeps extends TableImpl<JepsRecord> {
      */
     @Override
     public List<UniqueKey<JepsRecord>> getKeys() {
-        return Arrays.<UniqueKey<JepsRecord>>asList(Keys.JEPS_PKEY, Keys.JEPS_TITLE_KEY);
+        return Arrays.<UniqueKey<JepsRecord>>asList(Keys.JEPS_PKEY);
     }
 
     /**
