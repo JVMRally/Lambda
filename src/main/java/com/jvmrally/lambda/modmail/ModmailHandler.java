@@ -7,6 +7,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.jvmrally.lambda.modmail.exception.CouldNotCreateChannelException;
+import com.jvmrally.lambda.modmail.exception.NoSuchCategoryException;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.TextChannel;
