@@ -16,6 +16,10 @@
     <db.url>${env.LAMBDA_DB_HOST}</db.url>
     <db.user>${env.LAMBDA_DB_USER}</db.user>
     <db.password>${env.LAMBDA_DB_PASSWORD}</db.password>
+    <sonar.projectKey>JVMRally_Lambda</sonar.projectKey>
+    <sonar.organization>jvmrally</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.login>${env.LAMBDA_SONAR}</sonar.login>
   
     <java.version>11</java.version>
     <disparse.version>master-SNAPSHOT</disparse.version>
@@ -51,10 +55,10 @@
   <dependencies>   
   
     <dependency>
-	    <groupId>com.github.BoscoJared</groupId>
+	    <groupId>com.github.BoscoJared.fork</groupId>
 	    <artifactId>disparse</artifactId>
 	    <version>${disparse.version}</version>
-	  </dependency>
+	</dependency>
   
     <dependency>
       <groupId>net.dv8tion</groupId>

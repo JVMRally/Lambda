@@ -8,6 +8,7 @@ phases:
     commands:
       - echo Build started on `date`
       - mvn test
+      - mvn verify sonar:sonar
   post_build:
     commands:
       - mvn package
