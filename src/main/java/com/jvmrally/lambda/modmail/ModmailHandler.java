@@ -29,6 +29,16 @@ public class ModmailHandler {
         this.jda = Objects.requireNonNull(jda);
     }
 
+    public TextChannel openNewChannel(User user) {
+        Category category = fetchModmailCategory();
+        var channelName = computeCaseChannelName(user);
+        try {
+            return category.createTextChannel(channelName).complete(true);
+        } catch (RateLimitedException e) {
+            throw new CouldNotCreateChannelException("Could not create channel: " + channelName, e);
+        }
+    }
+
     public void manageDirectMessage(PrivateMessageReceivedEvent event) {
         var caseChannel = getCaseChannel(event.getAuthor());
         caseChannel.sendMessage(formatDirectMessage(event)).queue();
@@ -48,7 +58,7 @@ public class ModmailHandler {
         if (potentialChannel.isPresent()) {
             return potentialChannel.get();
         }
-        return openNewCaseChannel(user);
+        return openNewChannel(user);
     }
 
     private Category fetchModmailCategory() {
@@ -71,13 +81,4 @@ public class ModmailHandler {
         return potentialChannel;
     }
 
-    private TextChannel openNewCaseChannel(User user) {
-        Category category = fetchModmailCategory();
-        var channelName = computeCaseChannelName(user);
-        try {
-            return category.createTextChannel(channelName).complete(true);
-        } catch (RateLimitedException e) {
-            throw new CouldNotCreateChannelException("Could not create channel: " + channelName, e);
-        }
-    }
 }
