@@ -1,17 +1,21 @@
 package com.jvmrally.lambda.modmail;
 
 import java.nio.channels.UnsupportedAddressTypeException;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.jvmrally.lambda.command.utility.Embed;
 import com.jvmrally.lambda.modmail.exception.CouldNotCreateChannelException;
 import com.jvmrally.lambda.modmail.exception.NoSuchCategoryException;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.Invite.Channel;
@@ -30,13 +34,21 @@ public class ModmailHandler {
     }
 
     public TextChannel openNewChannel(User user) {
-        Category category = fetchModmailCategory();
+        var category = fetchModmailCategory();
         var channelName = computeCaseChannelName(user);
         try {
-            return category.createTextChannel(channelName).complete(true);
+            var createdChannel = category.createTextChannel(channelName).complete(true);
+            createdChannel.sendMessage(createCaseStartEmbed(user)).queue();
+            return createdChannel;
         } catch (RateLimitedException e) {
             throw new CouldNotCreateChannelException("Could not create channel: " + channelName, e);
         }
+    }
+
+    private MessageEmbed createCaseStartEmbed(User user) {
+        return new EmbedBuilder().setTitle("Opened case").setColor(0x00FF00).setThumbnail(user.getAvatarUrl())
+                .setDescription("Use this channel to send staff messages.").addField("User", user.getAsMention(), false)
+                .addField("ID", user.getId(), false).setTimestamp(Instant.now()).build();
     }
 
     public void manageDirectMessage(PrivateMessageReceivedEvent event) {
