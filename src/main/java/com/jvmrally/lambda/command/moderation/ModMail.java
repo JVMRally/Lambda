@@ -25,6 +25,7 @@ public class ModMail extends Command {
         super(e);
     }
 
+    // FIXME: Does not open channels
     @CommandHandler(commandName = "modmail.open", description = "If not already opened, opens a modmail channel for each given id.", roles = "admin")
     public static void open(List<String> userIds, MessageReceivedEvent e) {
         List<Guild> guilds = e.getJDA().getGuilds();
