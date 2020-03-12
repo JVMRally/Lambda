@@ -99,9 +99,6 @@ public class DirectMessageListener extends ListenerAdapter {
      * @param e the received message event
      */
     private void logMessage(PrivateMessageReceivedEvent e) {
-        String message = "User: " + e.getAuthor().getAsMention() + " sent message: " + e.getMessage().getContentRaw();
-        var channels = e.getJDA().getTextChannelsByName("modmail", true);
-        channels.forEach(channel -> Messenger.send(channel, message));
         new ModmailHandler(e.getJDA()).manageDirectMessage(e);
     }
 }
