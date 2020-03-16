@@ -54,6 +54,11 @@ public class ModMail extends Command {
         args.forEach(emote -> modmailHandler.tagChannel(e.getTextChannel(), emote));
     }
 
+    @CommandHandler(commandName = "modmail.cleartags", description = "Clears all tags from the channel")
+    public static void clearTags(MessageReceivedEvent e) {
+        new ModmailHandler(e.getJDA()).clearTags(e.getTextChannel());
+    }
+
     // FIXME: throws NPE when id is unknown/not in any server
     private static Optional<User> fetchUser(String userId, List<Guild> guilds) {
         return guilds.stream().map(guild -> guild.getMemberById(userId)).map(member -> member.getUser())
