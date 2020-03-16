@@ -37,11 +37,7 @@ public class ModMail extends Command {
 
     @CommandHandler(commandName = "modmail.close", description = "Closes the current modmail channel.")
     public static void close(MessageReceivedEvent e) {
-        deleteChannel(e.getChannel(), e.getGuild());
-    }
-
-    private static void deleteChannel(MessageChannel channel, Guild guild) {
-        guild.getChannels().stream().filter(x -> channel.getIdLong() == x.getIdLong()).forEach(x -> x.delete().queue());
+        new ModmailHandler(e.getJDA()).deleteChannel(e.getChannel(), e.getGuild());
     }
 
     // FIXME: throws NPE when id is unknown/not in any server
