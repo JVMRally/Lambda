@@ -1,4 +1,4 @@
-package com.jvmrally.lambda.command.moderation.modmail;
+package com.jvmrally.lambda.command.moderation;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +25,6 @@ public class ModMail extends Command {
         super(e);
     }
 
-    // FIXME: Does not open channels
     @CommandHandler(commandName = "modmail.open", description = "If not already opened, opens a modmail channel for each given id.", roles = "admin")
     public static void open(List<String> userIds, MessageReceivedEvent e) {
         List<Guild> guilds = e.getJDA().getGuilds();
@@ -46,5 +45,4 @@ public class ModMail extends Command {
         LOGGER.warn(message);
         e.getChannel().sendMessage(message).queue();
     }
-
 }
