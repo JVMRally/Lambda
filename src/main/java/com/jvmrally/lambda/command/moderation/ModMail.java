@@ -42,8 +42,10 @@ public class ModMail extends Command {
     }
 
     @CommandHandler(commandName = "modmail.note", description = "Posts a note embed in the current channel.")
-    public static void note(String content, MessageReceivedEvent e) {
-        new ModmailHandler(e.getJDA()).postNote(e.getChannel(), e.getAuthor(), e.getMessage().getContentRaw());
+    public static void note(List<String> args, MessageReceivedEvent e) {
+        var content = new StringBuilder();
+        args.forEach(word -> content.append(content.length() == 0 ? "" : " ").append(word));
+        new ModmailHandler(e.getJDA()).postNote(e.getChannel(), e.getAuthor(), content.toString());
     }
 
     // FIXME: throws NPE when id is unknown/not in any server
