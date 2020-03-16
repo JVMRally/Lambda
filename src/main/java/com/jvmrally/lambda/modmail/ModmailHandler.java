@@ -12,9 +12,14 @@ import com.jvmrally.lambda.command.utility.Embed;
 import com.jvmrally.lambda.modmail.exception.CouldNotCreateChannelException;
 import com.jvmrally.lambda.modmail.exception.NoSuchCategoryException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -27,10 +32,22 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
  */
 public class ModmailHandler {
 
+    private static final String CATEGORY_NAME = "reports";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModmailHandler.class);
+
     private final JDA jda;
 
     public ModmailHandler(JDA jda) {
         this.jda = Objects.requireNonNull(jda);
+    }
+
+    public void deleteChannel(MessageChannel channel, Guild guild) {
+        if (verifyChannelCategory(channel, guild)) {
+            guild.getTextChannelById(channel.getId()).delete().queue();
+        } else {
+            postError(guild.getTextChannelById(channel.getIdLong()),
+                    "Could not delete channel, channel is not in Category " + CATEGORY_NAME);
+        }
     }
 
     public TextChannel openNewChannel(User user) {
@@ -43,6 +60,17 @@ public class ModmailHandler {
         } catch (RateLimitedException e) {
             throw new CouldNotCreateChannelException("Could not create channel: " + channelName, e);
         }
+    }
+
+    private void postError(TextChannel channel, String message) {
+        channel.sendMessage("Error: " + message).queue();
+        LOGGER.error(message);
+    }
+
+    private static boolean verifyChannelCategory(MessageChannel channel, Guild guild) {
+        var categories = guild.getCategoriesByName(CATEGORY_NAME, false);
+        return categories.stream().map(category -> category.getTextChannels()).flatMap(channels -> channels.stream())
+                .anyMatch(potentialChannel -> potentialChannel.getIdLong() == channel.getIdLong());
     }
 
     private MessageEmbed createCaseStartEmbed(User user) {
@@ -74,7 +102,6 @@ public class ModmailHandler {
     }
 
     private Category fetchModmailCategory() {
-        final String CATEGORY_NAME = "reports";
         Optional<Category> potentialCategory = jda.getCategoriesByName(CATEGORY_NAME, false).stream()
                 .reduce((x, ignore) -> x);
 
