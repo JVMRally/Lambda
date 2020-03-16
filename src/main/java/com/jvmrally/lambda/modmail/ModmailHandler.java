@@ -1,5 +1,6 @@
 package com.jvmrally.lambda.modmail;
 
+import java.lang.reflect.Member;
 import java.nio.channels.UnsupportedAddressTypeException;
 import java.time.Instant;
 import java.util.Date;
@@ -23,7 +24,6 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.Invite.Channel;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 
@@ -39,6 +39,11 @@ public class ModmailHandler {
 
     public ModmailHandler(JDA jda) {
         this.jda = Objects.requireNonNull(jda);
+    }
+
+    public void postNote(MessageChannel channel, User member, String content) {
+        var note = new Note(member, content, Instant.now());
+        channel.sendMessage(note.toMessageEmbed()).queue();
     }
 
     public void deleteChannel(MessageChannel channel, Guild guild) {

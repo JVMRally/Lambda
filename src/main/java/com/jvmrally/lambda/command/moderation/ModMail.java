@@ -1,5 +1,6 @@
 package com.jvmrally.lambda.command.moderation;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,11 @@ public class ModMail extends Command {
     @CommandHandler(commandName = "modmail.close", description = "Closes the current modmail channel.")
     public static void close(MessageReceivedEvent e) {
         new ModmailHandler(e.getJDA()).deleteChannel(e.getChannel(), e.getGuild());
+    }
+
+    @CommandHandler(commandName = "modmail.note", description = "Posts a note embed in the current channel.")
+    public static void note(String content, MessageReceivedEvent e) {
+        new ModmailHandler(e.getJDA()).postNote(e.getChannel(), e.getAuthor(), e.getMessage().getContentRaw());
     }
 
     // FIXME: throws NPE when id is unknown/not in any server
