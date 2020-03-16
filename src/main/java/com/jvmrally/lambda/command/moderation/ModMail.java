@@ -48,6 +48,12 @@ public class ModMail extends Command {
         new ModmailHandler(e.getJDA()).postNote(e.getChannel(), e.getAuthor(), content.toString());
     }
 
+    @CommandHandler(commandName = "modmail.tag", description = "Prepends an emote to the channel name.")
+    public static void tag(List<String> args, MessageReceivedEvent e) {
+        var modmailHandler = new ModmailHandler(e.getJDA());
+        args.forEach(emote -> modmailHandler.tagChannel(e.getTextChannel(), emote));
+    }
+
     // FIXME: throws NPE when id is unknown/not in any server
     private static Optional<User> fetchUser(String userId, List<Guild> guilds) {
         return guilds.stream().map(guild -> guild.getMemberById(userId)).map(member -> member.getUser())

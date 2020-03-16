@@ -26,6 +26,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
+import net.dv8tion.jda.api.managers.ChannelManager;
 
 /**
  * ModmailHandler
@@ -39,6 +40,11 @@ public class ModmailHandler {
 
     public ModmailHandler(JDA jda) {
         this.jda = Objects.requireNonNull(jda);
+    }
+
+    public void tagChannel(TextChannel channel, String emote) {
+        var initialChannelName = channel.getName();
+        channel.getManager().setName(emote + initialChannelName).submit();
     }
 
     public void postNote(MessageChannel channel, User member, String content) {
