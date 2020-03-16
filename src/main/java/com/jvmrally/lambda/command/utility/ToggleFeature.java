@@ -3,6 +3,8 @@ package com.jvmrally.lambda.command.utility;
 import com.jvmrally.lambda.command.Command;
 import com.jvmrally.lambda.command.entities.ToggleRequest;
 import com.jvmrally.lambda.tasks.TaskManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import disparse.parser.dispatch.CommandRegistrar;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -11,6 +13,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  * DisableFeature
  */
 public class ToggleFeature extends Command {
+
+    private static final Logger logger = LogManager.getLogger(ToggleFeature.class);
 
     private ToggleRequest req;
 
@@ -28,11 +32,6 @@ public class ToggleFeature extends Command {
     @CommandHandler(commandName = "enable", description = "Enable a feature", roles = "admin",
             canBeDisabled = false)
     public static void enable(MessageReceivedEvent e, ToggleRequest req) {
-        try {
-            CommandRegistrar.REGISTRAR.enableCommand("embed");
-        } catch (IllegalArgumentException ex) {
-            System.out.println("Failed");
-        }
         new ToggleFeature(e, req).enable();
     }
 
@@ -41,7 +40,12 @@ public class ToggleFeature extends Command {
             CommandRegistrar.REGISTRAR.disableCommand(req.getCommandName());
         }
         if (!req.getTaskName().isEmpty()) {
-            TaskManager.MANAGER.removeTask(req.getTaskName());
+            try {
+                TaskManager.MANAGER.removeTask(req.getTaskName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                logger.error("Task {} not found", req.getTaskName(), e);
+            }
         }
     }
 
@@ -50,7 +54,11 @@ public class ToggleFeature extends Command {
             CommandRegistrar.REGISTRAR.enableCommand(req.getCommandName());
         }
         if (!req.getTaskName().isEmpty()) {
-            TaskManager.MANAGER.registerTask(req.getTaskName());
+            try {
+                TaskManager.MANAGER.registerTask(req.getTaskName());
+            } catch (ClassNotFoundException e) {
+                logger.error("Task {} not found", req.getTaskName(), e);
+            }
         }
     }
 }

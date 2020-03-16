@@ -1,7 +1,9 @@
 package com.jvmrally.lambda.tasks;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -17,10 +19,11 @@ import net.dv8tion.jda.api.JDA;
 public class TaskManager {
     private static final Logger logger = LogManager.getLogger(TaskManager.class);
     public static final TaskManager MANAGER = new TaskManager();
-    private static final Map<String, ScheduledFuture<?>> tasks = new HashMap<>();
+    private static final Map<Class<?>, ScheduledFuture<?>> tasks = new HashMap<>();
     private static final ScheduledExecutorService scheduler =
             Executors.newSingleThreadScheduledExecutor();
-    private static JDA jda;
+    private static final List<Class<?>> disabledTasks = new ArrayList<>();
+    private static JDA jda; // required for task creation
 
     private TaskManager() {
     }
@@ -29,39 +32,60 @@ public class TaskManager {
         jda = jdaInstance;
     }
 
-    public void addTask(Object task, long initialDelay, Task taskDetails, String taskName) {
-        var future = scheduler.scheduleAtFixedRate((Runnable) task, initialDelay,
-                taskDetails.frequency(), taskDetails.unit());
-        tasks.put(taskName, future);
-        logger.info("Registered {} Task with delay {}", taskName, initialDelay);
-    }
-
-    public void removeTask(String clazz) {
-        var future = tasks.get(clazz);
+    public void removeTask(String taskName) throws ClassNotFoundException {
+        Class<?> taskClass =
+                tasks.keySet().stream().filter(task -> task.getSimpleName().equals(taskName))
+                        .findFirst().orElseThrow(ClassNotFoundException::new);
+        var future = tasks.get(taskClass);
         if (future != null) {
+            disabledTasks.add(taskClass);
             future.cancel(false);
+            tasks.remove(taskClass);
+            logger.info("Task {} removed", taskName);
         }
     }
 
-    public void registerTask(String taskName) {
-        taskName = "com.jvmrally.lambda.tasks." + taskName;
+    public void registerTaskInitial(Class<?> taskClass) {
+        registerTask(taskClass, true);
+    }
+
+    public void registerTask(String taskName) throws ClassNotFoundException {
+        Class<?> taskClass =
+                disabledTasks.stream().filter(task -> task.getSimpleName().equals(taskName))
+                        .findFirst().orElseThrow(ClassNotFoundException::new);
+        disabledTasks.remove(taskClass);
+        registerTask(taskClass, false);
+    }
+
+    private void registerTask(Class<?> taskClass, boolean isInitialRegistration) {
         try {
-            long initialDelay = 0;
-            Class<?> clazz = Class.forName(taskName);
-            Task taskDetails = clazz.getAnnotation(Task.class);
-            if (taskDetails == null) {
-                logger.error("Error");
+            if (!taskClass.isAnnotationPresent(Task.class)) {
+                logger.error("Task {} does not have the @Task annotation", taskClass.getName());
                 return;
             }
-            Object taskObject = clazz.getConstructor(JDA.class).newInstance(jda);
-            if (DelayedTask.class.isAssignableFrom(clazz)) {
-                Method getDelay = clazz.getMethod("getTaskDelay");
+            Task taskDetails = taskClass.getAnnotation(Task.class);
+            if (isInitialRegistration && taskDetails.disabled()) {
+                disabledTasks.add(taskClass);
+                return;
+            }
+            long initialDelay = 0;
+            Object taskObject = taskClass.getConstructor(JDA.class).newInstance(jda);
+            if (DelayedTask.class.isAssignableFrom(taskClass)) {
+                Method getDelay = taskClass.getMethod("getTaskDelay");
                 initialDelay = (long) getDelay.invoke(taskObject);
             }
-            addTask(taskObject, initialDelay, taskDetails, taskName);
+            addTask(taskObject, initialDelay, taskDetails, taskClass);
         } catch (ReflectiveOperationException e) {
-            logger.error("Error", e);
+            logger.error("Error registering tasks", e);
         }
+        return;
+    }
+
+    private void addTask(Object task, long initialDelay, Task taskDetails, Class<?> taskClass) {
+        var future = scheduler.scheduleAtFixedRate((Runnable) task, initialDelay,
+                taskDetails.frequency(), taskDetails.unit());
+        tasks.put(taskClass, future);
+        logger.info("Registered {} Task with delay {}", taskClass.getSimpleName(), initialDelay);
     }
 
 }

@@ -9,12 +9,14 @@ import disparse.parser.reflection.CommandHandler;
 import disparse.parser.reflection.Flag;
 import disparse.parser.reflection.ParsedEntity;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Embed
  */
 public class Embed extends Command {
-
+    private static final Logger logger = LogManager.getLogger(Embed.class);
     private EmbedRequest req;
 
     private Embed(MessageReceivedEvent e, EmbedRequest req) {
@@ -40,7 +42,7 @@ public class Embed extends Command {
         try {
             embed = om.readValue(req.json, EmbedMessage.class);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
             return;
         }
         getTargetChannel().ifPresentOrElse(channel -> Messenger.send(channel, embed.build()),

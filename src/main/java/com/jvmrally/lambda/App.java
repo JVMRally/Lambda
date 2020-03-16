@@ -1,12 +1,9 @@
 package com.jvmrally.lambda;
 
-import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Set;
 import javax.security.auth.login.LoginException;
-import com.jvmrally.lambda.annotation.Task;
 import com.jvmrally.lambda.config.JooqCodeGen;
-import com.jvmrally.lambda.tasks.DelayedTask;
 import com.jvmrally.lambda.tasks.TaskManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,8 +46,6 @@ public class App {
         jda.awaitReady();
         jda.getPresence().setActivity(Activity.playing("DM to contact staff"));
         registerScheduledTasks();
-
-
     }
 
     private JDA addListeners(JDABuilder jdaBuilder) throws LoginException {
@@ -86,26 +81,7 @@ public class App {
         var reflections = new Reflections("com.jvmrally.lambda.tasks");
         Set<Class<? extends Runnable>> classes = reflections.getSubTypesOf(Runnable.class);
         for (var clazz : classes) {
-            if (clazz.isAnnotationPresent(Task.class)) {
-                Task task = clazz.getAnnotation(Task.class);
-                if (task.disabled()) {
-                    continue;
-                }
-                try {
-                    long initialDelay = 0;
-                    Object taskObject = Class.forName(clazz.getName()).getConstructor(JDA.class)
-                            .newInstance(jda);
-                    if (DelayedTask.class.isAssignableFrom(clazz)) {
-                        Method getDelay = clazz.getMethod("getTaskDelay");
-                        initialDelay = (long) getDelay.invoke(taskObject);
-                    }
-                    TaskManager.MANAGER.addTask(taskObject, initialDelay, task, clazz.getName());
-                } catch (ReflectiveOperationException e) {
-                    logger.error("Error registering tasks", e);
-                }
-            } else {
-                logger.error("Task {} does not have the @Task annotation", clazz.getName());
-            }
+            TaskManager.MANAGER.registerTaskInitial(clazz);
         }
     }
 
