@@ -8,6 +8,7 @@ import com.jvmrally.lambda.modmail.ModmailHandler;
 
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -32,7 +33,15 @@ public class ModMail extends Command {
             fetchUser(userId, guilds).ifPresentOrElse(user -> new ModmailHandler(e.getJDA()).openNewChannel(user),
                     () -> sendError("Cannot open channel: Cannot find user " + userId, e));
         }
+    }
 
+    @CommandHandler(commandName = "modmail.close", description = "Closes the current modmail channel.")
+    public static void close(MessageReceivedEvent e) {
+        deleteChannel(e.getChannel(), e.getGuild());
+    }
+
+    private static void deleteChannel(MessageChannel channel, Guild guild) {
+        guild.getChannels().stream().filter(x -> channel.getIdLong() == x.getIdLong()).forEach(x -> x.delete().queue());
     }
 
     // FIXME: throws NPE when id is unknown/not in any server
