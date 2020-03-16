@@ -32,7 +32,7 @@ public class Mute extends AuditedPersistenceAwareCommand {
             roles = "admin")
     public static void execute(MessageReceivedEvent e, DSLContext dsl, TimedReasonRequest req) {
         Mute mute = new Mute(e, dsl, req);
-        Util.getRole(e.getGuild(), "muted").ifPresentOrElse(mute::muteMembers,
+        Util.getRole(e.getGuild(), MUTED_ROLE).ifPresentOrElse(mute::muteMembers,
                 () -> new RoleNotFoundException(MUTED_ROLE));
     }
 

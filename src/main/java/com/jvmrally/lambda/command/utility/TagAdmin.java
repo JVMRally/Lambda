@@ -70,7 +70,7 @@ public class TagAdmin extends AuditedPersistenceAwareCommand {
 
 
     private void deleteTag() {
-        findTagByName(req.getName()).ifPresentOrElse(tag -> removeTag(tag),
+        findTagByName(req.getName()).ifPresentOrElse(this::removeTag,
                 this::sendTagDoesNotExistError);
     }
 
@@ -109,10 +109,7 @@ public class TagAdmin extends AuditedPersistenceAwareCommand {
      * @return true if the content is empty
      */
     private boolean isContentEmpty() {
-        if (req.getContent().isEmpty()) {
-            return true;
-        }
-        return false;
+        return req.getContent().isEmpty();
     }
 
     private void sendMissingContentError() {

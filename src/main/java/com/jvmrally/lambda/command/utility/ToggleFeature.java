@@ -43,7 +43,6 @@ public class ToggleFeature extends Command {
             try {
                 TaskManager.MANAGER.removeTask(req.getTaskName());
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
                 logger.error("Task {} not found", req.getTaskName(), e);
             }
         }
