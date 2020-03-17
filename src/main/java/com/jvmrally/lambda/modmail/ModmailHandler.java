@@ -112,7 +112,7 @@ public class ModmailHandler {
     }
 
     private MessageEmbed formatDirectMessage(PrivateMessageReceivedEvent event) {
-        return new EmbedBuilder().setColor(0x00FF00).setTitle("Modmail message")
+        return new EmbedBuilder().setColor(0x00FF00).setTitle("Modmail")
                 .addField("Author", event.getAuthor().getAsMention(), false)
                 .addField("Content", event.getMessage().getContentRaw(), false)
                 .setTimestamp(event.getMessage().getTimeCreated()).build();
