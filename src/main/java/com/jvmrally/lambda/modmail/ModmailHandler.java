@@ -111,9 +111,11 @@ public class ModmailHandler {
         caseChannel.sendMessage(formatDirectMessage(event)).queue();
     }
 
-    private String formatDirectMessage(PrivateMessageReceivedEvent event) {
-        return String.format("User: %s sent message: %s", event.getAuthor().getAsMention(),
-                event.getMessage().getContentDisplay());
+    private MessageEmbed formatDirectMessage(PrivateMessageReceivedEvent event) {
+        return new EmbedBuilder().setColor(0x00FF00).setTitle("Modmail message")
+                .addField("Author", event.getAuthor().getAsMention(), false)
+                .addField("Content", event.getMessage().getContentRaw(), false)
+                .setTimestamp(event.getMessage().getTimeCreated()).build();
     }
 
     private String computeCaseChannelName(User user) {
