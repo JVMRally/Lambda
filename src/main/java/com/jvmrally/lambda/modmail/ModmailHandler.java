@@ -49,6 +49,15 @@ public class ModmailHandler {
         channel.getManager().setName(newName).submit();
     }
 
+    public void archive(TextChannel channel, Guild guild) {
+
+        if (verifyChannelCategory(channel, guild)) {
+            var archive = new ChannelArchiver(channel).archive();
+        } else {
+            postError(channel, "Command can only be used within a modmail channel");
+        }
+    }
+
     public void tagChannel(TextChannel channel, String emote) {
         var initialChannelName = channel.getName();
         channel.getManager().setName(emote + initialChannelName).submit();
