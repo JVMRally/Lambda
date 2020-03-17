@@ -30,14 +30,33 @@ public class ChannelArchiver {
     public static class ArchivedChannel {
         private String channelName;
         private List<String> messages = new ArrayList<>();
-        private TemporalAccessor firstMessage;
-        private TemporalAccessor lastMessage;
+        private Message firstMessage;
+        private Message lastMessage;
+
+        private void setFirstMessageIfOlder(Message message) {
+            if (firstMessage == null) {
+                firstMessage = message;
+            } else if (firstMessage.getTimeCreated().isAfter(message.getTimeCreated())) {
+                firstMessage = message;
+            }
+
+        }
+
+        private void setLastMessageIfNewer(Message message) {
+            if (lastMessage == null) {
+                lastMessage = message;
+            } else if (lastMessage.getTimeCreated().isBefore(message.getTimeCreated())) {
+                lastMessage = message;
+            }
+        }
 
         private void setChannelName(String channelName) {
             this.channelName = channelName;
         }
 
         private void addMessage(Message message) {
+            setFirstMessageIfOlder(message);
+            setLastMessageIfNewer(message);
             if (message.getAuthor().isBot()) {
 
             } else {
