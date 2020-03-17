@@ -1,9 +1,11 @@
 package com.jvmrally.lambda.modmail;
 
+import java.time.OffsetDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -30,23 +32,22 @@ public class ChannelArchiver {
     public static class ArchivedChannel {
         private String channelName;
         private List<String> messages = new ArrayList<>();
-        private Message firstMessage;
-        private Message lastMessage;
+        private OffsetDateTime firstMessage;
+        private OffsetDateTime lastMessage;
 
         private void setFirstMessageIfOlder(Message message) {
             if (firstMessage == null) {
-                firstMessage = message;
-            } else if (firstMessage.getTimeCreated().isAfter(message.getTimeCreated())) {
-                firstMessage = message;
+                firstMessage = message.getTimeCreated();
+            } else if (firstMessage.isAfter(message.getTimeCreated())) {
+                firstMessage = message.getTimeCreated();
             }
-
         }
 
         private void setLastMessageIfNewer(Message message) {
             if (lastMessage == null) {
-                lastMessage = message;
-            } else if (lastMessage.getTimeCreated().isBefore(message.getTimeCreated())) {
-                lastMessage = message;
+                lastMessage = message.getTimeCreated();
+            } else if (lastMessage.isBefore(message.getTimeCreated())) {
+                lastMessage = message.getTimeCreated();
             }
         }
 
