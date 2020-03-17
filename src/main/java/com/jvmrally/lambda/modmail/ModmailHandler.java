@@ -103,7 +103,8 @@ public class ModmailHandler {
     private MessageEmbed createCaseStartEmbed(User user) {
         return new EmbedBuilder().setTitle("Opened case").setColor(0x00FF00).setThumbnail(user.getAvatarUrl())
                 .setDescription("Use this channel to send staff messages.").addField("User", user.getAsMention(), false)
-                .addField("ID", user.getId(), false).setTimestamp(Instant.now()).build();
+                .addField("ID", user.getId(), false).addField("Tag", user.getAsTag(), false).setTimestamp(Instant.now())
+                .build();
     }
 
     public void manageDirectMessage(PrivateMessageReceivedEvent event) {
@@ -111,11 +112,8 @@ public class ModmailHandler {
         caseChannel.sendMessage(formatDirectMessage(event)).queue();
     }
 
-    private MessageEmbed formatDirectMessage(PrivateMessageReceivedEvent event) {
-        return new EmbedBuilder().setColor(0x00FF00).setTitle("Modmail")
-                .addField("Author", event.getAuthor().getAsMention(), false)
-                .addField("Content", event.getMessage().getContentRaw(), false)
-                .setTimestamp(event.getMessage().getTimeCreated()).build();
+    private String formatDirectMessage(PrivateMessageReceivedEvent event) {
+        return String.format("[%s]: %s", event.getAuthor().getAsMention(), event.getMessage().getContentRaw());
     }
 
     private String computeCaseChannelName(User user) {
