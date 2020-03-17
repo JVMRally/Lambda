@@ -28,7 +28,7 @@ public class TaskManager {
     private TaskManager() {
     }
 
-    public void setJDA(JDA jdaInstance) {
+    public static void setJDA(JDA jdaInstance) {
         jda = jdaInstance;
     }
 
@@ -78,7 +78,6 @@ public class TaskManager {
         } catch (ReflectiveOperationException e) {
             logger.error("Error registering tasks", e);
         }
-        return;
     }
 
     private void addTask(Object task, long initialDelay, Task taskDetails, Class<?> taskClass) {

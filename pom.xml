@@ -23,17 +23,17 @@
   
     <java.version>11</java.version>
     <disparse.version>master-SNAPSHOT</disparse.version>
-    <jda.version>4.BETA.0_33</jda.version>
+    <jda.version>4.1.1_116</jda.version>
     <log4j.version>2.13.1</log4j.version>
-    <jackson.version>2.10.0.pr1</jackson.version>
-    <postgres.driver.version>42.2.6</postgres.driver.version>
+    <jackson.version>2.10.3</jackson.version>
+    <postgres.driver.version>42.2.11</postgres.driver.version>
     <jooq.version>3.13.1</jooq.version>
     <javax.version>1.3.2</javax.version>
-    <maven.shade.version>3.2.1</maven.shade.version>
+    <maven.shade.version>3.2.2</maven.shade.version>
     <flyway.version>6.3.1</flyway.version>
-    <reflections.version>0.9.11</reflections.version>
-    <junit.version>5.5.1</junit.version>
-    <hikari.version>3.3.1</hikari.version>
+    <reflections.version>0.9.12</reflections.version>
+    <junit.version>5.6.0</junit.version>
+    <hikari.version>3.4.2</hikari.version>
     <jsoup.version>1.13.1</jsoup.version>
     <maven.exec.version>1.6.0</maven.exec.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

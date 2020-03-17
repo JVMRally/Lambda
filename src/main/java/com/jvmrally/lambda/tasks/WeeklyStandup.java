@@ -31,6 +31,8 @@ public class WeeklyStandup implements Runnable, DelayedTask {
     private static final String CATEGORY = "general";
     private static final DayOfWeek TARGET_DAY = DayOfWeek.MONDAY;
     private static final LocalTime TARGET_TIME = LocalTime.of(9, 0);
+    private static final String CHANNEL_TOPIC =
+            "Language agnostic open discussion on what you're working on this week!";
 
     private final JDA jda;
 
@@ -56,8 +58,8 @@ public class WeeklyStandup implements Runnable, DelayedTask {
     }
 
     private void createChannel(Category category) {
-        var createdChannel = category.createTextChannel(DISCUSSION_CHANNEL)
-                .setTopic(getChannelTopic()).setSlowmode(5).complete();
+        var createdChannel = category.createTextChannel(DISCUSSION_CHANNEL).setTopic(CHANNEL_TOPIC)
+                .setSlowmode(5).complete();
         sendInitialMessage(createdChannel);
         logger.info("Channel created.");
     }
@@ -72,10 +74,6 @@ public class WeeklyStandup implements Runnable, DelayedTask {
                         + " about keeping things vague.");
     }
 
-    private String getChannelTopic() {
-        return "Language agnostic open discussion on what you're working on this week!";
-    }
-
     private void updateDiscussion(TextChannel channel) {
         Messenger.send(channel, getUpdateEmbed());
         sendInitialMessage(channel);
@@ -85,9 +83,7 @@ public class WeeklyStandup implements Runnable, DelayedTask {
         return new EmbedBuilder()
                 .setTitle("Weekly Standup - "
                         + LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
-                .setDescription(
-                        "Language agnostic open discussion on what you're working on this week!")
-                .build();
+                .setDescription(CHANNEL_TOPIC).build();
     }
 
     private Optional<TextChannel> getChannel(String channelName) {
