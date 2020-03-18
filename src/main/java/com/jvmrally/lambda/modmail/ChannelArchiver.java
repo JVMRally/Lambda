@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
@@ -13,10 +14,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.jvmrally.lambda.modmail.exception.ArchivingException;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -44,11 +48,6 @@ public class ChannelArchiver {
         private Message firstMessage;
         private OffsetDateTime lastMessage;
 
-        private String determineFileName() {
-
-            return String.format("[%s][ID=%s]");
-        }
-
         public Path saveInDirectory(Path directory) {
             if (!Files.isDirectory(directory)) {
                 throw new ArchivingException(directory.toAbsolutePath().toUri() + " is not a directory");
@@ -60,7 +59,7 @@ public class ChannelArchiver {
                 throw new ArchivingException(directory.toAbsolutePath().toUri() + " already exists");
             }
 
-            String content = messages.stream().reduce((x, acc) -> x + '\n' + acc).orElseGet(() -> "");
+            String content = serializeContent();
             try {
                 Files.createFile(filePath);
                 Files.writeString(filePath, content, StandardOpenOption.APPEND);
@@ -68,6 +67,23 @@ public class ChannelArchiver {
                 throw new ArchivingException("Could not write to file", e);
             }
             return filePath;
+        }
+
+        public String serializeContent() {
+            return messages.stream().reduce((x, acc) -> x + '\n' + acc).orElseGet(() -> "");
+        }
+
+        public void saveToChannel(TextChannel channel) {
+            channel.sendMessage(generateInfoEmbed()).addFile(serializeContent().getBytes(), "log.txt").queue();
+        }
+
+        private MessageEmbed generateInfoEmbed() {
+            var userData = getUserData();
+            return new EmbedBuilder().setTitle("Log").addField("User", userData.get("User"), false).setColor(0x00FF00)
+                    .setDescription("See the attached File for more details")
+                    .addField("User ID", userData.get("ID"), false)
+                    .addField("Begin", formatDate(firstMessage.getTimeCreated()), false)
+                    .addField("End", formatDate(lastMessage), false).setTimestamp(Instant.now()).build();
         }
 
         private Map<String, String> getUserData() {
@@ -138,6 +154,5 @@ public class ChannelArchiver {
             }
             return "MESSAGE";
         }
-
     }
 }

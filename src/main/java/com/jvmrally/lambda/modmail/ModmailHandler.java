@@ -1,15 +1,11 @@
 package com.jvmrally.lambda.modmail;
 
-import java.lang.reflect.Member;
-import java.nio.channels.UnsupportedAddressTypeException;
+import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import com.jvmrally.lambda.command.utility.Embed;
+import com.jvmrally.lambda.modmail.exception.ArchivingException;
 import com.jvmrally.lambda.modmail.exception.CouldNotCreateChannelException;
 import com.jvmrally.lambda.modmail.exception.NoSuchCategoryException;
 
@@ -26,7 +22,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
-import net.dv8tion.jda.api.managers.ChannelManager;
 
 /**
  * ModmailHandler
@@ -53,6 +48,8 @@ public class ModmailHandler {
 
         if (verifyChannelCategory(channel, guild)) {
             var archive = new ChannelArchiver(channel).archive();
+            var archiveChannel = getReportsArchiveChannel(guild).orElseThrow(() -> new ArchivingException("message"));
+            archive.saveToChannel(archiveChannel);
         } else {
             postError(channel, "Command can only be used within a modmail channel");
         }
@@ -87,6 +84,10 @@ public class ModmailHandler {
         } catch (RateLimitedException e) {
             throw new CouldNotCreateChannelException("Could not create channel: " + channelName, e);
         }
+    }
+
+    private Optional<TextChannel> getReportsArchiveChannel(Guild guild) {
+        return guild.getTextChannelsByName("reports-archive", false).stream().reduce((x, ignore) -> x);
     }
 
     private void postError(TextChannel channel, String message) {
