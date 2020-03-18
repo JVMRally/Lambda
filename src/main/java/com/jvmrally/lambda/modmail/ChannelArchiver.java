@@ -1,11 +1,20 @@
 package com.jvmrally.lambda.modmail;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+
+import com.jvmrally.lambda.modmail.exception.ArchivingException;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -32,14 +41,53 @@ public class ChannelArchiver {
     public static class ArchivedChannel {
         private String channelName;
         private List<String> messages = new ArrayList<>();
-        private OffsetDateTime firstMessage;
+        private Message firstMessage;
         private OffsetDateTime lastMessage;
+
+        private String determineFileName() {
+
+            return String.format("[%s][ID=%s]");
+        }
+
+        public Path saveInDirectory(Path directory) {
+            if (!Files.isDirectory(directory)) {
+                throw new ArchivingException(directory.toAbsolutePath().toUri() + " is not a directory");
+            }
+
+            var filePath = Paths.get(directory.toAbsolutePath().toString(), computeFileName());
+
+            if (Files.exists(filePath)) {
+                throw new ArchivingException(directory.toAbsolutePath().toUri() + " already exists");
+            }
+
+            String content = messages.stream().reduce((x, acc) -> x + '\n' + acc).orElseGet(() -> "");
+            try {
+                Files.createFile(filePath);
+                Files.writeString(filePath, content, StandardOpenOption.APPEND);
+            } catch (IOException e) {
+                throw new ArchivingException("Could not write to file", e);
+            }
+            return filePath;
+        }
+
+        private Map<String, String> getUserData() {
+            Map<String, String> data = new HashMap<>();
+            firstMessage.getEmbeds().stream().map(embed -> embed.getFields()).flatMap(fields -> fields.stream())
+                    .forEach(field -> data.put(field.getName(), field.getValue()));
+            return Collections.unmodifiableMap(data);
+        }
+
+        private String computeFileName() {
+            var userData = getUserData();
+            return String.format("[TAG:%s][ID:%s][BEG:%s][END:%s]", userData.get("Tag"), userData.get("ID"),
+                    formatDate(firstMessage.getTimeCreated()), formatDate(lastMessage));
+        }
 
         private void setFirstMessageIfOlder(Message message) {
             if (firstMessage == null) {
-                firstMessage = message.getTimeCreated();
-            } else if (firstMessage.isAfter(message.getTimeCreated())) {
-                firstMessage = message.getTimeCreated();
+                firstMessage = message;
+            } else if (firstMessage.getTimeCreated().isAfter(message.getTimeCreated())) {
+                firstMessage = message;
             }
         }
 
