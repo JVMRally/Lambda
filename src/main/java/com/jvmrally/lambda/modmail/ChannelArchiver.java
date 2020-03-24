@@ -1,20 +1,9 @@
 package com.jvmrally.lambda.modmail;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import com.jvmrally.lambda.modmail.exception.ArchivingException;
 
@@ -37,104 +26,108 @@ public class ChannelArchiver {
     public ArchivedChannel archive() {
         var archivedChannel = new ArchivedChannel();
         channel.getIterableHistory().stream().forEach(archivedChannel::addMessage);
-        archivedChannel.setChannelName(channel.getName());
 
         return archivedChannel;
     }
 
     public static class ArchivedChannel {
-        private String channelName;
-        private List<String> messages = new ArrayList<>();
-        private Message firstMessage;
-        private OffsetDateTime lastMessage;
-
-        public Path saveInDirectory(Path directory) {
-            if (!Files.isDirectory(directory)) {
-                throw new ArchivingException(directory.toAbsolutePath().toUri() + " is not a directory");
-            }
-
-            var filePath = Paths.get(directory.toAbsolutePath().toString(), computeFileName());
-
-            if (Files.exists(filePath)) {
-                throw new ArchivingException(directory.toAbsolutePath().toUri() + " already exists");
-            }
-
-            String content = serializeContent();
-            try {
-                Files.createFile(filePath);
-                Files.writeString(filePath, content, StandardOpenOption.APPEND);
-            } catch (IOException e) {
-                throw new ArchivingException("Could not write to file", e);
-            }
-            return filePath;
-        }
-
-        public String serializeContent() {
-            return messages.stream().reduce((x, acc) -> x + '\n' + acc).orElseGet(() -> "");
-        }
+        private List<Message> messages = new ArrayList<>();
 
         public void saveToChannel(TextChannel channel) {
             channel.sendMessage(generateInfoEmbed()).addFile(serializeContent().getBytes(), "log.txt").queue();
         }
 
+        // TODO: Customizable note
         private MessageEmbed generateInfoEmbed() {
-            var userData = getUserData();
-            return new EmbedBuilder().setTitle("Log").addField("User", userData.get("User"), false).setColor(0x00FF00)
-                    .setDescription("See the attached File for more details")
-                    .addField("User ID", userData.get("ID"), false)
-                    .addField("Begin", formatDate(firstMessage.getTimeCreated()), false)
-                    .addField("End", formatDate(lastMessage), false).setTimestamp(Instant.now()).build();
+            var id = messages.get(0).getEmbeds().get(0).getFields().stream()
+                    .filter(field -> field.getName().contains("ID")).map(field -> field.getValue())
+                    .reduce((result, ignore) -> result)
+                    .orElseThrow(() -> new IllegalStateException("Field 'ID' does not exist"));
+            return new EmbedBuilder().setTitle("Log").setDescription("See the attached file for more details.")
+                    .setColor(0x00FF00).addField("User", "<@" + id + ">", false).addField("ID", id, false).build();
         }
 
-        private Map<String, String> getUserData() {
-            Map<String, String> data = new HashMap<>();
-            firstMessage.getEmbeds().stream().map(embed -> embed.getFields()).flatMap(fields -> fields.stream())
-                    .forEach(field -> data.put(field.getName(), field.getValue()));
-            return Collections.unmodifiableMap(data);
+        private String serializeContent() {
+            return messages.stream().map(this::serializeMessage).reduce((x, acc) -> x + '\n' + acc)
+                    .orElseThrow(() -> new ArchivingException("Could not serialize messages"));
         }
 
-        private String computeFileName() {
-            var userData = getUserData();
-            return String.format("[TAG:%s][ID:%s][BEG:%s][END:%s]", userData.get("Tag"), userData.get("ID"),
-                    formatDate(firstMessage.getTimeCreated()), formatDate(lastMessage));
-        }
-
-        private void setFirstMessageIfOlder(Message message) {
-            if (firstMessage == null) {
-                firstMessage = message;
-            } else if (firstMessage.getTimeCreated().isAfter(message.getTimeCreated())) {
-                firstMessage = message;
+        private String serializeMessage(Message message) {
+            String serializedMessage = "";
+            if (isModeratorAnswer(message)) {
+                serializedMessage = serializeModeratorAnswer(message);
+            } else if (isNote(message)) {
+                serializedMessage = serializeNote(message);
+            } else if (isCommand(message)) {
+                serializedMessage = serializeCommand(message);
+            } else if (isParticipiantMessage(message)) {
+                serializedMessage = serializeParticipiantMessage(message);
             }
+
+            return serializedMessage;
         }
 
-        private void setLastMessageIfNewer(Message message) {
-            if (lastMessage == null) {
-                lastMessage = message.getTimeCreated();
-            } else if (lastMessage.isBefore(message.getTimeCreated())) {
-                lastMessage = message.getTimeCreated();
-            }
+        private String serializeParticipiantMessage(Message message) {
+            String author = getParticipiantIdentification();
+
+            return String.format("[%s][%s][%s]: %s", formatDate(message.getTimeCreated()), author, "MESSAGE",
+                    message.getContentRaw());
         }
 
-        private void setChannelName(String channelName) {
-            this.channelName = channelName;
+        private boolean isParticipiantMessage(Message message) {
+            return message.getAuthor().isBot() && message.getEmbeds().isEmpty();
+        }
+
+        private String serializeCommand(Message message) {
+            return formatMessage(formatDate(message.getTimeCreated()), message.getAuthor(), "COMMAND",
+                    message.getContentRaw());
+        }
+
+        private boolean isCommand(Message message) {
+            return message.getContentRaw().contains("modmail");
+        }
+
+        private String serializeNote(Message message) {
+            var time = formatDate(message.getTimeCreated());
+            var type = "NOTE";
+            var content = message.getEmbeds().get(0).getFields().stream()
+                    .filter(field -> field.getName().contains("Content")).map(field -> field.getValue())
+                    .reduce((result, ignore) -> result)
+                    .orElseThrow(() -> new IllegalStateException("Field 'Content' does not exist in embed"));
+
+            return formatEmbed(time, type, content);
+        }
+
+        private boolean isNote(Message message) {
+            return message.getEmbeds().stream().anyMatch(embed -> embed.getTitle().contains("Note"));
+        }
+
+        private boolean isModeratorAnswer(Message message) {
+            return !message.getAuthor().isBot() && !message.getContentRaw().contains("!modmail");
+        }
+
+        private String serializeModeratorAnswer(Message message) {
+            return formatMessage(formatDate(message.getTimeCreated()), message.getAuthor(), "ANSWER",
+                    message.getContentRaw());
+        }
+
+        private String getParticipiantIdentification() {
+            var infoEmbed = messages.get(0).getEmbeds().get(0);
+            var tag = infoEmbed.getFields().stream().filter(field -> field.getName().contains("Tag"))
+                    .map(field -> field.getValue()).reduce((result, ignore) -> result)
+                    .orElseThrow(() -> new IllegalStateException("Field 'Tag' does not exist"));
+            var id = infoEmbed.getFields().stream().filter(field -> field.getName().contains("ID"))
+                    .map(field -> field.getValue()).reduce((result, ignore) -> result)
+                    .orElseThrow(() -> new IllegalStateException("Field 'ID' does not exist"));
+            return tag + '|' + id;
         }
 
         private void addMessage(Message message) {
-            setFirstMessageIfOlder(message);
-            setLastMessageIfNewer(message);
-            if (message.getAuthor().isBot()) {
-
-            } else {
-                messages.add(userMessageToString(message));
-            }
+            messages.add(message);
         }
 
-        private String userMessageToString(Message message) {
-            String time = formatDate(message.getTimeCreated());
-            User author = message.getAuthor();
-            String type = determineTypeOfMessage(message.getContentRaw());
-            String content = message.getContentRaw();
-            return formatMessage(time, author, type, content);
+        private String formatEmbed(String time, String type, String content) {
+            return String.format("[%s][%s][%s]: %s", time, "BOT", type, content);
         }
 
         private String formatMessage(String time, User author, String type, String content) {
@@ -146,13 +139,6 @@ public class ChannelArchiver {
                     time.get(ChronoField.MONTH_OF_YEAR), time.get(ChronoField.DAY_OF_MONTH),
                     time.get(ChronoField.HOUR_OF_DAY), time.get(ChronoField.MINUTE_OF_HOUR),
                     time.get(ChronoField.SECOND_OF_MINUTE));
-        }
-
-        private String determineTypeOfMessage(String content) {
-            if (content.contains("!modmail")) {
-                return "COMMAND";
-            }
-            return "MESSAGE";
         }
     }
 }
