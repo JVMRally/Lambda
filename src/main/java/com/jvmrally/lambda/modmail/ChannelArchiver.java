@@ -39,7 +39,7 @@ public class ChannelArchiver {
 
         // TODO: Customizable note
         private MessageEmbed generateInfoEmbed() {
-            var id = messages.get(0).getEmbeds().get(0).getFields().stream()
+            var id = getFirstMessage().getEmbeds().get(0).getFields().stream()
                     .filter(field -> field.getName().contains("ID")).map(field -> field.getValue())
                     .reduce((result, ignore) -> result)
                     .orElseThrow(() -> new IllegalStateException("Field 'ID' does not exist"));
@@ -111,8 +111,12 @@ public class ChannelArchiver {
                     message.getContentRaw());
         }
 
+        private Message getFirstMessage() {
+            return messages.get(messages.size() - 1);
+        }
+
         private String getParticipiantIdentification() {
-            var infoEmbed = messages.get(0).getEmbeds().get(0);
+            var infoEmbed = getFirstMessage().getEmbeds().get(0);
             var tag = infoEmbed.getFields().stream().filter(field -> field.getName().contains("Tag"))
                     .map(field -> field.getValue()).reduce((result, ignore) -> result)
                     .orElseThrow(() -> new IllegalStateException("Field 'Tag' does not exist"));
