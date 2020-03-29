@@ -7,7 +7,6 @@ import com.jvmrally.lambda.db.tables.pojos.DmTimeouts;
 import com.jvmrally.lambda.injectable.JooqConn;
 import com.jvmrally.lambda.modmail.ModmailChannelManagement;
 import com.jvmrally.lambda.utility.Util;
-import com.jvmrally.lambda.utility.messaging.Messenger;
 import org.jooq.DSLContext;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;

@@ -1,11 +1,9 @@
 package com.jvmrally.lambda.modmail;
 
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.jvmrally.lambda.modmail.exception.ArchivingException;
 import com.jvmrally.lambda.modmail.exception.CouldNotCreateChannelException;
 import com.jvmrally.lambda.modmail.exception.NoSuchCategoryException;
 
@@ -109,7 +107,6 @@ public class ModmailChannelManagement {
     }
 
     private Optional<TextChannel> fetchOpenCaseChannel(User user) {
-        var tag = user.getAsTag();
         Category category = fetchModmailCategory();
         var textChannels = category.getTextChannels();
         Optional<TextChannel> potentialChannel = textChannels.stream()
