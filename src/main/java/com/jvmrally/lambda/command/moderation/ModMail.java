@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.jvmrally.lambda.command.Command;
-import com.jvmrally.lambda.modmail.ModmailHandler;
+import com.jvmrally.lambda.modmail.*;
 
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.entities.Guild;
@@ -50,13 +50,13 @@ public class ModMail extends Command {
 
     @CommandHandler(commandName = "modmail.tag", description = "Prepends an emote to the channel name.")
     public static void tag(List<String> args, MessageReceivedEvent e) {
-        var modmailHandler = new ModmailHandler(e.getJDA());
-        args.forEach(emote -> modmailHandler.tagChannel(e.getTextChannel(), emote));
+        var modmailTagHandler = new ModmailTagHandler(e.getJDA());
+        args.forEach(emote -> modmailTagHandler.tagChannel(e.getTextChannel(), emote));
     }
 
     @CommandHandler(commandName = "modmail.cleartags", description = "Clears all tags from the channel")
     public static void clearTags(MessageReceivedEvent e) {
-        new ModmailHandler(e.getJDA()).clearTags(e.getTextChannel());
+        new ModmailTagHandler(e.getJDA()).clearTags(e.getTextChannel());
     }
 
     @CommandHandler(commandName = "modmail.archive", description = "Clears all tags from the channel")

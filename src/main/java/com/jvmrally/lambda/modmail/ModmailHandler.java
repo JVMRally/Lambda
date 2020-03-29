@@ -39,13 +39,6 @@ public class ModmailHandler {
         this.jda = Objects.requireNonNull(jda);
     }
 
-    public void clearTags(TextChannel channel) {
-        var initialChannelName = channel.getName();
-        var newName = initialChannelName.replaceAll("[\\p{P}\\p{S}]", "");
-
-        channel.getManager().setName(newName).submit();
-    }
-
     public void archive(TextChannel channel, Guild guild) {
 
         if (verifyChannelCategory(channel, guild)) {
@@ -55,11 +48,6 @@ public class ModmailHandler {
         } else {
             postError(channel, "Command can only be used within a modmail channel");
         }
-    }
-
-    public void tagChannel(TextChannel channel, String emote) {
-        var initialChannelName = channel.getName();
-        channel.getManager().setName(emote + initialChannelName).submit();
     }
 
     public void postNote(MessageChannel channel, User member, String content) {
