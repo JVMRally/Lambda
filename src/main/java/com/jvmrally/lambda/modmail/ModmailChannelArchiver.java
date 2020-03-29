@@ -26,7 +26,7 @@ public class ModmailChannelArchiver {
         this.guild = guild;
     }
 
-    public void archive() {
+    public void archive(String note) {
         if (ModmailChannelManagement.verifyModmailChannelCategory(channel, guild)) {
             var archive = collectMessages(channel);
             var archiveChannel = ModmailUtils.getReportsArchiveChannel(guild)
@@ -35,6 +35,10 @@ public class ModmailChannelArchiver {
         } else {
             throw new ArchivingException("Channel is not a modmailchannel");
         }
+    }
+
+    public void archive() {
+        archive(null);
     }
 
     private ArchivedChannel collectMessages(TextChannel channel) {
@@ -46,19 +50,32 @@ public class ModmailChannelArchiver {
 
     public static class ArchivedChannel {
         private List<Message> messages = new ArrayList<>();
+        private String note = null;
 
         public void saveToChannel(TextChannel channel) {
             channel.sendMessage(generateInfoEmbed()).addFile(serializeContent().getBytes(), "log.txt").queue();
         }
 
-        // TODO: Customizable note
+        public ArchivedChannel setNote(String note) {
+            this.note = note;
+            return this;
+        }
+
         private MessageEmbed generateInfoEmbed() {
             var id = getFirstMessage().getEmbeds().get(0).getFields().stream()
                     .filter(field -> field.getName().contains("ID")).map(field -> field.getValue())
                     .reduce((result, ignore) -> result)
                     .orElseThrow(() -> new IllegalStateException("Field 'ID' does not exist"));
-            return new EmbedBuilder().setTitle("Log").setDescription("See the attached file for more details.")
-                    .setColor(0x00FF00).addField("User", "<@" + id + ">", false).addField("ID", id, false).build();
+
+            var embedBuilder = new EmbedBuilder().setTitle("Log")
+                    .setDescription("See the attached file for more details.").setColor(0x00FF00)
+                    .addField("User", "<@" + id + ">", false).addField("ID", id, false);
+
+            if (note != null) {
+                embedBuilder = embedBuilder.addField("Note", note, false);
+            }
+
+            return embedBuilder.build();
         }
 
         private String serializeContent() {

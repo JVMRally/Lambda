@@ -58,9 +58,16 @@ public class ModMail extends Command {
         new ModmailTagHandler().clearTags(e.getTextChannel());
     }
 
-    @CommandHandler(commandName = "modmail.archive", description = "Clears all tags from the channel")
+    @CommandHandler(commandName = "modmail.archive", description = "Posts a log file to the reports-archive channel")
     public static void archive(MessageReceivedEvent e) {
         new ModmailChannelArchiver(e.getTextChannel(), e.getGuild()).archive();
+    }
+
+    @CommandHandler(commandName = "modmail.archive", description = "Posts a log file to the reports-archive channel")
+    public static void archive(List<String> args, MessageReceivedEvent e) {
+        var additionalNote = new StringBuilder();
+        args.forEach(word -> additionalNote.append(additionalNote.length() == 0 ? "" : " ").append(word));
+        new ModmailChannelArchiver(e.getTextChannel(), e.getGuild()).archive(additionalNote.toString());
     }
 
     // FIXME: throws NPE when id is unknown/not in any server
