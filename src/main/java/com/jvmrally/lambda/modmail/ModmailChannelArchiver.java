@@ -98,7 +98,7 @@ public class ModmailChannelArchiver {
         }
 
         private boolean isCommand(Message message) {
-            return message.getContentRaw().contains("modmail");
+            return message.getContentRaw().contains(ModmailUtils.Constants.MODMAIL_COMMAND_PREFIX);
         }
 
         private String serializeNote(Message message) {
@@ -117,7 +117,8 @@ public class ModmailChannelArchiver {
         }
 
         private boolean isModeratorAnswer(Message message) {
-            return !message.getAuthor().isBot() && !message.getContentRaw().contains("!modmail");
+            return !message.getAuthor().isBot()
+                    && !message.getContentRaw().contains(ModmailUtils.Constants.MODMAIL_COMMAND_PREFIX);
         }
 
         private String serializeModeratorAnswer(Message message) {
@@ -125,7 +126,7 @@ public class ModmailChannelArchiver {
                     message.getContentRaw());
         }
 
-        private Message getFirstMessage() {
+        private static Message getFirstMessage() {
             return messages.get(messages.size() - 1);
         }
 
