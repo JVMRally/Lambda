@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.jvmrally.lambda.modmail.entities.Note;
 import com.jvmrally.lambda.modmail.exception.ArchivingException;
 import com.jvmrally.lambda.modmail.exception.CouldNotCreateChannelException;
 import com.jvmrally.lambda.modmail.exception.NoSuchCategoryException;
@@ -48,11 +47,6 @@ public class ModmailHandler {
         } else {
             postError(channel, "Command can only be used within a modmail channel");
         }
-    }
-
-    public void postNote(MessageChannel channel, User member, String content) {
-        var note = new Note(member, content, Instant.now());
-        channel.sendMessage(note.toMessageEmbed()).queue();
     }
 
     public void deleteChannel(MessageChannel channel, Guild guild) {
