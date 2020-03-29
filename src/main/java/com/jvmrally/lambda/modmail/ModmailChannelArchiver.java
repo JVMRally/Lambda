@@ -126,7 +126,7 @@ public class ModmailChannelArchiver {
                     message.getContentRaw());
         }
 
-        private static Message getFirstMessage() {
+        private Message getFirstMessage() {
             return messages.get(messages.size() - 1);
         }
 
