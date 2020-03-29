@@ -45,7 +45,7 @@ public class ModMail extends Command {
     public static void note(List<String> args, MessageReceivedEvent e) {
         var content = new StringBuilder();
         args.forEach(word -> content.append(content.length() == 0 ? "" : " ").append(word));
-        new ModmailHandler(e.getJDA()).postNote(e.getChannel(), e.getAuthor(), content.toString());
+        new ModmailNoteHandler().postNote(e.getChannel(), e.getAuthor(), content.toString());
     }
 
     @CommandHandler(commandName = "modmail.tag", description = "Prepends an emote to the channel name.")
