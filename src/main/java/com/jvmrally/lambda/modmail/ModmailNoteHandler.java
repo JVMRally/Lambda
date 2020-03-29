@@ -30,18 +30,6 @@ public class ModmailNoteHandler {
             this.timeStamp = timeStamp;
         }
 
-        public User getCreator() {
-            return creator;
-        }
-
-        public String getContent() {
-            return content;
-        }
-
-        public TemporalAccessor getTimeStamp() {
-            return timeStamp;
-        }
-
         public MessageEmbed toMessageEmbed() {
             return new EmbedBuilder().setTitle("Note").addField("Creator", creator.getAsMention(), false)
                     .addField("Content", content, false).setTimestamp(timeStamp).setColor(0xFFFF00).build();
