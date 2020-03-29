@@ -4,10 +4,12 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.jvmrally.lambda.modmail.exception.ArchivingException;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -16,18 +18,34 @@ import net.dv8tion.jda.api.entities.User;
 /**
  * ChannelArchiver
  */
-public class ChannelArchiver {
+public class ModmailChannelArchiver {
     private final TextChannel channel;
+    private final Guild guild;
 
-    public ChannelArchiver(TextChannel channel) {
+    public ModmailChannelArchiver(TextChannel channel, Guild guild) {
         this.channel = channel;
+        this.guild = guild;
     }
 
-    public ArchivedChannel archive() {
+    public void archive() {
+        if (ModmailHandler.verifyModmailChannelCategory(channel, guild)) {
+            var archive = collectMessages(channel);
+            var archiveChannel = getReportsArchiveChannel(guild).orElseThrow(() -> new ArchivingException("message"));
+            archive.saveToChannel(archiveChannel);
+        } else {
+            throw new ArchivingException("Channel is not a modmailchannel");
+        }
+    }
+
+    private ArchivedChannel collectMessages(TextChannel channel) {
         var archivedChannel = new ArchivedChannel();
         channel.getIterableHistory().stream().forEach(archivedChannel::addMessage);
 
         return archivedChannel;
+    }
+
+    private Optional<TextChannel> getReportsArchiveChannel(Guild guild) {
+        return guild.getTextChannelsByName("reports-archive", false).stream().reduce((x, ignore) -> x);
     }
 
     public static class ArchivedChannel {
