@@ -27,14 +27,14 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 /**
  * ModmailHandler
  */
-public class ModmailHandler {
+public class ModmailChannelManagement {
 
     private static final String CATEGORY_NAME = "reports";
-    private static final Logger LOGGER = LoggerFactory.getLogger(ModmailHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModmailChannelManagement.class);
 
     private final JDA jda;
 
-    public ModmailHandler(JDA jda) {
+    public ModmailChannelManagement(JDA jda) {
         this.jda = Objects.requireNonNull(jda);
     }
 
