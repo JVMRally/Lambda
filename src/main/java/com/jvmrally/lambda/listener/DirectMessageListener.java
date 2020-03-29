@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import com.jvmrally.lambda.db.tables.pojos.DmTimeouts;
 import com.jvmrally.lambda.injectable.JooqConn;
-import com.jvmrally.lambda.modmail.ModmailChannelManagement;
+import com.jvmrally.lambda.modmail.ModmailCommunicationHandler;
 import com.jvmrally.lambda.utility.Util;
 import org.jooq.DSLContext;
 import net.dv8tion.jda.api.entities.Guild;
@@ -98,6 +98,6 @@ public class DirectMessageListener extends ListenerAdapter {
      * @param e the received message event
      */
     private void logMessage(PrivateMessageReceivedEvent e) {
-        new ModmailChannelManagement(e.getJDA()).manageDirectMessage(e);
+        new ModmailCommunicationHandler().handleDirectMessage(e);
     }
 }

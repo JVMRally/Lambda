@@ -14,12 +14,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 
 /**
@@ -75,20 +73,11 @@ public class ModmailChannelManagement {
                 .build();
     }
 
-    public void manageDirectMessage(PrivateMessageReceivedEvent event) {
-        var caseChannel = getCaseChannel(event.getAuthor());
-        caseChannel.sendMessage(formatDirectMessage(event)).queue();
-    }
-
-    private Message formatDirectMessage(PrivateMessageReceivedEvent event) {
-        return event.getMessage();
-    }
-
     private String computeCaseChannelName(User user) {
         return user.getAsTag().toLowerCase().replace("#", "");
     }
 
-    private TextChannel getCaseChannel(User user) {
+    public TextChannel getCaseChannel(User user) {
         var potentialChannel = fetchOpenCaseChannel(user);
         if (potentialChannel.isPresent()) {
             return potentialChannel.get();
