@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.jvmrally.lambda.modmail.entities.Note;
 import com.jvmrally.lambda.modmail.exception.ArchivingException;
 import com.jvmrally.lambda.modmail.exception.CouldNotCreateChannelException;
 import com.jvmrally.lambda.modmail.exception.NoSuchCategoryException;

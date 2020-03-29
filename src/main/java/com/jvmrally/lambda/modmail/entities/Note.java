@@ -1,4 +1,4 @@
-package com.jvmrally.lambda.modmail;
+package com.jvmrally.lambda.modmail.entities;
 
 import java.time.temporal.TemporalAccessor;
 
