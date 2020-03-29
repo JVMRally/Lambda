@@ -4,7 +4,6 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import com.jvmrally.lambda.modmail.exception.ArchivingException;
 
@@ -30,7 +29,8 @@ public class ModmailChannelArchiver {
     public void archive() {
         if (ModmailChannelManagement.verifyModmailChannelCategory(channel, guild)) {
             var archive = collectMessages(channel);
-            var archiveChannel = getReportsArchiveChannel(guild).orElseThrow(() -> new ArchivingException("message"));
+            var archiveChannel = ModmailUtils.getReportsArchiveChannel(guild)
+                    .orElseThrow(() -> new ArchivingException("message"));
             archive.saveToChannel(archiveChannel);
         } else {
             throw new ArchivingException("Channel is not a modmailchannel");
@@ -42,10 +42,6 @@ public class ModmailChannelArchiver {
         channel.getIterableHistory().stream().forEach(archivedChannel::addMessage);
 
         return archivedChannel;
-    }
-
-    private Optional<TextChannel> getReportsArchiveChannel(Guild guild) {
-        return guild.getTextChannelsByName("reports-archive", false).stream().reduce((x, ignore) -> x);
     }
 
     public static class ArchivedChannel {
