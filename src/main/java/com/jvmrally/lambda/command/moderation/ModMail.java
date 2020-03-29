@@ -31,14 +31,15 @@ public class ModMail extends Command {
     public static void open(List<String> userIds, MessageReceivedEvent e) {
         List<Guild> guilds = e.getJDA().getGuilds();
         for (var userId : userIds) {
-            fetchUser(userId, guilds).ifPresentOrElse(user -> new ModmailHandler(e.getJDA()).openNewChannel(user),
+            fetchUser(userId, guilds).ifPresentOrElse(
+                    user -> new ModmailChannelManagement(e.getJDA()).openNewChannel(user),
                     () -> sendError("Cannot open channel: Cannot find user " + userId, e));
         }
     }
 
     @CommandHandler(commandName = "modmail.close", description = "Closes the current modmail channel.")
     public static void close(MessageReceivedEvent e) {
-        new ModmailHandler(e.getJDA()).deleteChannel(e.getChannel(), e.getGuild());
+        new ModmailChannelManagement(e.getJDA()).deleteChannel(e.getChannel(), e.getGuild());
     }
 
     @CommandHandler(commandName = "modmail.note", description = "Posts a note embed in the current channel.")
