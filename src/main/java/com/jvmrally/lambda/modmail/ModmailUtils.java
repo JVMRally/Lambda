@@ -9,8 +9,13 @@ import net.dv8tion.jda.api.entities.TextChannel;
  * ModmailUtils
  */
 public class ModmailUtils {
+
     public static Optional<TextChannel> getReportsArchiveChannel(Guild guild) {
         return guild.getTextChannelsByName("reports-archive", false).stream().reduce((x, ignore) -> x);
+    }
+
+    public static class Constants {
+        public static final String MODMAIL_COMMAND_PREFIX = "!modmail";
     }
 
 }
