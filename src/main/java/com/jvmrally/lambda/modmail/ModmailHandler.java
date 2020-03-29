@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -113,8 +114,8 @@ public class ModmailHandler {
         caseChannel.sendMessage(formatDirectMessage(event)).queue();
     }
 
-    private String formatDirectMessage(PrivateMessageReceivedEvent event) {
-        return String.format("[%s]: %s", event.getAuthor().getAsMention(), event.getMessage().getContentRaw());
+    private Message formatDirectMessage(PrivateMessageReceivedEvent event) {
+        return event.getMessage();
     }
 
     private String computeCaseChannelName(User user) {
