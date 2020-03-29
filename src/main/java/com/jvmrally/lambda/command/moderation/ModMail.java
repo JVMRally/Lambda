@@ -61,7 +61,7 @@ public class ModMail extends Command {
 
     @CommandHandler(commandName = "modmail.archive", description = "Clears all tags from the channel")
     public static void archive(MessageReceivedEvent e) {
-        new ModmailHandler(e.getJDA()).archive(e.getTextChannel(), e.getGuild());
+        new ModmailChannelArchiver(e.getTextChannel(), e.getGuild()).archive();
     }
 
     // FIXME: throws NPE when id is unknown/not in any server

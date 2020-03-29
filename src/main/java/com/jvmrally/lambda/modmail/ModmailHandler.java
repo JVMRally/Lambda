@@ -38,19 +38,8 @@ public class ModmailHandler {
         this.jda = Objects.requireNonNull(jda);
     }
 
-    public void archive(TextChannel channel, Guild guild) {
-
-        if (verifyChannelCategory(channel, guild)) {
-            var archive = new ChannelArchiver(channel).archive();
-            var archiveChannel = getReportsArchiveChannel(guild).orElseThrow(() -> new ArchivingException("message"));
-            archive.saveToChannel(archiveChannel);
-        } else {
-            postError(channel, "Command can only be used within a modmail channel");
-        }
-    }
-
     public void deleteChannel(MessageChannel channel, Guild guild) {
-        if (verifyChannelCategory(channel, guild)) {
+        if (verifyModmailChannelCategory(channel, guild)) {
             guild.getTextChannelById(channel.getId()).delete().queue();
         } else {
             postError(guild.getTextChannelById(channel.getIdLong()),
@@ -70,16 +59,12 @@ public class ModmailHandler {
         }
     }
 
-    private Optional<TextChannel> getReportsArchiveChannel(Guild guild) {
-        return guild.getTextChannelsByName("reports-archive", false).stream().reduce((x, ignore) -> x);
-    }
-
     private void postError(TextChannel channel, String message) {
         channel.sendMessage("Error: " + message).queue();
         LOGGER.error(message);
     }
 
-    private static boolean verifyChannelCategory(MessageChannel channel, Guild guild) {
+    public static boolean verifyModmailChannelCategory(MessageChannel channel, Guild guild) {
         var categories = guild.getCategoriesByName(CATEGORY_NAME, false);
         return categories.stream().map(category -> category.getTextChannels()).flatMap(channels -> channels.stream())
                 .anyMatch(potentialChannel -> potentialChannel.getIdLong() == channel.getIdLong());
