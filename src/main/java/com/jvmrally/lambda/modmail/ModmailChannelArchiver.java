@@ -68,10 +68,9 @@ public class ModmailChannelArchiver {
                     .reduce((result, ignore) -> result)
                     .orElseThrow(() -> new IllegalStateException("Field 'ID' does not exist"));
 
-            return embedBuilder = new EmbedBuilder().setTitle("Log")
-                    .setDescription("See the attached file for more details.").setColor(0x00FF00)
-                    .addField("User", "<@" + id + ">", false).addField("ID", id, false).addField("Note", note, false)
-                    .build();
+            return new EmbedBuilder().setTitle("Log").setDescription("See the attached file for more details.")
+                    .setColor(0x00FF00).addField("User", "<@" + id + ">", false).addField("ID", id, false)
+                    .addField("Note", note, false).build();
 
         }
 
