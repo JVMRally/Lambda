@@ -4,6 +4,7 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.jvmrally.lambda.modmail.exception.ArchivingException;
 
@@ -28,7 +29,7 @@ public class ModmailChannelArchiver {
 
     public void archive(String note) {
         if (ModmailChannelManagement.verifyModmailChannelCategory(channel, guild)) {
-            var archive = collectMessages(channel);
+            var archive = collectMessages(channel).setNote(note);
             var archiveChannel = ModmailUtils.getReportsArchiveChannel(guild)
                     .orElseThrow(() -> new ArchivingException("message"));
             archive.saveToChannel(archiveChannel);
@@ -50,14 +51,14 @@ public class ModmailChannelArchiver {
 
     public static class ArchivedChannel {
         private List<Message> messages = new ArrayList<>();
-        private String note = null;
+        private String note = "";
 
         public void saveToChannel(TextChannel channel) {
             channel.sendMessage(generateInfoEmbed()).addFile(serializeContent().getBytes(), "log.txt").queue();
         }
 
         public ArchivedChannel setNote(String note) {
-            this.note = note;
+            this.note = Objects.requireNonNull(note);
             return this;
         }
 
@@ -67,15 +68,11 @@ public class ModmailChannelArchiver {
                     .reduce((result, ignore) -> result)
                     .orElseThrow(() -> new IllegalStateException("Field 'ID' does not exist"));
 
-            var embedBuilder = new EmbedBuilder().setTitle("Log")
+            return embedBuilder = new EmbedBuilder().setTitle("Log")
                     .setDescription("See the attached file for more details.").setColor(0x00FF00)
-                    .addField("User", "<@" + id + ">", false).addField("ID", id, false);
+                    .addField("User", "<@" + id + ">", false).addField("ID", id, false).addField("Note", note, false)
+                    .build();
 
-            if (note != null) {
-                embedBuilder = embedBuilder.addField("Note", note, false);
-            }
-
-            return embedBuilder.build();
         }
 
         private String serializeContent() {
@@ -94,7 +91,6 @@ public class ModmailChannelArchiver {
             } else if (isParticipiantMessage(message)) {
                 serializedMessage = serializeParticipiantMessage(message);
             }
-
             return serializedMessage;
         }
 
