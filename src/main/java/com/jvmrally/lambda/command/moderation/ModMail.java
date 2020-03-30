@@ -2,6 +2,8 @@ package com.jvmrally.lambda.command.moderation;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import com.jvmrally.lambda.command.Command;
 import com.jvmrally.lambda.modmail.*;
@@ -29,9 +31,7 @@ public class ModMail extends Command {
     public static void open(List<String> userIds, MessageReceivedEvent e) {
         List<Guild> guilds = e.getJDA().getGuilds();
         for (var userId : userIds) {
-            fetchUser(userId, guilds).ifPresentOrElse(
-                    user -> new ModmailChannelManagement(e.getJDA()).openNewChannel(user),
-                    () -> sendError("Cannot open channel: Cannot find user " + userId, e));
+            new ModmailChannelManagement(e.getJDA()).openNewChannel(getUser(userId, guilds));
         }
     }
 
@@ -65,14 +65,16 @@ public class ModMail extends Command {
         new ModmailChannelArchiver(e.getTextChannel(), e.getGuild()).archive(additionalNote.toString());
     }
 
-    // FIXME: throws NPE when id is unknown/not in any server
-    private static Optional<User> fetchUser(String userId, List<Guild> guilds) {
-        return guilds.stream().map(guild -> guild.getMemberById(userId)).map(member -> member.getUser())
-                .reduce((result, ignore) -> result);
+    private static User getUser(String userId, List<Guild> guilds) {
+        List<User> foundUsers = guilds.stream().map(guild -> guild.getMemberById(userId))
+                .map(member -> member.getUser()).collect(Collectors.toList());
+
+        if (foundUsers.isEmpty()) {
+            throw new IllegalStateException(
+                    "Cannot find user " + userId + ". User with id does not share any server with the bot.");
+        }
+
+        return foundUsers.get(0);
     }
 
-    private static void sendError(String message, MessageReceivedEvent e) {
-        LOGGER.warn(message);
-        e.getChannel().sendMessage(message).queue();
-    }
 }
