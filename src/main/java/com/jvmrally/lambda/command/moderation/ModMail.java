@@ -59,11 +59,6 @@ public class ModMail extends Command {
     }
 
     @CommandHandler(commandName = "modmail.archive", description = "Posts a log file to the reports-archive channel")
-    public static void archive(MessageReceivedEvent e) {
-        new ModmailChannelArchiver(e.getTextChannel(), e.getGuild()).archive();
-    }
-
-    @CommandHandler(commandName = "modmail.archive", description = "Posts a log file to the reports-archive channel")
     public static void archive(List<String> args, MessageReceivedEvent e) {
         var additionalNote = new StringBuilder();
         args.forEach(word -> additionalNote.append(additionalNote.length() == 0 ? "" : " ").append(word));
