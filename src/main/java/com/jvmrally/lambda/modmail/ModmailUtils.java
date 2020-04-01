@@ -5,6 +5,8 @@ import java.util.Optional;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+import org.apache.logging.log4j.Logger;
+
 /**
  * ModmailUtils
  */
@@ -16,6 +18,10 @@ public class ModmailUtils {
 
     public static class Constants {
         public static final String MODMAIL_COMMAND_PREFIX = "!modmail";
+    }
+
+    public static void logInfo(Logger logger, String message) {
+        logger.info(String.format("[%s] %s", "modmail", message));
     }
 
 }
