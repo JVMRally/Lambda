@@ -84,7 +84,7 @@ public class ModMail extends Command {
     }
 
     private static void logCommand(MessageReceivedEvent e) {
-        LOGGER.info(String.format("[%s] %s in channel %s: %s", "modmail", e.getAuthor().getAsTag(),
+        ModmailUtils.logInfo(LOGGER, String.format("%s in channel %s: %s", e.getAuthor().getAsTag(),
                 e.getChannel().getName(), e.getMessage().getContentRaw()));
     }
 
