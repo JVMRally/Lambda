@@ -1,8 +1,6 @@
 package com.jvmrally.lambda.command.moderation;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.jvmrally.lambda.command.Command;

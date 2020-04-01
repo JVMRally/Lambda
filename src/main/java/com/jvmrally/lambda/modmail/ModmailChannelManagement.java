@@ -8,9 +8,6 @@ import com.jvmrally.lambda.modmail.exception.CouldNotCreateChannelException;
 import com.jvmrally.lambda.modmail.exception.CouldNotDeleteChannelException;
 import com.jvmrally.lambda.modmail.exception.NoSuchCategoryException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Category;
