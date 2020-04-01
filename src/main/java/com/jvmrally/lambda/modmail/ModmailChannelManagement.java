@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.jvmrally.lambda.modmail.exception.CouldNotCreateChannelException;
+import com.jvmrally.lambda.modmail.exception.CouldNotDeleteChannelException;
 import com.jvmrally.lambda.modmail.exception.NoSuchCategoryException;
 
 import org.slf4j.Logger;
@@ -38,8 +39,8 @@ public class ModmailChannelManagement {
         if (verifyModmailChannelCategory(channel, guild)) {
             guild.getTextChannelById(channel.getId()).delete().queue();
         } else {
-            postError(guild.getTextChannelById(channel.getIdLong()),
-                    "Could not delete channel, channel is not in Category " + CATEGORY_NAME);
+            throw new CouldNotDeleteChannelException("Could not delete channel " + channel.getName() + " in guild "
+                    + guild.getName() + ". Channel is not in category " + CATEGORY_NAME);
         }
     }
 
@@ -53,11 +54,6 @@ public class ModmailChannelManagement {
         } catch (RateLimitedException e) {
             throw new CouldNotCreateChannelException("Could not create channel: " + channelName, e);
         }
-    }
-
-    private void postError(TextChannel channel, String message) {
-        channel.sendMessage("Error: " + message).queue();
-        LOGGER.error(message);
     }
 
     public static boolean verifyModmailChannelCategory(MessageChannel channel, Guild guild) {
