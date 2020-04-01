@@ -8,8 +8,8 @@ import com.jvmrally.lambda.modmail.exception.CouldNotCreateChannelException;
 import com.jvmrally.lambda.modmail.exception.CouldNotDeleteChannelException;
 import com.jvmrally.lambda.modmail.exception.NoSuchCategoryException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -27,7 +27,6 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 public class ModmailChannelManagement {
 
     private static final String CATEGORY_NAME = "reports";
-    private static final Logger LOGGER = LoggerFactory.getLogger(ModmailChannelManagement.class);
 
     private final JDA jda;
 
