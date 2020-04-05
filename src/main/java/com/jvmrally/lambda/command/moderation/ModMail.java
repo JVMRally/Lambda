@@ -19,6 +19,10 @@ import org.apache.logging.log4j.Logger;
  */
 public class ModMail extends Command {
 
+    public static class Constants {
+        public static final String MODMAIL_COMMAND_PREFIX = "!modmail";
+    }
+
     private static final Logger LOGGER = LogManager.getLogger(ModMail.class);
 
     private ModMail(MessageReceivedEvent e) {

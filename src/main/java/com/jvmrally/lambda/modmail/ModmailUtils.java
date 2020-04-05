@@ -16,10 +16,6 @@ public class ModmailUtils {
         return guild.getTextChannelsByName("reports-archive", false).stream().reduce((x, ignore) -> x);
     }
 
-    public static class Constants {
-        public static final String MODMAIL_COMMAND_PREFIX = "!modmail";
-    }
-
     public static void logInfo(Logger logger, String message) {
         logger.info(String.format("[%s] %s", "modmail", message));
     }

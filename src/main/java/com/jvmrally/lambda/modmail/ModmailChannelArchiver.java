@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.jvmrally.lambda.command.moderation.ModMail;
 import com.jvmrally.lambda.modmail.exception.ArchivingException;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -110,7 +111,7 @@ public class ModmailChannelArchiver {
         }
 
         private boolean isCommand(Message message) {
-            return message.getContentRaw().contains(ModmailUtils.Constants.MODMAIL_COMMAND_PREFIX);
+            return message.getContentRaw().contains(ModMail.Constants.MODMAIL_COMMAND_PREFIX);
         }
 
         private String serializeNote(Message message) {
@@ -130,7 +131,7 @@ public class ModmailChannelArchiver {
 
         private boolean isModeratorAnswer(Message message) {
             return !message.getAuthor().isBot()
-                    && !message.getContentRaw().contains(ModmailUtils.Constants.MODMAIL_COMMAND_PREFIX);
+                    && !message.getContentRaw().contains(ModMail.Constants.MODMAIL_COMMAND_PREFIX);
         }
 
         private String serializeModeratorAnswer(Message message) {
