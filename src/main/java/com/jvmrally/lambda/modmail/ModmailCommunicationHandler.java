@@ -24,10 +24,8 @@ public class ModmailCommunicationHandler {
             var participiant = getModMailParticipiant(event.getJDA(), getParticipiantId(event.getTextChannel()));
             ModmailUtils.logInfo(LOGGER, String.format("[%s|%s] answered to case [%s|%s]", event.getAuthor().getAsTag(),
                     event.getAuthor().getAvatarId(), participiant.getAsTag(), participiant.getId()));
-            participiant.openPrivateChannel().queue(channel -> {
-                channel.sendMessage("Staff reply:").queue(null, (ignore) -> modMessage.addReaction("❌").queue());
-                channel.sendMessage(modMessage).queue();
-            });
+            participiant.openPrivateChannel().queue(channel -> channel.sendMessage(modMessage).queue(null,
+                    (ignore) -> modMessage.addReaction("❌").queue()));
         }
     }
 
