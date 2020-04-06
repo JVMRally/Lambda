@@ -35,7 +35,7 @@ public class ModmailCommunicationHandler {
         LOGGER.info("Received modmail message by user: [{}|{}]", event.getAuthor().getAsTag(),
                 event.getAuthor().getId());
         var caseChannel = new ModmailChannelManagement(event.getJDA()).getCaseChannel(event.getAuthor());
-        caseChannel.sendMessage(formatDirectMessage(event)).queue();
+        caseChannel.sendMessage(event.getMessage()).queue();
     }
 
     private boolean isInModMailChannel(MessageReceivedEvent event) {
@@ -68,9 +68,5 @@ public class ModmailCommunicationHandler {
                 .orElseThrow(() -> new IllegalStateException(
                         "Could not find embed with field 'ID' in the first message of channel: "
                                 + modmailChannel.getName()));
-    }
-
-    private Message formatDirectMessage(PrivateMessageReceivedEvent event) {
-        return event.getMessage();
     }
 }
