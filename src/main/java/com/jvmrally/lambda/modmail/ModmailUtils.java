@@ -15,8 +15,4 @@ public class ModmailUtils {
         return guild.getTextChannelsByName(channelname, false).stream().reduce((result, ignore) -> result);
     }
 
-    public static void logInfo(Logger logger, String message) {
-        logger.info(String.format("[%s] %s", "modmail", message));
-    }
-
 }
