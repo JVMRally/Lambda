@@ -39,10 +39,6 @@ public class ModmailChannelArchiver {
         }
     }
 
-    public void archive() {
-        archive(null);
-    }
-
     private ArchivedChannel collectMessages(TextChannel channel) {
         var archivedChannel = new ArchivedChannel();
         channel.getIterableHistory().stream().forEach(archivedChannel::addMessage);
