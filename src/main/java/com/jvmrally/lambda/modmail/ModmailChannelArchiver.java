@@ -31,7 +31,7 @@ public class ModmailChannelArchiver {
     public void archive(String note) {
         if (ModmailChannelManagement.verifyModmailChannelCategory(channel, guild)) {
             var archive = collectMessages(channel).setNote(note);
-            var archiveChannel = ModmailUtils.getReportsArchiveChannel(guild)
+            var archiveChannel = ModmailUtils.findTextChannelByName("reports-archive", guild)
                     .orElseThrow(() -> new ArchivingException("message"));
             archive.saveToChannel(archiveChannel);
         } else {
