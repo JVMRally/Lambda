@@ -22,16 +22,16 @@ public class ModmailCommunicationHandler {
         var modMessage = event.getMessage();
         if (isInModMailChannel(event) && !event.getAuthor().isBot() && messageIsNotCommand(modMessage)) {
             var participiant = getModMailParticipiant(event.getJDA(), getParticipiantId(event.getTextChannel()));
-            ModmailUtils.logInfo(LOGGER, String.format("[%s|%s] answered to case [%s|%s]", event.getAuthor().getAsTag(),
-                    event.getAuthor().getAvatarId(), participiant.getAsTag(), participiant.getId()));
+            LOGGER.info("[{}|{}] answered to case [{}|{}]", event.getAuthor().getAsTag(),
+                    event.getAuthor().getAvatarId(), participiant.getAsTag(), participiant.getId());
             participiant.openPrivateChannel().queue(channel -> channel.sendMessage(modMessage).queue(null,
                     (ignore) -> modMessage.addReaction("❌").queue()));
         }
     }
 
     public void handleDirectMessage(PrivateMessageReceivedEvent event) {
-        ModmailUtils.logInfo(LOGGER, String.format("Received modmail message by user: [%s|%s]",
-                event.getAuthor().getAsTag(), event.getAuthor().getId()));
+        LOGGER.info("Received modmail message by user: [{}|{}]", event.getAuthor().getAsTag(),
+                event.getAuthor().getId());
         var caseChannel = new ModmailChannelManagement(event.getJDA()).getCaseChannel(event.getAuthor());
         caseChannel.sendMessage(formatDirectMessage(event)).queue();
     }
