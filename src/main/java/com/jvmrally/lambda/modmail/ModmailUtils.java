@@ -13,7 +13,11 @@ import org.apache.logging.log4j.Logger;
 public class ModmailUtils {
 
     public static Optional<TextChannel> getReportsArchiveChannel(Guild guild) {
-        return guild.getTextChannelsByName("reports-archive", false).stream().reduce((x, ignore) -> x);
+        return getChannelByName("reports-archive", guild);
+    }
+
+    public static Optional<TextChannel> getChannelByName(String channelname, Guild guild) {
+        return guild.getTextChannelsByName(channelname, false).stream().reduce((result, ignore) -> result);
     }
 
     public static void logInfo(Logger logger, String message) {
