@@ -1,5 +1,7 @@
 package com.jvmrally.lambda.modmail;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,10 +56,15 @@ public class ModmailCommunicationHandler {
     }
 
     private long getParticipiantId(TextChannel modmailChannel) {
-        return modmailChannel.getHistoryFromBeginning(1).complete().getRetrievedHistory().get(0).getEmbeds().stream()
-                .limit(1).map(embed -> embed.getFields()).flatMap(fields -> fields.stream())
-                .filter(field -> field.getName().equals("ID")).map(Field::getValue).map(Long::parseLong)
-                .reduce((result, ignore) -> result)
+        var firstMessage = Objects.requireNonNull(
+                modmailChannel.getHistoryFromBeginning(1).complete().getRetrievedHistory().get(0),
+                "Could not receive first message in channel: " + modmailChannel.getName());
+
+        var infoEmbed = firstMessage.getEmbeds().stream().reduce((result, ignore) -> result)
+                .orElseThrow(() -> new IllegalStateException("Could not receive info embed from first message"));
+
+        return infoEmbed.getFields().stream().filter(field -> field.getName().equals("ID")).map(Field::getValue)
+                .map(Long::parseLong).reduce((result, ignore) -> result)
                 .orElseThrow(() -> new IllegalStateException(
                         "Could not find embed with field 'ID' in the first message of channel: "
                                 + modmailChannel.getName()));
