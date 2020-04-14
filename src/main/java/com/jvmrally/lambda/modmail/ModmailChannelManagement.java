@@ -66,7 +66,7 @@ public class ModmailChannelManagement {
     }
 
     private String computeCaseChannelName(User user) {
-        return user.getAsTag().toLowerCase().replace("#", "");
+        return user.getAsTag().toLowerCase().replace("#", "").replace(" ", "-");
     }
 
     public TextChannel getCaseChannel(User user) {
