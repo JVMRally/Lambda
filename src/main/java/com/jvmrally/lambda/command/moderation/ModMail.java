@@ -65,12 +65,13 @@ public class ModMail extends Command {
         new ModmailTagHandler().clearTags(e.getTextChannel());
     }
 
-    @CommandHandler(commandName = "modmail.archive", description = "Posts a log file to the reports-archive channel")
+    @CommandHandler(commandName = "modmail.archive", description = "Posts a log file to the reports-archive channel and closes the channel.")
     public static void archive(List<String> args, MessageReceivedEvent e) {
         logCommand(e);
         var additionalNote = new StringBuilder();
         args.forEach(word -> additionalNote.append(additionalNote.length() == 0 ? "" : " ").append(word));
         new ModmailChannelArchiver(e.getTextChannel(), e.getGuild()).archive(additionalNote.toString());
+        new ModmailChannelManagement(e.getJDA()).deleteChannel(e.getChannel(), e.getGuild());
     }
 
     private static User getUser(String userId, List<Guild> guilds) {
