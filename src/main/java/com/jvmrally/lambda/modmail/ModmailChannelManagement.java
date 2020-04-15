@@ -8,6 +8,9 @@ import com.jvmrally.lambda.modmail.exception.CouldNotCreateChannelException;
 import com.jvmrally.lambda.modmail.exception.CouldNotDeleteChannelException;
 import com.jvmrally.lambda.modmail.exception.NoSuchCategoryException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Category;
@@ -24,6 +27,7 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 public class ModmailChannelManagement {
 
     private static final String CATEGORY_NAME = "reports";
+    private static final Logger LOGGER = LogManager.getLogger(ModmailChannelManagement.class);
 
     private final JDA jda;
 
@@ -46,6 +50,8 @@ public class ModmailChannelManagement {
         try {
             var createdChannel = category.createTextChannel(channelName).complete(true);
             createdChannel.sendMessage(createCaseStartEmbed(user)).queue();
+            sendMessageToUser(user,
+                    "A report has been opened. JVMRally staff will get back to you as soon as possible. \nAny following messages will also be attached to the report.");
             return createdChannel;
         } catch (RateLimitedException e) {
             throw new CouldNotCreateChannelException("Could not create channel: " + channelName, e);
@@ -93,6 +99,13 @@ public class ModmailChannelManagement {
         Optional<TextChannel> potentialChannel = textChannels.stream()
                 .filter(x -> x.getName().contains(computeCaseChannelName(user))).reduce((x, ignore) -> x);
         return potentialChannel;
+    }
+
+    public static void sendMessageToUser(User user, String message) {
+        user.openPrivateChannel().queue(directChannel -> directChannel.sendMessage(message).queue(null, exception -> {
+            LOGGER.error("Could not send message '{}' to user {}", message, user.getAsTag());
+            LOGGER.error(exception);
+        }));
     }
 
 }
