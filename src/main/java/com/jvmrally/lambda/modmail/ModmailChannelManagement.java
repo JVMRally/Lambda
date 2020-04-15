@@ -21,6 +21,8 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 
+import static com.jvmrally.lambda.modmail.ModmailCommunicationHandler.*;
+
 /**
  * ModmailHandler
  */
@@ -37,7 +39,10 @@ public class ModmailChannelManagement {
 
     public void deleteChannel(MessageChannel channel, Guild guild) {
         if (verifyModmailChannelCategory(channel, guild)) {
-            guild.getTextChannelById(channel.getId()).delete().queue();
+            var textchannel = guild.getTextChannelById(channel.getId());
+            var user = ModmailCommunicationHandler.getModMailParticipiant(jda, getParticipiantId(textchannel));
+            textchannel.delete().queue();
+            sendMessageToUser(user, "JVMRally staff have closed this report. Further messages will open a new report.");
         } else {
             throw new CouldNotDeleteChannelException("Could not delete channel " + channel.getName() + " in guild "
                     + guild.getName() + ". Channel is not in category " + CATEGORY_NAME);
