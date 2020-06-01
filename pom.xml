@@ -23,7 +23,7 @@
   
     <java.version>11</java.version>
     <disparse.version>master-SNAPSHOT</disparse.version>
-    <jda.version>4.1.1_116</jda.version>
+    <jda.version>4.1.1_156</jda.version>
     <log4j.version>2.13.1</log4j.version>
     <jackson.version>2.10.3</jackson.version>
     <postgres.driver.version>42.2.11</postgres.driver.version>
