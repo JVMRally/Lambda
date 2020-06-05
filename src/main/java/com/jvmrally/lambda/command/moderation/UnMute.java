@@ -6,6 +6,7 @@ import com.jvmrally.lambda.command.PersistenceAwareCommand;
 import com.jvmrally.lambda.command.exception.RoleNotFoundException;
 import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
+import disparse.discord.AbstractPermission;
 import org.jooq.DSLContext;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.entities.Member;
@@ -27,7 +28,7 @@ public class UnMute extends PersistenceAwareCommand {
     }
 
     @CommandHandler(commandName = "unmute", description = "Unmute mentioned users.",
-            roles = "admin")
+            perms = AbstractPermission.ADMINISTRATOR)
     public static void execute(MessageReceivedEvent e, DSLContext dsl)
             throws RoleNotFoundException {
         var unmute = new UnMute(e, dsl);
