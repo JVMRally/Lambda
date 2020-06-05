@@ -13,24 +13,28 @@ import java.io.Serializable;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Ban implements Serializable {
 
-    private static final long serialVersionUID = -194472373;
+    private static final long serialVersionUID = 1929365501;
 
     private Long userid;
     private Long banExpiry;
+    private Long guildId;
 
     public Ban() {}
 
     public Ban(Ban value) {
         this.userid = value.userid;
         this.banExpiry = value.banExpiry;
+        this.guildId = value.guildId;
     }
 
     public Ban(
         Long userid,
-        Long banExpiry
+        Long banExpiry,
+        Long guildId
     ) {
         this.userid = userid;
         this.banExpiry = banExpiry;
+        this.guildId = guildId;
     }
 
     public Long getUserid() {
@@ -49,12 +53,21 @@ public class Ban implements Serializable {
         this.banExpiry = banExpiry;
     }
 
+    public Long getGuildId() {
+        return this.guildId;
+    }
+
+    public void setGuildId(Long guildId) {
+        this.guildId = guildId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Ban (");
 
         sb.append(userid);
         sb.append(", ").append(banExpiry);
+        sb.append(", ").append(guildId);
 
         sb.append(")");
         return sb.toString();
