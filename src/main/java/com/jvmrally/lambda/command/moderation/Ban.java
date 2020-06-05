@@ -5,6 +5,7 @@ import com.jvmrally.lambda.command.AuditedPersistenceAwareCommand;
 import com.jvmrally.lambda.command.entities.BanRequest;
 import com.jvmrally.lambda.db.enums.AuditAction;
 import com.jvmrally.lambda.utility.messaging.Messenger;
+import disparse.discord.AbstractPermission;
 import org.jooq.DSLContext;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.entities.Member;
@@ -25,13 +26,13 @@ public class Ban extends AuditedPersistenceAwareCommand {
 
     /**
      * Bans a user
-     * 
+     *
      * @param req the request entity containing command flags and values
      * @param e   the message entity received
      */
     @CommandHandler(commandName = "ban",
             description = "Give an official warning to a user. The user will receive a direct message informing them of the reason.",
-            roles = "admin")
+            perms = AbstractPermission.BAN_MEMBERS)
     public static void execute(MessageReceivedEvent e, DSLContext dsl, BanRequest req) {
         Ban ban = new Ban(e, dsl, req);
         ban.getMentionedMember().ifPresentOrElse(ban::executeBan, ban::sendMissingUserError);
@@ -48,7 +49,7 @@ public class Ban extends AuditedPersistenceAwareCommand {
 
     /**
      * If the clear flag is true, will delete the last 7 days of messages from the target user
-     * 
+     *
      * @param member the target member
      */
     public void banUser(Member member) {
