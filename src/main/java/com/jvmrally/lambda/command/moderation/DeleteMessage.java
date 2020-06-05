@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import com.jvmrally.lambda.command.Command;
+import disparse.discord.AbstractPermission;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import disparse.parser.reflection.CommandHandler;
@@ -38,13 +39,13 @@ public class DeleteMessage extends Command {
     /**
      * Deletes messages sent by mentioned users from all mentioned channels. Defaults to the last 25
      * messages
-     * 
+     *
      * @param req the request entity containing command flags and values
      * @param e   the message entity received
      */
     @CommandHandler(commandName = "delete",
             description = "Deletes messages sent by mentioned users from all mentioned channels. Defaults to the last 25 messages.",
-            roles = "admin")
+            perms = AbstractPermission.MESSAGE_MANAGE)
     public static void execute(MessageReceivedEvent e, DeleteRequest req) {
         new DeleteMessage(e, req).deleteMessages();
     }
@@ -61,7 +62,7 @@ public class DeleteMessage extends Command {
 
     /**
      * Deletes messages sent by a specific users from a specific channel
-     * 
+     *
      * @param channel the channel to delete messages from
      * @param member  the target user
      * @param limit   the maximum number of messages to delete
@@ -82,7 +83,7 @@ public class DeleteMessage extends Command {
 
     /**
      * Method to return a predicate for the equailty between a message author and a member
-     * 
+     *
      * @param member the member to test against the author of the message
      * @return the predicate for message author equailty
      */
