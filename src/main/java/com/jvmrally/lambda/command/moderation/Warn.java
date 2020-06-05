@@ -6,6 +6,7 @@ import com.jvmrally.lambda.command.entities.ReasonRequest;
 import com.jvmrally.lambda.db.enums.AuditAction;
 import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
+import disparse.discord.AbstractPermission;
 import org.jooq.DSLContext;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.entities.Member;
@@ -25,13 +26,13 @@ public final class Warn extends AuditedPersistenceAwareCommand {
 
     /**
      * Gives a warning to a user
-     * 
+     *
      * @param req the request entity containing command flags and values
      * @param e   the message entity received
      */
     @CommandHandler(commandName = "warn",
             description = "Give an official warning to a user. The user will receive a direct message informing them of the reason.",
-            roles = "admin")
+            perms = AbstractPermission.ADMINISTRATOR)
     public static void warn(MessageReceivedEvent e, DSLContext dsl, ReasonRequest req) {
         Warn warn = new Warn(e, dsl, req);
         warn.getMentionedMember().ifPresentOrElse(warn::warnMember, warn::userError);
