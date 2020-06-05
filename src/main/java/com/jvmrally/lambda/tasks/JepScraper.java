@@ -27,7 +27,7 @@ import java.awt.Color;
 /**
  * JepScraper is task which is used to scrap JEP pages (https://openjdk.java.net/jeps/0) for
  * updates, add them (if they exist) to the database and post an update via Messenger.
- * 
+ *
  */
 @Task(unit = TimeUnit.HOURS, frequency = 3, disabled = true)
 public class JepScraper implements Runnable {
@@ -63,7 +63,7 @@ public class JepScraper implements Runnable {
     /**
      * Searches through list of existing jeps list for news and changes from scraped jeps list.
      * Updates all existing Jeps if there are changes and adds all non existing jeps to list.
-     * 
+     *
      * @param scrapedJeps
      * @param existingJeps
      */
@@ -92,7 +92,7 @@ public class JepScraper implements Runnable {
     /**
      * Builds new JepEmbed message for updated JEP and sends it via Messenger to appropriate
      * channel.
-     * 
+     *
      * @param existingJep
      * @param jep
      */
@@ -106,7 +106,7 @@ public class JepScraper implements Runnable {
 
     /**
      * Builds new JepEmbed message for new JEP and sends it via Messenger to appropriate channel
-     * 
+     *
      * @param jep
      */
     private void sendNewEmbed(Jep jep) {
@@ -117,11 +117,11 @@ public class JepScraper implements Runnable {
 
     /**
      * Used to send embed message via Messenger to "java_updates" channel
-     * 
+     *
      * @param eb builder of the message
      */
     private void sendEmbed(EmbedBuilder eb) {
-        TextChannel channel = jda.getTextChannelsByName("java_updates", true).get(0);
+        TextChannel channel = jda.getGuildById(607965294731853855L).getTextChannelsByName("java_updates", true).get(0);
         Messenger.send(channel, eb.build());
     }
 
@@ -139,9 +139,9 @@ public class JepScraper implements Runnable {
 
 
     /**
-     * 
+     *
      * Builds string of changes between 2 Jep objects - new one and old one.
-     * 
+     *
      * @param existingJep old one that has changes
      * @param jep         one that carries wind of change
      * @return string of changes
@@ -170,7 +170,7 @@ public class JepScraper implements Runnable {
     /**
      * Currently does 2 jobs: 1. Inserting list of Jeps into the database 2. Sending every inserted
      * Jep to the appropriate channel via Messenger
-     * 
+     *
      * @param jeps
      */
     private void insertJeps(List<Jep> jeps) {
@@ -184,7 +184,7 @@ public class JepScraper implements Runnable {
     /**
      * Currently does 2 jobs: 1. Updating JEP entity in the database 2. Sending update message to
      * the appropriate channel via Messenger
-     * 
+     *
      * @param existingJep Jep to be updated
      * @param jep         One that carries the update
      */
@@ -200,7 +200,7 @@ public class JepScraper implements Runnable {
     /**
      * Uses Jsoup to connect to JEP_URL in order to scrape html into com.jvmrally.lambda.jdk.Jep
      * objects.
-     * 
+     *
      * @return List of scrapped jeps
      * @throws IOException caught by run() method if fails
      */
@@ -222,7 +222,7 @@ public class JepScraper implements Runnable {
     /**
      * Queries the db for all Jeps contained and returns them in list of com.jvmrally.lambda.jdk.Jep
      * objects.
-     * 
+     *
      * @return list of JEPs.
      */
     private List<Jep> getDbJeps() {
