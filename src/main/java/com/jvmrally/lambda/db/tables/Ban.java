@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row2;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Ban extends TableImpl<BanRecord> {
 
-    private static final long serialVersionUID = 533207441;
+    private static final long serialVersionUID = -2019368876;
 
     /**
      * The reference instance of <code>ban</code>
@@ -55,6 +55,11 @@ public class Ban extends TableImpl<BanRecord> {
      * The column <code>ban.ban_expiry</code>.
      */
     public final TableField<BanRecord, Long> BAN_EXPIRY = createField(DSL.name("ban_expiry"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("'1976256242000'::bigint", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+
+    /**
+     * The column <code>ban.guild_id</code>.
+     */
+    public final TableField<BanRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("'607965294731853855'::bigint", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>ban</code> table reference
@@ -101,7 +106,7 @@ public class Ban extends TableImpl<BanRecord> {
 
     @Override
     public List<UniqueKey<BanRecord>> getKeys() {
-        return Arrays.<UniqueKey<BanRecord>>asList(Keys.BAN_PKEY);
+        return Arrays.<UniqueKey<BanRecord>>asList(Keys.BAN_PKEY, Keys.BAN_GUILD_ID_KEY);
     }
 
     @Override
@@ -131,11 +136,11 @@ public class Ban extends TableImpl<BanRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row2 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Long, Long> fieldsRow() {
-        return (Row2) super.fieldsRow();
+    public Row3<Long, Long, Long> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }
