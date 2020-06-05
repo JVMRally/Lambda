@@ -47,13 +47,10 @@ public class WeeklyStandup implements Runnable, DelayedTask {
     }
 
     private void createNewDiscussion() {
-        var guilds = jda.getGuilds();
-        for (Guild guild : guilds) {
-            var categories = guild.getCategoriesByName(CATEGORY, true);
-            if (categories.size() == 1) {
-                createChannel(categories.get(0));
-            }
-
+        Guild guild = jda.getGuildById(607965294731853855L);
+        var categories = guild.getCategoriesByName(CATEGORY, true);
+        if (categories.size() == 1) {
+            createChannel(categories.get(0));
         }
     }
 
