@@ -1,0 +1,17 @@
+version: '2'
+services:
+  postgres:
+    build: postgres
+    restart: always
+    container_name: lambda_postgres
+    ports:
+    - "5432:5432"
+    volumes:
+      - lambda_postgres:/var/lib/postgres
+    environment:
+      - POSTGRES_USER=${LAMBDA_DB_USER}
+      - POSTGRES_PASSWORD=${LAMBDA_DB_PASSWORD}
+
+volumes:
+  lambda_postgres:
+    driver: local
