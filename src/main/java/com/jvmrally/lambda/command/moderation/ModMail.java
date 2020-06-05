@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.jvmrally.lambda.command.Command;
 import com.jvmrally.lambda.modmail.*;
 
+import disparse.discord.AbstractPermission;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
@@ -29,7 +30,7 @@ public class ModMail extends Command {
         super(e);
     }
 
-    @CommandHandler(commandName = "modmail.open", description = "If not already opened, opens a modmail channel for each given id.", roles = "admin")
+    @CommandHandler(commandName = "modmail.open", description = "If not already opened, opens a modmail channel for each given id.", perms = AbstractPermission.ADMINISTRATOR)
     public static void open(List<String> userIds, MessageReceivedEvent e) {
         logCommand(e);
         List<Guild> guilds = e.getJDA().getGuilds();
