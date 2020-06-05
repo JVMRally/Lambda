@@ -2,10 +2,14 @@ package com.jvmrally.lambda.tasks;
 
 import static com.jvmrally.lambda.db.Tables.BAN;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 import com.jvmrally.lambda.annotation.Task;
 import com.jvmrally.lambda.db.tables.pojos.Ban;
 import com.jvmrally.lambda.injectable.JooqConn;
+import net.dv8tion.jda.api.entities.Guild;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
@@ -30,13 +34,18 @@ public class Unban implements Runnable {
     @Override
     public void run() {
         DSLContext dsl = JooqConn.getJooqContext();
-        List<Ban> bans = dsl.selectFrom(BAN).where(BAN.BAN_EXPIRY.le(System.currentTimeMillis()))
-                .fetchInto(Ban.class);
-        var guild = jda.getGuilds().get(0);
-        for (Ban ban : bans) {
+        Map<Long, Ban> bans = dsl.selectFrom(BAN).where(BAN.BAN_EXPIRY.le(System.currentTimeMillis()))
+                .fetchInto(Ban.class)
+                .stream()
+                .collect(Collectors.toMap(Ban::getGuildId, b -> b));
+
+        bans.forEach((guildId, ban) -> {
+            Guild guild = jda.getGuildById(guildId);
             guild.unban(ban.getUserid().toString()).queue();
             logger.info("Unbanning userid: {}", ban.getUserid());
-            dsl.deleteFrom(BAN).where(BAN.USERID.eq(ban.getUserid())).execute();
-        }
+            dsl.deleteFrom(BAN)
+                    .where(BAN.USERID.eq(ban.getUserid()))
+                    .and(BAN.GUILD_ID.eq(ban.getGuildId())).execute();
+        });
     }
 }
