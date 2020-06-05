@@ -8,6 +8,7 @@ import com.jvmrally.lambda.command.entities.TimedReasonRequest;
 import com.jvmrally.lambda.db.enums.AuditAction;
 import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
+import disparse.discord.AbstractPermission;
 import org.jooq.DSLContext;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.entities.Member;
@@ -29,7 +30,7 @@ public class Mute extends AuditedPersistenceAwareCommand {
 
     @CommandHandler(commandName = "mute",
             description = "Mute someone for the specified amount of time. Defaults to 1 hour.",
-            roles = "admin")
+            perms = AbstractPermission.ADMINISTRATOR)
     public static void execute(MessageReceivedEvent e, DSLContext dsl, TimedReasonRequest req) {
         Mute mute = new Mute(e, dsl, req);
         Util.getRole(e.getGuild(), MUTED_ROLE).ifPresentOrElse(mute::muteMembers,
@@ -60,7 +61,7 @@ public class Mute extends AuditedPersistenceAwareCommand {
 
     /**
      * Log the mute action
-     * 
+     *
      * @param member
      */
     private void logMute(Member member) {
@@ -71,7 +72,7 @@ public class Mute extends AuditedPersistenceAwareCommand {
 
     /**
      * Save a mute record into the database
-     * 
+     *
      * @param member
      */
     private void saveMute(Member member) {
