@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.flywaydb.core.Flyway;
 import org.reflections.Reflections;
-import disparse.discord.Dispatcher;
+import disparse.discord.jda.Dispatcher;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -73,7 +73,7 @@ public class App {
     /**
      * Finds all tasks in the task package and registers them with the scheduler. Scheduling info is
      * read from the Task annotation
-     * 
+     *
      * @param jda the jda instance
      */
     private void registerScheduledTasks() {
@@ -87,7 +87,7 @@ public class App {
 
     /**
      * Run flyway migrations, and if --generate arg is passed, run Jooq Code generation
-     * 
+     *
      * @param args command line args
      */
     private void initDatabase() {
