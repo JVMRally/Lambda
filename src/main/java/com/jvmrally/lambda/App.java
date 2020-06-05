@@ -2,6 +2,7 @@ package com.jvmrally.lambda;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import javax.security.auth.login.LoginException;
 import com.jvmrally.lambda.config.JooqCodeGen;
 import com.jvmrally.lambda.tasks.TaskManager;
@@ -42,7 +43,13 @@ public class App {
     }
 
     private void initJDA() throws LoginException, InterruptedException {
-        jda = addListeners(Dispatcher.init(new JDABuilder(System.getenv(TOKEN)), PREFIX));
+        Dispatcher.Builder dispatcherBuilder = new Dispatcher.Builder()
+                .prefix(PREFIX)
+                .pageLimit(10)
+                .description("General purpose moderation bot!")
+                .withExecutorService(Executors.newFixedThreadPool(10));
+
+        jda = addListeners(Dispatcher.init(new JDABuilder(System.getenv(TOKEN)), dispatcherBuilder.build()));
         jda.awaitReady();
         jda.getPresence().setActivity(Activity.playing("DM to contact staff"));
         registerScheduledTasks();
