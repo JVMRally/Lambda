@@ -22,7 +22,7 @@ public class SuggestionApproval extends ListenerAdapter {
     }
 
     private void execute() {
-        if (e.getUser().isBot()) {
+        if (e.getUser().isBot() || e.getGuild().getIdLong() != 607965294731853855L) {
             return;
         }
         if (channelIsCorrect()) {
