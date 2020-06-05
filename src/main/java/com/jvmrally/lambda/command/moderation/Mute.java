@@ -9,6 +9,7 @@ import com.jvmrally.lambda.db.enums.AuditAction;
 import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import disparse.discord.AbstractPermission;
+import net.dv8tion.jda.api.entities.Guild;
 import org.jooq.DSLContext;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.entities.Member;
@@ -55,17 +56,19 @@ public class Mute extends AuditedPersistenceAwareCommand {
     }
 
     private void muteMember(Role role, Member member) {
-        e.getGuild().addRoleToMember(member, role).queue();
-        logMute(member);
+        Guild guild = e.getGuild();
+        guild.addRoleToMember(member, role).queue();
+        logMute(guild, member);
     }
 
     /**
      * Log the mute action
      *
+     * @param guild
      * @param member
      */
-    private void logMute(Member member) {
-        saveMute(member);
+    private void logMute(Guild guild, Member member) {
+        saveMute(guild, member);
         audit.log(AuditAction.MUTED, e.getAuthor().getIdLong(), member.getIdLong(),
                 request.getReason());
     }
@@ -73,9 +76,13 @@ public class Mute extends AuditedPersistenceAwareCommand {
     /**
      * Save a mute record into the database
      *
+     * @param guild
      * @param member
      */
-    private void saveMute(Member member) {
-        dsl.insertInto(MUTE).values(member.getIdLong(), request.getExpiry()).execute();
+    private void saveMute(Guild guild, Member member) {
+        dsl.insertInto(MUTE)
+                .columns(MUTE.USERID, MUTE.MUTE_EXPIRY, MUTE.GUILD_ID)
+                .values(member.getIdLong(), request.getExpiry(), guild.getIdLong())
+                .execute();
     }
 }
