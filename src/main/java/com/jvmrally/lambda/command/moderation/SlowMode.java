@@ -1,6 +1,7 @@
 package com.jvmrally.lambda.command.moderation;
 
 import com.jvmrally.lambda.command.Command;
+import disparse.discord.AbstractPermission;
 import disparse.parser.reflection.CommandHandler;
 import disparse.parser.reflection.Flag;
 import disparse.parser.reflection.ParsedEntity;
@@ -32,13 +33,13 @@ public class SlowMode extends Command {
     /**
      * Modifies the slowmode of mentioned channels. If no channels are mentioned, it defaults to the
      * channel of the received message.
-     * 
+     *
      * @param req the request entity containing command flags and values
      * @param e   the message entity received
      */
     @CommandHandler(commandName = "slow",
             description = "Modifies the slowmode of mentioned channels. If no channel is mentioned it defaults to the current channel.",
-            roles = "admin")
+            perms = AbstractPermission.MANAGE_CHANNEL)
     public static void execute(MessageReceivedEvent e, SlowModeRequest req) {
         new SlowMode(e, req).configureSlowMode();
     }
@@ -50,7 +51,7 @@ public class SlowMode extends Command {
 
     /**
      * Set the slowmode of targeted text channel
-     * 
+     *
      * @param time the number of seconds to set. 0 will remove slow mode
      */
     private void setSlowMode(int time) {
