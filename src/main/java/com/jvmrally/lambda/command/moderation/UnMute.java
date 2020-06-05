@@ -45,7 +45,9 @@ public class UnMute extends PersistenceAwareCommand {
 
     private void unmuteMember(Member member) {
         e.getGuild().removeRoleFromMember(member, role).queue();
-        dsl.deleteFrom(MUTE).where(MUTE.USERID.eq(member.getIdLong())).execute();
+        dsl.deleteFrom(MUTE)
+                .where(MUTE.USERID.eq(member.getIdLong()))
+                .and(MUTE.GUILD_ID.eq(member.getGuild().getIdLong())).execute();
     }
 
     private void userError() {
