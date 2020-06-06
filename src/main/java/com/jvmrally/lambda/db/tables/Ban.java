@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Ban extends TableImpl<BanRecord> {
 
-    private static final long serialVersionUID = -2019368876;
+    private static final long serialVersionUID = 2125711973;
 
     /**
      * The reference instance of <code>ban</code>
@@ -106,7 +106,7 @@ public class Ban extends TableImpl<BanRecord> {
 
     @Override
     public List<UniqueKey<BanRecord>> getKeys() {
-        return Arrays.<UniqueKey<BanRecord>>asList(Keys.BAN_PKEY, Keys.BAN_GUILD_ID_KEY);
+        return Arrays.<UniqueKey<BanRecord>>asList(Keys.BAN_PKEY);
     }
 
     @Override

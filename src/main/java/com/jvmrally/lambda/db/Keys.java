@@ -43,14 +43,11 @@ public class Keys {
 
     public static final UniqueKey<AuditRecord> AUDIT_PKEY = UniqueKeys0.AUDIT_PKEY;
     public static final UniqueKey<BanRecord> BAN_PKEY = UniqueKeys0.BAN_PKEY;
-    public static final UniqueKey<BanRecord> BAN_GUILD_ID_KEY = UniqueKeys0.BAN_GUILD_ID_KEY;
     public static final UniqueKey<DmTimeoutsRecord> DM_TIMEOUTS_PKEY = UniqueKeys0.DM_TIMEOUTS_PKEY;
     public static final UniqueKey<JepsRecord> JEPS_PKEY = UniqueKeys0.JEPS_PKEY;
     public static final UniqueKey<MuteRecord> MUTE_PKEY = UniqueKeys0.MUTE_PKEY;
-    public static final UniqueKey<MuteRecord> MUTE_GUILD_ID_KEY = UniqueKeys0.MUTE_GUILD_ID_KEY;
     public static final UniqueKey<TagsRecord> TAGS_PKEY = UniqueKeys0.TAGS_PKEY;
     public static final UniqueKey<TagsRecord> TAGS_TAGNAME_KEY = UniqueKeys0.TAGS_TAGNAME_KEY;
-    public static final UniqueKey<TagsRecord> TAGS_GUILD_ID_KEY = UniqueKeys0.TAGS_GUILD_ID_KEY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -69,13 +66,10 @@ public class Keys {
     private static class UniqueKeys0 {
         public static final UniqueKey<AuditRecord> AUDIT_PKEY = Internal.createUniqueKey(Audit.AUDIT, "audit_pkey", new TableField[] { Audit.AUDIT.ID }, true);
         public static final UniqueKey<BanRecord> BAN_PKEY = Internal.createUniqueKey(Ban.BAN, "ban_pkey", new TableField[] { Ban.BAN.USERID }, true);
-        public static final UniqueKey<BanRecord> BAN_GUILD_ID_KEY = Internal.createUniqueKey(Ban.BAN, "ban_guild_id_key", new TableField[] { Ban.BAN.GUILD_ID }, true);
         public static final UniqueKey<DmTimeoutsRecord> DM_TIMEOUTS_PKEY = Internal.createUniqueKey(DmTimeouts.DM_TIMEOUTS, "dm_timeouts_pkey", new TableField[] { DmTimeouts.DM_TIMEOUTS.USERID }, true);
         public static final UniqueKey<JepsRecord> JEPS_PKEY = Internal.createUniqueKey(Jeps.JEPS, "jeps_pkey", new TableField[] { Jeps.JEPS.ID }, true);
         public static final UniqueKey<MuteRecord> MUTE_PKEY = Internal.createUniqueKey(Mute.MUTE, "mute_pkey", new TableField[] { Mute.MUTE.USERID }, true);
-        public static final UniqueKey<MuteRecord> MUTE_GUILD_ID_KEY = Internal.createUniqueKey(Mute.MUTE, "mute_guild_id_key", new TableField[] { Mute.MUTE.GUILD_ID }, true);
         public static final UniqueKey<TagsRecord> TAGS_PKEY = Internal.createUniqueKey(Tags.TAGS, "tags_pkey", new TableField[] { Tags.TAGS.ID }, true);
         public static final UniqueKey<TagsRecord> TAGS_TAGNAME_KEY = Internal.createUniqueKey(Tags.TAGS, "tags_tagname_key", new TableField[] { Tags.TAGS.TAGNAME }, true);
-        public static final UniqueKey<TagsRecord> TAGS_GUILD_ID_KEY = Internal.createUniqueKey(Tags.TAGS, "tags_guild_id_key", new TableField[] { Tags.TAGS.GUILD_ID }, true);
     }
 }

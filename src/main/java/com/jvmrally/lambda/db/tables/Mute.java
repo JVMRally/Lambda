@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Mute extends TableImpl<MuteRecord> {
 
-    private static final long serialVersionUID = 1194273377;
+    private static final long serialVersionUID = 874116424;
 
     /**
      * The reference instance of <code>mute</code>
@@ -106,7 +106,7 @@ public class Mute extends TableImpl<MuteRecord> {
 
     @Override
     public List<UniqueKey<MuteRecord>> getKeys() {
-        return Arrays.<UniqueKey<MuteRecord>>asList(Keys.MUTE_PKEY, Keys.MUTE_GUILD_ID_KEY);
+        return Arrays.<UniqueKey<MuteRecord>>asList(Keys.MUTE_PKEY);
     }
 
     @Override
