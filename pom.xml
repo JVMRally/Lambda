@@ -22,7 +22,7 @@
     <sonar.login>${env.LAMBDA_SONAR}</sonar.login>
 
     <java.version>11</java.version>
-    <disparse.version>master-08e51a1-1</disparse.version>
+    <disparse.version>master-5fdf4ac268-1</disparse.version>
     <jda.version>4.1.1_116</jda.version>
     <log4j.version>2.13.1</log4j.version>
     <jackson.version>2.10.3</jackson.version>
