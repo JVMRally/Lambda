@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tags extends TableImpl<TagsRecord> {
 
-    private static final long serialVersionUID = -372035159;
+    private static final long serialVersionUID = 1169271096;
 
     /**
      * The reference instance of <code>tags</code>
@@ -67,6 +67,11 @@ public class Tags extends TableImpl<TagsRecord> {
      * The column <code>tags.updated_at</code>.
      */
     public final TableField<TagsRecord, OffsetDateTime> UPDATED_AT = createField(DSL.name("updated_at"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE.nullable(false), this, "");
+
+    /**
+     * The column <code>tags.guild_id</code>.
+     */
+    public final TableField<TagsRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("'607965294731853855'::bigint", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>tags</code> table reference
@@ -118,7 +123,7 @@ public class Tags extends TableImpl<TagsRecord> {
 
     @Override
     public List<UniqueKey<TagsRecord>> getKeys() {
-        return Arrays.<UniqueKey<TagsRecord>>asList(Keys.TAGS_PKEY, Keys.TAGS_TAGNAME_KEY);
+        return Arrays.<UniqueKey<TagsRecord>>asList(Keys.TAGS_PKEY, Keys.TAGS_TAGNAME_KEY, Keys.TAGS_GUILD_ID_KEY);
     }
 
     @Override
@@ -148,11 +153,11 @@ public class Tags extends TableImpl<TagsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Integer, String, String, OffsetDateTime> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Integer, String, String, OffsetDateTime, Long> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

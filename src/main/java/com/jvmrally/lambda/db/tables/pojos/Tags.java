@@ -14,12 +14,13 @@ import java.time.OffsetDateTime;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tags implements Serializable {
 
-    private static final long serialVersionUID = -1126969985;
+    private static final long serialVersionUID = 1082956081;
 
     private Integer        id;
     private String         tagname;
     private String         content;
     private OffsetDateTime updatedAt;
+    private Long           guildId;
 
     public Tags() {}
 
@@ -28,18 +29,21 @@ public class Tags implements Serializable {
         this.tagname = value.tagname;
         this.content = value.content;
         this.updatedAt = value.updatedAt;
+        this.guildId = value.guildId;
     }
 
     public Tags(
         Integer        id,
         String         tagname,
         String         content,
-        OffsetDateTime updatedAt
+        OffsetDateTime updatedAt,
+        Long           guildId
     ) {
         this.id = id;
         this.tagname = tagname;
         this.content = content;
         this.updatedAt = updatedAt;
+        this.guildId = guildId;
     }
 
     public Integer getId() {
@@ -74,6 +78,14 @@ public class Tags implements Serializable {
         this.updatedAt = updatedAt;
     }
 
+    public Long getGuildId() {
+        return this.guildId;
+    }
+
+    public void setGuildId(Long guildId) {
+        this.guildId = guildId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Tags (");
@@ -82,6 +94,7 @@ public class Tags implements Serializable {
         sb.append(", ").append(tagname);
         sb.append(", ").append(content);
         sb.append(", ").append(updatedAt);
+        sb.append(", ").append(guildId);
 
         sb.append(")");
         return sb.toString();
