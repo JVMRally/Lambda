@@ -50,7 +50,8 @@ public class Tag extends PersistenceAwareCommand {
     }
 
     private List<String> getAllTags() {
-        return dsl.select(TAGS.TAGNAME).from(TAGS).fetchInto(String.class);
+        return dsl.select(TAGS.TAGNAME).from(TAGS).where(TAGS.GUILD_ID.eq(e.getGuild().getIdLong()))
+                .fetchInto(String.class);
     }
 
     /**
@@ -60,6 +61,7 @@ public class Tag extends PersistenceAwareCommand {
      * @return
      */
     private Optional<Tags> getTagByName(String name) {
-        return dsl.selectFrom(TAGS).where(TAGS.TAGNAME.eq(name)).fetchOptionalInto(Tags.class);
+        return dsl.selectFrom(TAGS).where(TAGS.TAGNAME.eq(name))
+                .and(TAGS.GUILD_ID.eq(e.getGuild().getIdLong())).fetchOptionalInto(Tags.class);
     }
 }

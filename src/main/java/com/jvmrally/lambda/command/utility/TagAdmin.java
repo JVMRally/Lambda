@@ -75,12 +75,15 @@ public class TagAdmin extends AuditedPersistenceAwareCommand {
     }
 
     private Optional<Tags> findTagByName(String name) {
-        return dsl.selectFrom(TAGS).where(TAGS.TAGNAME.eq(name)).fetchOptionalInto(Tags.class);
+        return dsl.selectFrom(TAGS).where(TAGS.TAGNAME.eq(name))
+                .and(TAGS.GUILD_ID.eq(e.getGuild().getIdLong())).fetchOptionalInto(Tags.class);
     }
 
     private void saveTag() {
-        dsl.insertInto(TAGS).columns(TAGS.TAGNAME, TAGS.CONTENT, TAGS.UPDATED_AT)
-                .values(req.getName(), req.getContent(), OffsetDateTime.now()).execute();
+        dsl.insertInto(TAGS).columns(TAGS.TAGNAME, TAGS.CONTENT, TAGS.UPDATED_AT, TAGS.GUILD_ID)
+                .values(req.getName(), req.getContent(), OffsetDateTime.now(),
+                        e.getGuild().getIdLong())
+                .execute();
         auditTag(AuditAction.CREATED_TAG);
         Messenger.send(e.getChannel(), "Tag created!");
     }
@@ -88,13 +91,13 @@ public class TagAdmin extends AuditedPersistenceAwareCommand {
     private void updateTag() {
         dsl.update(TAGS).set(TAGS.CONTENT, req.getContent())
                 .set(TAGS.UPDATED_AT, OffsetDateTime.now()).where(TAGS.TAGNAME.eq(req.getName()))
-                .execute();
+                .and(TAGS.GUILD_ID.eq(e.getGuild().getIdLong())).execute();
         auditTag(AuditAction.EDITED_TAG);
     }
 
-
     private void removeTag(Tags tag) {
-        dsl.deleteFrom(TAGS).where(TAGS.TAGNAME.eq(tag.getTagname())).execute();
+        dsl.deleteFrom(TAGS).where(TAGS.TAGNAME.eq(tag.getTagname()))
+                .and(TAGS.GUILD_ID.eq(e.getGuild().getIdLong())).execute();
         auditTag(AuditAction.DELETED_TAG);
         Messenger.send(e.getChannel(), "Tag `" + tag.getTagname() + "` has been deleted.");
     }
