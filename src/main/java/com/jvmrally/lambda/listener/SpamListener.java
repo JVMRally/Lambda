@@ -33,7 +33,7 @@ public class SpamListener extends ListenerAdapter {
             Messenger.send(e.getMember(), getWarning());
             Auditor.getAuditor().log(AuditAction.AUTOMATED_WARN,
                     e.getJDA().getSelfUser().getIdLong(), e.getMember().getIdLong(),
-                    "Automatic warning from spam prevention.");
+                    "Automatic warning from spam prevention.", e.getGuild().getIdLong());
         }
     }
 

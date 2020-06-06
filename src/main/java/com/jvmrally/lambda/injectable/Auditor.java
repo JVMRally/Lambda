@@ -32,8 +32,8 @@ public class Auditor {
      * @param action    the action type
      * @param initiator the id of the initiator
      */
-    public void log(AuditAction action, long initiator) {
-        insert(action, initiator);
+    public void log(AuditAction action, long initiator, long guildid) {
+        insert(action, initiator, guildid);
     }
 
     /**
@@ -43,8 +43,8 @@ public class Auditor {
      * @param initiator the id of the initiator
      * @param target    the id of the target user
      */
-    public void log(AuditAction action, long initiator, long target) {
-        insert(action, initiator, target);
+    public void log(AuditAction action, long initiator, long target, long guildid) {
+        insert(action, initiator, target, guildid);
     }
 
     /**
@@ -55,25 +55,26 @@ public class Auditor {
      * @param target    the id of the target user
      * @param reason    the reason of the action
      */
-    public void log(AuditAction action, long initiator, long target, String reason) {
+    public void log(AuditAction action, long initiator, long target, String reason, long guildid) {
         if (reason.isEmpty()) {
             reason = null;
         }
-        insert(action, initiator, target, reason);
+        insert(action, initiator, target, reason, guildid);
     }
 
-    private void insert(AuditAction action, long initiator) {
-        insert(action, initiator, null, null);
+    private void insert(AuditAction action, long initiator, long guildid) {
+        insert(action, initiator, null, null, guildid);
     }
 
-    private void insert(AuditAction action, Long initiator, Long target) {
-        insert(action, initiator, target, null);
+    private void insert(AuditAction action, Long initiator, Long target, long guildid) {
+        insert(action, initiator, target, null, guildid);
     }
 
-    private void insert(AuditAction action, Long initiator, Long target, String reason) {
+    private void insert(AuditAction action, Long initiator, Long target, String reason,
+            long guildid) {
         dsl.insertInto(AUDIT)
                 .columns(AUDIT.MOD_ACTION, AUDIT.USER_ID, AUDIT.TARGET_USER, AUDIT.REASON,
-                        AUDIT.CREATED)
-                .values(action, initiator, target, reason, OffsetDateTime.now()).execute();
+                        AUDIT.CREATED, AUDIT.GUILD_ID)
+                .values(action, initiator, target, reason, OffsetDateTime.now(), guildid).execute();
     }
 }

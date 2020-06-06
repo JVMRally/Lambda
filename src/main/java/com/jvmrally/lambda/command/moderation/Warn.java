@@ -55,7 +55,7 @@ public final class Warn extends AuditedPersistenceAwareCommand {
 
     private void auditWarning(Member member) {
         audit.log(AuditAction.WARNED, e.getAuthor().getIdLong(), member.getIdLong(),
-                req.getReason());
+                req.getReason(), e.getGuild().getIdLong());
     }
 
     private void sendWarningMessage(Member member) {

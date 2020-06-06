@@ -70,7 +70,7 @@ public class Mute extends AuditedPersistenceAwareCommand {
     private void logMute(Guild guild, Member member) {
         saveMute(guild, member);
         audit.log(AuditAction.MUTED, e.getAuthor().getIdLong(), member.getIdLong(),
-                request.getReason());
+                request.getReason(), e.getGuild().getIdLong());
     }
 
     /**
@@ -80,9 +80,7 @@ public class Mute extends AuditedPersistenceAwareCommand {
      * @param member
      */
     private void saveMute(Guild guild, Member member) {
-        dsl.insertInto(MUTE)
-                .columns(MUTE.USERID, MUTE.MUTE_EXPIRY, MUTE.GUILD_ID)
-                .values(member.getIdLong(), request.getExpiry(), guild.getIdLong())
-                .execute();
+        dsl.insertInto(MUTE).columns(MUTE.USERID, MUTE.MUTE_EXPIRY, MUTE.GUILD_ID)
+                .values(member.getIdLong(), request.getExpiry(), guild.getIdLong()).execute();
     }
 }

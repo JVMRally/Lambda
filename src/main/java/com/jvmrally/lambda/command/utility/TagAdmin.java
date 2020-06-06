@@ -103,7 +103,7 @@ public class TagAdmin extends AuditedPersistenceAwareCommand {
     }
 
     private void auditTag(AuditAction action) {
-        audit.log(action, e.getAuthor().getIdLong());
+        audit.log(action, e.getAuthor().getIdLong(), e.getGuild().getIdLong());
     }
 
     /**

@@ -58,11 +58,11 @@ public class Ban extends AuditedPersistenceAwareCommand {
     }
 
     private void logBan(Member member) {
-        dsl.insertInto(BAN)
-                .columns(BAN.USERID, BAN.BAN_EXPIRY, BAN.GUILD_ID)
-                .values(member.getIdLong(), req.getExpiry(), member.getGuild().getIdLong()).execute();
-        
+        dsl.insertInto(BAN).columns(BAN.USERID, BAN.BAN_EXPIRY, BAN.GUILD_ID)
+                .values(member.getIdLong(), req.getExpiry(), member.getGuild().getIdLong())
+                .execute();
+
         audit.log(AuditAction.WARNED, e.getAuthor().getIdLong(), member.getIdLong(),
-                req.getReason());
+                req.getReason(), e.getGuild().getIdLong());
     }
 }
