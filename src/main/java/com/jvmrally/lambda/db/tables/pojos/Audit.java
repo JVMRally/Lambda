@@ -16,7 +16,7 @@ import java.time.OffsetDateTime;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Audit implements Serializable {
 
-    private static final long serialVersionUID = 1520704695;
+    private static final long serialVersionUID = -179572883;
 
     private Integer        id;
     private Long           userId;
@@ -24,6 +24,7 @@ public class Audit implements Serializable {
     private Long           targetUser;
     private String         reason;
     private OffsetDateTime created;
+    private Long           guildId;
 
     public Audit() {}
 
@@ -34,6 +35,7 @@ public class Audit implements Serializable {
         this.targetUser = value.targetUser;
         this.reason = value.reason;
         this.created = value.created;
+        this.guildId = value.guildId;
     }
 
     public Audit(
@@ -42,7 +44,8 @@ public class Audit implements Serializable {
         AuditAction    modAction,
         Long           targetUser,
         String         reason,
-        OffsetDateTime created
+        OffsetDateTime created,
+        Long           guildId
     ) {
         this.id = id;
         this.userId = userId;
@@ -50,6 +53,7 @@ public class Audit implements Serializable {
         this.targetUser = targetUser;
         this.reason = reason;
         this.created = created;
+        this.guildId = guildId;
     }
 
     public Integer getId() {
@@ -100,6 +104,14 @@ public class Audit implements Serializable {
         this.created = created;
     }
 
+    public Long getGuildId() {
+        return this.guildId;
+    }
+
+    public void setGuildId(Long guildId) {
+        this.guildId = guildId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Audit (");
@@ -110,6 +122,7 @@ public class Audit implements Serializable {
         sb.append(", ").append(targetUser);
         sb.append(", ").append(reason);
         sb.append(", ").append(created);
+        sb.append(", ").append(guildId);
 
         sb.append(")");
         return sb.toString();

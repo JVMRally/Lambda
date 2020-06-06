@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Audit extends TableImpl<AuditRecord> {
 
-    private static final long serialVersionUID = 691824491;
+    private static final long serialVersionUID = -310271301;
 
     /**
      * The reference instance of <code>audit</code>
@@ -78,6 +78,11 @@ public class Audit extends TableImpl<AuditRecord> {
      * The column <code>audit.created</code>.
      */
     public final TableField<AuditRecord, OffsetDateTime> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE.nullable(false), this, "");
+
+    /**
+     * The column <code>audit.guild_id</code>.
+     */
+    public final TableField<AuditRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("'607965294731853855'::bigint", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>audit</code> table reference
@@ -159,11 +164,11 @@ public class Audit extends TableImpl<AuditRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, Long, AuditAction, Long, String, OffsetDateTime> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Integer, Long, AuditAction, Long, String, OffsetDateTime, Long> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }
