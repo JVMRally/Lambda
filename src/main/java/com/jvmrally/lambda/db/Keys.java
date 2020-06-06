@@ -47,7 +47,7 @@ public class Keys {
     public static final UniqueKey<JepsRecord> JEPS_PKEY = UniqueKeys0.JEPS_PKEY;
     public static final UniqueKey<MuteRecord> MUTE_PKEY = UniqueKeys0.MUTE_PKEY;
     public static final UniqueKey<TagsRecord> TAGS_PKEY = UniqueKeys0.TAGS_PKEY;
-    public static final UniqueKey<TagsRecord> TAGS_TAGNAME_KEY = UniqueKeys0.TAGS_TAGNAME_KEY;
+    public static final UniqueKey<TagsRecord> TAGS_TAGNAME_GUILD_ID_KEY = UniqueKeys0.TAGS_TAGNAME_GUILD_ID_KEY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -70,6 +70,6 @@ public class Keys {
         public static final UniqueKey<JepsRecord> JEPS_PKEY = Internal.createUniqueKey(Jeps.JEPS, "jeps_pkey", new TableField[] { Jeps.JEPS.ID }, true);
         public static final UniqueKey<MuteRecord> MUTE_PKEY = Internal.createUniqueKey(Mute.MUTE, "mute_pkey", new TableField[] { Mute.MUTE.USERID }, true);
         public static final UniqueKey<TagsRecord> TAGS_PKEY = Internal.createUniqueKey(Tags.TAGS, "tags_pkey", new TableField[] { Tags.TAGS.ID }, true);
-        public static final UniqueKey<TagsRecord> TAGS_TAGNAME_KEY = Internal.createUniqueKey(Tags.TAGS, "tags_tagname_key", new TableField[] { Tags.TAGS.TAGNAME }, true);
+        public static final UniqueKey<TagsRecord> TAGS_TAGNAME_GUILD_ID_KEY = Internal.createUniqueKey(Tags.TAGS, "tags_tagname_guild_id_key", new TableField[] { Tags.TAGS.TAGNAME, Tags.TAGS.GUILD_ID }, true);
     }
 }

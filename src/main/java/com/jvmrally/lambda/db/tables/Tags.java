@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tags extends TableImpl<TagsRecord> {
 
-    private static final long serialVersionUID = -1530414415;
+    private static final long serialVersionUID = -1467714301;
 
     /**
      * The reference instance of <code>tags</code>
@@ -123,7 +123,7 @@ public class Tags extends TableImpl<TagsRecord> {
 
     @Override
     public List<UniqueKey<TagsRecord>> getKeys() {
-        return Arrays.<UniqueKey<TagsRecord>>asList(Keys.TAGS_PKEY, Keys.TAGS_TAGNAME_KEY);
+        return Arrays.<UniqueKey<TagsRecord>>asList(Keys.TAGS_PKEY, Keys.TAGS_TAGNAME_GUILD_ID_KEY);
     }
 
     @Override
