@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import javax.security.auth.login.LoginException;
 import com.jvmrally.lambda.config.JooqCodeGen;
+import com.jvmrally.lambda.managers.PersistedDisabledCommandManager;
 import com.jvmrally.lambda.tasks.TaskManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +48,8 @@ public class App {
                 .prefix(PREFIX)
                 .pageLimit(10)
                 .description("General purpose moderation bot!")
-                .withExecutorService(Executors.newFixedThreadPool(10));
+                .withExecutorService(Executors.newFixedThreadPool(10))
+                .withDisabledCommandManager(new PersistedDisabledCommandManager());
 
         jda = addListeners(Dispatcher.init(new JDABuilder(System.getenv(TOKEN)), dispatcherBuilder.build()));
         jda.awaitReady();

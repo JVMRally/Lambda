@@ -6,6 +6,7 @@ package com.jvmrally.lambda.db;
 
 import com.jvmrally.lambda.db.tables.Audit;
 import com.jvmrally.lambda.db.tables.Ban;
+import com.jvmrally.lambda.db.tables.DisabledCommands;
 import com.jvmrally.lambda.db.tables.DmTimeouts;
 import com.jvmrally.lambda.db.tables.Jeps;
 import com.jvmrally.lambda.db.tables.Mute;
@@ -26,7 +27,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefaultSchema extends SchemaImpl {
 
-    private static final long serialVersionUID = 403401150;
+    private static final long serialVersionUID = 600217910;
 
     /**
      * The reference instance of <code>DEFAULT_SCHEMA</code>
@@ -42,6 +43,11 @@ public class DefaultSchema extends SchemaImpl {
      * The table <code>ban</code>.
      */
     public final Ban BAN = Ban.BAN;
+
+    /**
+     * The table <code>disabled_commands</code>.
+     */
+    public final DisabledCommands DISABLED_COMMANDS = DisabledCommands.DISABLED_COMMANDS;
 
     /**
      * The table <code>dm_timeouts</code>.
@@ -80,6 +86,7 @@ public class DefaultSchema extends SchemaImpl {
     public final List<Sequence<?>> getSequences() {
         return Arrays.<Sequence<?>>asList(
             Sequences.AUDIT_SERIAL,
+            Sequences.DISABLED_COMMANDS_ID_SEQ,
             Sequences.TAGS_ID_SEQ);
     }
 
@@ -88,6 +95,7 @@ public class DefaultSchema extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             Audit.AUDIT,
             Ban.BAN,
+            DisabledCommands.DISABLED_COMMANDS,
             DmTimeouts.DM_TIMEOUTS,
             Jeps.JEPS,
             Mute.MUTE,

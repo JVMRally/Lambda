@@ -6,6 +6,7 @@ package com.jvmrally.lambda.db;
 
 import com.jvmrally.lambda.db.tables.Audit;
 import com.jvmrally.lambda.db.tables.Ban;
+import com.jvmrally.lambda.db.tables.DisabledCommands;
 import com.jvmrally.lambda.db.tables.DmTimeouts;
 import com.jvmrally.lambda.db.tables.Jeps;
 import com.jvmrally.lambda.db.tables.Mute;
@@ -27,6 +28,11 @@ public class Tables {
      * The table <code>ban</code>.
      */
     public static final Ban BAN = Ban.BAN;
+
+    /**
+     * The table <code>disabled_commands</code>.
+     */
+    public static final DisabledCommands DISABLED_COMMANDS = DisabledCommands.DISABLED_COMMANDS;
 
     /**
      * The table <code>dm_timeouts</code>.

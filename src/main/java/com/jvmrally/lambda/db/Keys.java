@@ -6,12 +6,14 @@ package com.jvmrally.lambda.db;
 
 import com.jvmrally.lambda.db.tables.Audit;
 import com.jvmrally.lambda.db.tables.Ban;
+import com.jvmrally.lambda.db.tables.DisabledCommands;
 import com.jvmrally.lambda.db.tables.DmTimeouts;
 import com.jvmrally.lambda.db.tables.Jeps;
 import com.jvmrally.lambda.db.tables.Mute;
 import com.jvmrally.lambda.db.tables.Tags;
 import com.jvmrally.lambda.db.tables.records.AuditRecord;
 import com.jvmrally.lambda.db.tables.records.BanRecord;
+import com.jvmrally.lambda.db.tables.records.DisabledCommandsRecord;
 import com.jvmrally.lambda.db.tables.records.DmTimeoutsRecord;
 import com.jvmrally.lambda.db.tables.records.JepsRecord;
 import com.jvmrally.lambda.db.tables.records.MuteRecord;
@@ -35,6 +37,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<AuditRecord, Integer> IDENTITY_AUDIT = Identities0.IDENTITY_AUDIT;
+    public static final Identity<DisabledCommandsRecord, Integer> IDENTITY_DISABLED_COMMANDS = Identities0.IDENTITY_DISABLED_COMMANDS;
     public static final Identity<TagsRecord, Integer> IDENTITY_TAGS = Identities0.IDENTITY_TAGS;
 
     // -------------------------------------------------------------------------
@@ -43,6 +46,8 @@ public class Keys {
 
     public static final UniqueKey<AuditRecord> AUDIT_PKEY = UniqueKeys0.AUDIT_PKEY;
     public static final UniqueKey<BanRecord> BAN_PKEY = UniqueKeys0.BAN_PKEY;
+    public static final UniqueKey<DisabledCommandsRecord> DISABLED_COMMANDS_PKEY = UniqueKeys0.DISABLED_COMMANDS_PKEY;
+    public static final UniqueKey<DisabledCommandsRecord> DISABLED_COMMANDS_GUILD_ID_COMMAND_NAME_KEY = UniqueKeys0.DISABLED_COMMANDS_GUILD_ID_COMMAND_NAME_KEY;
     public static final UniqueKey<DmTimeoutsRecord> DM_TIMEOUTS_PKEY = UniqueKeys0.DM_TIMEOUTS_PKEY;
     public static final UniqueKey<JepsRecord> JEPS_PKEY = UniqueKeys0.JEPS_PKEY;
     public static final UniqueKey<MuteRecord> MUTE_PKEY = UniqueKeys0.MUTE_PKEY;
@@ -60,12 +65,15 @@ public class Keys {
 
     private static class Identities0 {
         public static Identity<AuditRecord, Integer> IDENTITY_AUDIT = Internal.createIdentity(Audit.AUDIT, Audit.AUDIT.ID);
+        public static Identity<DisabledCommandsRecord, Integer> IDENTITY_DISABLED_COMMANDS = Internal.createIdentity(DisabledCommands.DISABLED_COMMANDS, DisabledCommands.DISABLED_COMMANDS.ID);
         public static Identity<TagsRecord, Integer> IDENTITY_TAGS = Internal.createIdentity(Tags.TAGS, Tags.TAGS.ID);
     }
 
     private static class UniqueKeys0 {
         public static final UniqueKey<AuditRecord> AUDIT_PKEY = Internal.createUniqueKey(Audit.AUDIT, "audit_pkey", new TableField[] { Audit.AUDIT.ID }, true);
         public static final UniqueKey<BanRecord> BAN_PKEY = Internal.createUniqueKey(Ban.BAN, "ban_pkey", new TableField[] { Ban.BAN.USERID }, true);
+        public static final UniqueKey<DisabledCommandsRecord> DISABLED_COMMANDS_PKEY = Internal.createUniqueKey(DisabledCommands.DISABLED_COMMANDS, "disabled_commands_pkey", new TableField[] { DisabledCommands.DISABLED_COMMANDS.ID }, true);
+        public static final UniqueKey<DisabledCommandsRecord> DISABLED_COMMANDS_GUILD_ID_COMMAND_NAME_KEY = Internal.createUniqueKey(DisabledCommands.DISABLED_COMMANDS, "disabled_commands_guild_id_command_name_key", new TableField[] { DisabledCommands.DISABLED_COMMANDS.GUILD_ID, DisabledCommands.DISABLED_COMMANDS.COMMAND_NAME }, true);
         public static final UniqueKey<DmTimeoutsRecord> DM_TIMEOUTS_PKEY = Internal.createUniqueKey(DmTimeouts.DM_TIMEOUTS, "dm_timeouts_pkey", new TableField[] { DmTimeouts.DM_TIMEOUTS.USERID }, true);
         public static final UniqueKey<JepsRecord> JEPS_PKEY = Internal.createUniqueKey(Jeps.JEPS, "jeps_pkey", new TableField[] { Jeps.JEPS.ID }, true);
         public static final UniqueKey<MuteRecord> MUTE_PKEY = Internal.createUniqueKey(Mute.MUTE, "mute_pkey", new TableField[] { Mute.MUTE.USERID }, true);
