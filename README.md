@@ -1,6 +1,6 @@
 # Lambda
 
-A bot for the JVMRally Discord server.
+A General purpose bot for Discord servers.
 
 ## Features
 
