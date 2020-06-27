@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 /**
  * App Entry
@@ -44,18 +45,21 @@ public class App {
     }
 
     private void initJDA() throws LoginException, InterruptedException {
-        Dispatcher.Builder dispatcherBuilder = new Dispatcher.Builder()
-                .prefix(PREFIX)
-                .pageLimit(10)
-                .description("General purpose moderation bot!")
+        Dispatcher.Builder dispatcherBuilder = new Dispatcher.Builder(App.class).prefix(PREFIX)
+                .pageLimit(10).description("General purpose moderation bot!")
                 .withExecutorService(Executors.newFixedThreadPool(10))
                 .withDisabledCommandManager(new PersistedDisabledCommandManager());
 
-        jda = addListeners(Dispatcher.init(new JDABuilder(System.getenv(TOKEN)), dispatcherBuilder.build()));
+
+        jda = addListeners(Dispatcher.init(
+                JDABuilder.create(System.getenv(TOKEN),
+                        GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS)),
+                dispatcherBuilder.build()));
         jda.awaitReady();
         jda.getPresence().setActivity(Activity.playing("DM to contact staff"));
         registerScheduledTasks();
     }
+
 
     private JDA addListeners(JDABuilder jdaBuilder) throws LoginException {
         var reflections = new Reflections("com.jvmrally.lambda.listener");
