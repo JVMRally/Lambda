@@ -22,8 +22,8 @@
     <sonar.login>${env.LAMBDA_SONAR}</sonar.login>
 
     <java.version>11</java.version>
-    <disparse.version>0.1.5</disparse.version>
-    <jda.version>4.1.1_116</jda.version>
+    <disparse.version>0.1.7</disparse.version>
+    <jda.version>4.2.0_214</jda.version>
     <log4j.version>2.13.3</log4j.version>
     <jackson.version>2.11.1</jackson.version>
     <postgres.driver.version>42.2.11</postgres.driver.version>
