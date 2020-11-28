@@ -2,15 +2,12 @@ package com.jvmrally.lambda.command.utility;
 
 import com.jvmrally.lambda.command.Command;
 import com.jvmrally.lambda.command.entities.ToggleRequest;
-import com.jvmrally.lambda.injectable.JooqConn;
 import com.jvmrally.lambda.tasks.TaskManager;
 import disparse.discord.jda.Dispatcher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import disparse.parser.dispatch.CommandRegistrar;
 import disparse.parser.reflection.CommandHandler;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import org.jooq.DSLContext;
 
 /**
  * DisableFeature

@@ -4,7 +4,6 @@ import static com.jvmrally.lambda.db.tables.Audit.AUDIT;
 import com.jvmrally.lambda.command.AuditedPersistenceAwareCommand;
 import com.jvmrally.lambda.command.entities.ReasonRequest;
 import com.jvmrally.lambda.db.enums.AuditAction;
-import com.jvmrally.lambda.utility.Util;
 import com.jvmrally.lambda.utility.messaging.Messenger;
 import disparse.discord.AbstractPermission;
 import org.jooq.DSLContext;
@@ -42,11 +41,6 @@ public final class Warn extends AuditedPersistenceAwareCommand {
         sendWarningMessage(member);
         auditWarning(member);
         sendWarningAcknowledgement();
-        addWarnedRoleToMember(member);
-    }
-
-    private void addWarnedRoleToMember(Member member) {
-        Util.addRoleToUser(e.getGuild(), member, "warned");
     }
 
     private void sendWarningAcknowledgement() {
@@ -76,7 +70,6 @@ public final class Warn extends AuditedPersistenceAwareCommand {
     private static String buildWarning(int warnings, String reason) {
         return "**Warning #" + warnings + 1 + "**\n"
                 + "You have been warned by a member of staff. Please read our rules for guidelines of how you should behave.\n "
-                + "You have been warned for the following reason: " + reason + "\n\n"
-                + "To ensure you have received and understood this, you have been automatically muted. Respond with `ACK` and you will be unmuted.";
+                + "You have been warned for the following reason: " + reason;
     }
 }

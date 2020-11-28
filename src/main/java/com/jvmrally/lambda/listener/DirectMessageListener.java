@@ -6,9 +6,7 @@ import java.util.concurrent.TimeUnit;
 import com.jvmrally.lambda.db.tables.pojos.DmTimeouts;
 import com.jvmrally.lambda.injectable.JooqConn;
 import com.jvmrally.lambda.modmail.ModmailCommunicationHandler;
-import com.jvmrally.lambda.utility.Util;
 import org.jooq.DSLContext;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -21,10 +19,6 @@ public class DirectMessageListener extends ListenerAdapter {
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent e) {
         if (e.getAuthor().isBot()) {
-            return;
-        }
-        if (e.getMessage().getContentRaw().equalsIgnoreCase("ACK")) {
-            handleWarningAcknowledgement(e);
             return;
         }
         handleModmailMessage(e);
@@ -45,13 +39,6 @@ public class DirectMessageListener extends ListenerAdapter {
 
     private Optional<DmTimeouts> getUserMessageTimeouts(long authorId) {
         return dsl.selectFrom(DM_TIMEOUTS).where(DM_TIMEOUTS.USERID.eq(authorId)).fetchOptionalInto(DmTimeouts.class);
-    }
-
-    private void handleWarningAcknowledgement(PrivateMessageReceivedEvent e) {
-        for (Guild guild : e.getJDA().getGuilds()) {
-            Util.removeRoleFromUser(guild, guild.getMember(e.getAuthor()), "warned");
-        }
-        logMessage(e);
     }
 
     private void updateResponseTimeout(PrivateMessageReceivedEvent e, long now, DmTimeouts timeout) {

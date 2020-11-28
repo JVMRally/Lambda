@@ -1,7 +1,6 @@
 package com.jvmrally.lambda.tasks;
 
 import static com.jvmrally.lambda.db.tables.Mute.MUTE;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
